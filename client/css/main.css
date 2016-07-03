@@ -61,7 +61,6 @@ div{
 
 #GameItemsArea > ul li {
   text-align: center;
-  vertical-align: middle;
   background-color: #069;
   width: 50px;
   height: 50px;
@@ -108,10 +107,33 @@ div{
 
 #FiledArea > ul li {
   text-align: center;
-  background-color: pink;
   width: 50px;
   height: 50px;
   border: 1px solid gray;
+}
+
+.vacant {
+  background-color: gray;
+}
+
+.player1 {
+  background-color: red;
+}
+
+.player2 {
+  background-color: yellow;
+}
+
+.player3 {
+  background-color: blue;
+}
+
+.player4 {
+  background-color: pink;
+}
+
+.player5 {
+  background-color: green;
 }
 
 
@@ -127,6 +149,11 @@ div{
 
 div .Ship {
   flex:1;
+}
+
+#SubmitArea {
+  flex:1;
+  background-color: #EEE;
 }
 
 #footer {
