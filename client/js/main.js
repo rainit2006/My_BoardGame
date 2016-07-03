@@ -1,4 +1,6 @@
 $(function() {
+    var socket = io();
+
     var GameItemsArray = [];
     var FiledArray = [];
     var FiledLength = 10;
@@ -91,12 +93,30 @@ $(function() {
         var index_Filed = Action.index_Filed;
         console.log(index_GameItems+";"+index_Filed);
 
-        GameItemsArray[index_GameItems][1] = GameItemsArray[index_GameItems][1] - 1;
-        FiledArray[index_Filed][0] = GameItemsArray[index_GameItems][0];
-        drawGameItemsArea();
-        drawFiledArea();
-        bindClickEvent();
+        updateGameStatus();
+
+        socket.emit('submit', Action);
 
     });
+
+    socket.on('update', function(data){
+        Action = data;
+        console.log('updated.'+Action.index_GameItems+';'+Action.index_Filed);
+
+        updateGameStatus();
+
+    });
+
+    function updateGameStatus(){
+      var index_GameItems = Action.index_GameItems;
+      var index_Filed = Action.index_Filed;
+      GameItemsArray[index_GameItems][1] = GameItemsArray[index_GameItems][1] - 1;
+      FiledArray[index_Filed][0] = GameItemsArray[index_GameItems][0];
+
+      drawGameItemsArea();
+      drawFiledArea();
+      bindClickEvent();
+    }
+
 
 })
