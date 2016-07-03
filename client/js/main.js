@@ -8,6 +8,7 @@ $(function() {
         index_GameItems:null,
         index_Filed:null
     };
+    var MAX_PLAYER = 5;
     var PlayerArray = [];
     var myPlayer = {
         name: null,
@@ -39,8 +40,12 @@ $(function() {
         $('#playerArea').empty();
         var ulNode = $('<ul>');
         $.each(PlayerArray, function(){
-            var cls = 'player'+this.id;
-            var div = $("<li>"+this.name+"</li>").addClass(cls);
+            var div = null;
+            if(myPlayer.name == this.name){
+              div = $("<li>"+this.name+"(★)</li>").addClass('player'+this.id);
+            }else{
+              div = $("<li>"+this.name+"</li>").addClass('player'+this.id);
+            }
             ulNode.append(div);
         });
         $('#playerArea').append(ulNode);
@@ -126,11 +131,35 @@ $(function() {
             $('.startForm').show();
 
             myPlayer.name = username;
-            myPlayer.id = PlayerArray.length + 1;
+            myPlayer.id = createPlayerID();
             PlayerArray.push(myPlayer);
 
             socket.emit('new player add', myPlayer);
         }
+    });
+
+    function createPlayerID(){
+      var id = 1;
+      for(var i=1; i <= MAX_PLAYER; i++){
+          var found = false;
+          for(var j=0; j < PlayerArray.length; j++){
+              if(PlayerArray[j].id == i){
+                  found = true;
+                  break;
+              }
+          }
+          if(!found){
+            id=i;
+            break;
+          }
+      }
+      return id;
+    }
+
+
+    $('#startGame').click(function(){
+      $('.loginPage').fadeOut("slow");
+      $('.wrap').show();
     });
 
     // Prevents input from having injected markup
