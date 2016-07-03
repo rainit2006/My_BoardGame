@@ -10,9 +10,74 @@ div{
   border: 1px solid gray;
 }
 
+.loginPage {
+  width:960px;
+  margin: 0 auto;
+}
+
+#playerArea {
+
+}
+
+#playerArea > ul {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content:space-around;
+  align-items: center;
+  padding: 0;
+  margin:0;
+  list-style:none;
+}
+
+#playerArea > ul li{
+  width: 100px;
+  height: 100px;
+  list-style:none;
+}
+
+#playerArea ul li .player1 {
+  background-color: red;
+  border-color: red;
+}
+
+#playerArea ul li .player2 {
+  background-color: yellow;
+  border-color: yellow;
+}
+
+#playerArea > ul li .player3 {
+  background-color: blue;
+  border-color: blue;
+}
+
+#playerArea > ul li .player4 {
+  background-color: pink;
+  border-color: pink;
+}
+
+#playerArea > ul li .player5 {
+  background-color: green;
+  border-color: green;
+}
+
+.loginForm {
+   height: 100px;
+   margin-top: -100px;
+   position: absolute;
+
+   text-align: center;
+   top: 50%;
+   width: 100%;
+}
+
+.startForm {
+  display: none;
+}
+
 .wrap {
   width:960px;
   margin: 0 auto;
+  display: none;
 }
 
 #header {
@@ -118,22 +183,27 @@ div{
 
 .player1 {
   background-color: red;
+  border-color: red;
 }
 
 .player2 {
   background-color: yellow;
+  border-color: yellow;
 }
 
 .player3 {
   background-color: blue;
+  border-color: blue;
 }
 
 .player4 {
   background-color: pink;
+  border-color: pink;
 }
 
 .player5 {
   background-color: green;
+  border-color: green;
 }
 
 

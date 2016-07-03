@@ -8,13 +8,24 @@ $(function() {
         index_GameItems:null,
         index_Filed:null
     };
+    var PlayerArray = [];
+    var myPlayer = {
+        name: null,
+        id: null
+    };
 
     window.onload = function(){
+        //socket.emit('connect');
+        $('.usernameInput').focus();
         init();
     }
 
 
     function init(){
+      PlayerArray = [];
+      myPlayer.name = null;
+      myPlayer.id = null;
+      drawLoginPage();
       initGameItems();
       initFiled();
       drawGameItemsArea();
@@ -22,6 +33,27 @@ $(function() {
       bindClickEvent();
 
       console.log("init done.");
+    }
+
+    function drawLoginPage(){
+        $('#playerArea').empty();
+        var ulNode = $('<ul>');
+        $.each(PlayerArray, function(){
+            var cls = 'player'+this.id;
+            var div = $("<li>"+this.name+"</li>").addClass(cls);
+            ulNode.append(div);
+        });
+        $('#playerArea').append(ulNode);
+
+        if(PlayerArray.length == 2){
+            $('#startGame').val('Star Game with 2 player');
+        }else if(PlayerArray.length == 3){
+            $('#startGame').val('Star Game with 3 player');
+        }else if(PlayerArray.length == 4){
+            $('#startGame').val('Star Game with 4 player');
+        }else if(PlayerArray.length == 5){
+            $('#startGame').val('Star Game with 5 player');
+        }
     }
 
     function initGameItems(){
@@ -87,6 +119,26 @@ $(function() {
       });
     }
 
+    $('#enter').click(function(){
+        username = cleanInput($('.usernameInput').val().trim());
+        if (username) {
+            $('.loginForm').fadeOut("slow");
+            $('.startForm').show();
+
+            myPlayer.name = username;
+            myPlayer.id = PlayerArray.length + 1;
+            PlayerArray.push(myPlayer);
+
+            socket.emit('new player add', myPlayer);
+        }
+    });
+
+    // Prevents input from having injected markup
+   function cleanInput (input) {
+      return $('<div/>').text(input).text();
+   }
+
+
     $('#SubmitArea input:button').click(function(){
         //console.log("button clicked");
         var index_GameItems = Action.index_GameItems;
@@ -105,6 +157,12 @@ $(function() {
 
         updateGameStatus();
 
+    });
+
+    socket.on('players update', function(data){
+        PlayerArray = data;
+        console.log('players update: '+PlayerArray.length);
+        drawLoginPage();
     });
 
     function updateGameStatus(){
