@@ -38,6 +38,10 @@ io.on('connection', function (socket) {
             io.sockets.emit('players update', players);
     });
 
+    socket.on('start game', function(){
+        io.sockets.emit('start game');
+    });
+
     socket.on('submit', function(data){
         socket.id
         Action = data;

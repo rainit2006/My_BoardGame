@@ -17,24 +17,30 @@ $(function() {
 
     window.onload = function(){
         //socket.emit('connect');
-        $('.usernameInput').focus();
-        init();
+
+        initLoginPage();
     }
 
+    function initLoginPage(){
+        $('.usernameInput').focus();
+        PlayerArray = [];
+        myPlayer.name = null;
+        myPlayer.id = null;
+    }
 
-    function init(){
-      PlayerArray = [];
-      myPlayer.name = null;
-      myPlayer.id = null;
+    function initWrap(){
       drawLoginPage();
       initGameItems();
       initFiled();
+      drawPlayer();
       drawGameItemsArea();
       drawFiledArea();
       bindClickEvent();
 
       console.log("init done.");
     }
+
+
 
     function drawLoginPage(){
         $('#playerArea').empty();
@@ -74,7 +80,21 @@ $(function() {
         for(var i = 0; i < FiledLength; i ++){
             FiledArray.push(["空地", 0, 0 ]); //param： 土地种类，归属者，数量
         }
-        FiledArray.push(["工厂", 2, 1]);
+    }
+
+    function drawPlayer(){
+      $('#MyPlayerArea').empty().append('<h3>'+myPlayer.name+'</h3>').addClass('player'+myPlayer.id);
+
+      $('#OtherPlayersArea').empty();
+      var ulNode = $('<ul>');
+      $.each(PlayerArray, function(){
+          var div = null;
+          if(myPlayer.name != this.name){
+            div = $("<li>"+this.name+"</li>").addClass('player'+this.id);
+          }
+          ulNode.append(div);
+      });
+      $('#OtherPlayersArea').empty().append(ulNode);
     }
 
     function drawGameItemsArea() {
@@ -158,8 +178,7 @@ $(function() {
 
 
     $('#startGame').click(function(){
-      $('.loginPage').fadeOut("slow");
-      $('.wrap').show();
+      socket.emit('start game');
     });
 
     // Prevents input from having injected markup
@@ -192,6 +211,14 @@ $(function() {
         PlayerArray = data;
         console.log('players update: '+PlayerArray.length);
         drawLoginPage();
+    });
+
+    socket.on('start game', function(){
+        $('.loginPage').fadeOut("slow");
+        $('.wrap').show();
+        initWrap();
+
+        console.log('start game.');
     });
 
     function updateGameStatus(){
