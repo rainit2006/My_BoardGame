@@ -5,9 +5,13 @@ var io = require('socket.io')(http);
 
 var settings = require(__dirname + '/../config/settings');
 
+var GameItemsArray = [];
+var FiledArray = [];
+var FiledLength = 10;
 var Action={//记录玩家的操作
     index_GameItems:null,
-    index_Filed:null
+    index_Filed:null,
+    id:null
 };
 var players = [];
 
@@ -20,6 +24,17 @@ http.listen(settings.port, function() {
 
 function init() {
   players = [];
+
+  GameItemsArray = [];
+  GameItemsArray.push(["玉米", 5, 1]); // "1" stands for "Enable".
+  GameItemsArray.push(["咖啡", 9, 1]);
+  GameItemsArray.push(["item3", 3, 1]);
+  GameItemsArray.push(["item4", 3, 0]);
+
+  FiledArray=[];
+  for(var i = 0; i < FiledLength; i ++){
+      FiledArray.push(["空地", 0, 0 ]); //param： 土地种类，归属者，数量
+  }
 }
 
 io.on('connection', function (socket) {
@@ -43,10 +58,14 @@ io.on('connection', function (socket) {
     });
 
     socket.on('submit', function(data){
-        socket.id
         Action = data;
+        i = Action.index_GameItems;
+        j = Action.index_Filed;
+        GameItemsArray[i][1] = GameItemsArray[i][1] - 1;
+        FiledArray[j][0] = GameItemsArray[i][0];
+        FiledArray[j][0] = Action.id;
         console.log('submit.'+Action.index_GameItems+';'+Action.index_Filed);
-        socket.broadcast.emit('update', data);
+        io.sockets.emit('update', data);
     });
 
     socket.on('disconnect', function(){

@@ -6,7 +6,8 @@ $(function() {
     var FiledLength = 10;
     var Action={//记录玩家的操作
         index_GameItems:null,
-        index_Filed:null
+        index_Filed:null,
+        id:null
     };
     var MAX_PLAYER = 5;
     var PlayerArray = [];
@@ -124,6 +125,15 @@ $(function() {
               if(this[1] === 2){
                   liNode.addClass('player2');
               }
+              if(this[1] === 3){
+                  liNode.addClass('player3');
+              }
+              if(this[1] === 4){
+                  liNode.addClass('player4');
+              }
+              if(this[1] === 5){
+                  liNode.addClass('player5');
+              }
               ulNode.append(liNode);
         });
         $("#FiledArea").empty().append(ulNode);
@@ -192,8 +202,9 @@ $(function() {
         var index_GameItems = Action.index_GameItems;
         var index_Filed = Action.index_Filed;
         console.log(index_GameItems+";"+index_Filed);
+        Action.id = myPlayer.id;
 
-        updateGameStatus();
+        //updateGameStatus();
 
         socket.emit('submit', Action);
 
@@ -222,10 +233,11 @@ $(function() {
     });
 
     function updateGameStatus(){
-      var index_GameItems = Action.index_GameItems;
-      var index_Filed = Action.index_Filed;
-      GameItemsArray[index_GameItems][1] = GameItemsArray[index_GameItems][1] - 1;
-      FiledArray[index_Filed][0] = GameItemsArray[index_GameItems][0];
+      var i = Action.index_GameItems;
+      var j = Action.index_Filed;
+      GameItemsArray[i][1] = GameItemsArray[i][1] - 1;
+      FiledArray[j][0] = GameItemsArray[i][0];
+      FiledArray[j][1] = Action.id;
 
       drawGameItemsArea();
       drawFiledArea();
