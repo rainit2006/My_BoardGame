@@ -222,3 +222,43 @@ div .Ship {
   background-color: #EEE;
   float:left;
 }
+
+.one{
+ background: #fff;
+}
+.two{
+ background: #222;
+}
+.three{
+ background: #999;
+}
+.four{
+ background: #ccc;
+}
+.five{
+ background: #ddd;
+}
+.wrapper{
+ height: 100px; /*this will define the height of the box*/
+}
+.row{
+ height: 100%;
+ width: 100%;
+}
+.row:after{ /* clearfix */
+  content: "";
+  display: table;
+  clear: both;
+}
+.row .column{
+ width: 33%;
+ float: left;
+ height: 100%;
+}
+.row .column.double{
+ width: 66%;
+}
+.row .column .item{
+ height: 50%;
+ width: 100%;
+}

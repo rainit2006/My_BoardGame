@@ -30,13 +30,13 @@ var Roles={
 };
 
 var Plants = [
-  {0,'free space', 0, 'green', 100},//id, 名称, 价格， 颜色, 总数
-  {1,'corn', 0, 'yellow', 10},
-  {2,'sugar',1, 'white', 11},
-  {3,'indigo',2, 'blue', 11},
-  {4,'tabacco',3, 'lt brown', 9},
-  {5,'coffee',4, 'dk brown', 9},
-  {6, 'quarry',0, 'gray', 10}
+  {id:0, name:'free space', price:0, color:'green', num:100}, //id, 名称, 价格， 颜色, 总数
+  {id:1, name:'corn', price:0, color:'yellow', num:10},
+  {id:2, name:'sugar', price:1, color:'white', num:11},
+  {id:3, name:'indigo', price:2, color:'blue', num:11},
+  {id:4, name:'tabacco', price:3, color:'lt brown', num:9},
+  {id:5, name:'coffee', price:4, color:'dk brown', num:9},
+  {id:6, name:'quarry', price:0, color:'gray', num:10}
 ];
 
 
@@ -85,6 +85,8 @@ http.listen(settings.port, function() {
  })
 
 function init() {
+  //根据player个数决定每次开拓者角色时platation tile数量, colonist总数等。
+
   players = [];
 
   GameItemsArray = [];
