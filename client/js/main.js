@@ -1,9 +1,12 @@
 $(function() {
     var socket = io();
 
-    var GameItemsArray = [];
-    var FiledArray = [];
-    var FiledLength = 10;
+
+    var BuildingAreaMaxNum = 12;
+    var PlantationAreaMaxNum = 12;
+    var MyBuildingArray = [];
+    var MyPlantationArray = [];
+
     var Action={//记录玩家的操作
         index_GameItems:null,
         index_Filed:null,
@@ -32,7 +35,7 @@ $(function() {
     function initWrap(){
       drawLoginPage();
       initGameItems();
-      initFiled();
+      initArea();
       drawPlayer();
       drawGameItemsArea();
       drawFiledArea();
@@ -69,17 +72,21 @@ $(function() {
     }
 
     function initGameItems(){
-        GameItemsArray = [];
+        Array = [];
         GameItemsArray.push(["玉米", 5, 1]); // "1" stands for "Enable".
         GameItemsArray.push(["咖啡", 9, 1]);
         GameItemsArray.push(["item3", 3, 1]);
         GameItemsArray.push(["item4", 3, 0]);
     }
 
-    function initFiled(){
-        FiledArray=[];
-        for(var i = 0; i < FiledLength; i ++){
-            FiledArray.push(["空地", 0, 0 ]); //param： 土地种类，归属者，数量
+    function initArea(){
+        MyBuildingArray=[];
+        MyPlantationArray=[];
+        for(var i = 0; i < BuildingAreaMaxNum; i ++){
+            MyBuildingArray.push(["空地", 0]); //param： 建筑种类，奴隶数
+        }
+        for(var i = 0; i < PlantationAreaMaxNum; i ++){
+            MyBuildingArray.push(["空地"]); //param： 土地种类
         }
     }
 
