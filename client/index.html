@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <title>My Board Game</title>
         <link rel="stylesheet" href="css/main.css" />
+        <link rel="stylesheet" href="css/table.css" />
     </head>
     <body>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -47,19 +48,19 @@
                       <div id = "GameArea">
                           <div id="publicInfo"><h2>valid colonist number: 51</h2></div>
                           <div id="RolesArea">
-                              <div id="Settler">
+                              <div id="SettlerDIV">
                                   <input type="button" id="Settler" value="Settler">
-                                  <div id="PlatationTile"></div>
+                                  <div id="PlantationTile"></div>
                               </div>
-                              <div id="Mayor">
+                              <div id="MayorDIV">
                                   <input type="button" id="Mayor" value="Mayor">
                                   <div id="ColonistsShip">4</div>
                               </div>
-                              <div id="Trader">
+                              <div id="TraderDIV">
                                   <input type="button" id="Trader" value="Trader">
                                   <div id="TradingHouse">4</div>
                               </div>
-                              <div id="Captain">
+                              <div id="CaptainDIV">
                                   <input type="button" id="Captain" value="Captain">
                                   <div id="CargoShip">
                                       <div id="Ship1">5</div>
@@ -67,56 +68,116 @@
                                       <div id="Ship3">7</div>
                                   </div>
                               </div>
-                              <div id="Builder">
+                              <div id="BuilderDIV">
                                   <input type="button" id="Builder" value="Builder">
-                                  <div id="BuildingItems" class="wrapper">
-                                       <div class="row">
-                                            <div class="column">
-                                                <div class="one item">a</div>
-                                                <div class="two item">b</div>
-                                            </div>
-                                            <div class="column item three">c</div>
-                                            <div class="column">
-                                                <div class="two item">d</div>
-                                                <div class="one item">e</div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="column item double four">a</div>
-                                            <div class="column">
-                                                <div class="two item">b</div>
-                                                <div class="one item">c</div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="column">
-                                                <div class="one item">a</div>
-                                                <div class="five item">b</div>
-                                            </div>
-                                            <div class="column item three">c</div>
-                                            <div class="column">
-                                                <div class="two item">d</div>
-                                                <div class="one item">e</div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                          <div class="column">
-                                              <div class="two item">a</div>
-                                              <div class="one item">b</div>
+                                  <div id="BuildingItems">
+                                      <div class="Table">
+                                          <div class="Heading">
+                                              <div class="Cell">
+                                                  <p>quarries:1</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>quarries:2</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>quarries:3</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>quarries:4</p>
+                                              </div>
                                           </div>
-                                          <div class="column">
-                                              <div class="one item">a</div>
-                                              <div class="two item">b</div>
+                                          <div class="Row" id="r1">
+                                              <div class="Cell">
+                                                  <p>small indigo plant</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>indigo plant</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>tabacco storage</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>guild hall</p>
+                                              </div>
                                           </div>
-                                          <div class="column three item"></div>
-                                        </div>
-                                    </div> <!--id="BuildingItems"-->
+                                          <div class="Row" id="r2">
+                                              <div class="Cell">
+                                                  <p>small sugar mill</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>sugar mill</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>coffee roaster</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>residence</p>
+                                              </div>
+                                          </div>
+                                          <div class="Row" id="r3">
+                                              <div class="Cell">
+                                                  <p>small market</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>hospice</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>factory</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>fortress</p>
+                                              </div>
+                                          </div>
+                                          <div class="Row" id="r4">
+                                              <div class="Cell">
+                                                  <p>hacienda</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>office</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>university</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>customs house</p>
+                                              </div>
+                                          </div>
+                                          <div class="Row" id="r5">
+                                              <div class="Cell">
+                                                  <p>construction hut</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>large market</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>harbor</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>city hall</p>
+                                              </div>
+                                          </div>
+                                          <div class="Row" id="r6">
+                                              <div class="Cell">
+                                                  <p>samll warehouse</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>large warehouse</p>
+                                              </div>
+                                              <div class="Cell">
+                                                  <p>wharf</p>
+                                              </div>
+                                              <div class="Cell">
+
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div> <!--id="BuildingItems"-->
                               </div> <!--id="Builder"-->
-                              <div id="Craftsman">
+                              <div id="CraftsmanDIV">
                                   <input type="button" id="Craftsman" value="Craftsman">
                                   <div id="Craftsman"></div>
                               </div>
-                              <div id="Prospector">
+                              <div id="ProspectorDIV">
                                   <input type="button" id="Prospector" value="Prospector">
                                   <div id="Prospector"></div>
                               </div>

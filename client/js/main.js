@@ -18,6 +18,12 @@ $(function() {
         name: null,
         id: null
     };
+    //var plantOptions = [];//记录settle角色时的plantation选项；
+    //var plantSelected = []; //记录被选中的plantation；
+
+    var playerAction = {
+      role: null
+    };
 
     window.onload = function(){
         //socket.emit('connect');
@@ -198,10 +204,17 @@ $(function() {
       socket.emit('start game');
     });
 
+    $('#Settler').click(function(){
+      playerAction.role = 'Settler';
+      socket.emit('gameRoleSelect', playerAction);
+      console.log('Settler');
+    });
+
     // Prevents input from having injected markup
    function cleanInput (input) {
       return $('<div/>').text(input).text();
    }
+
 
 
     $('#SubmitArea input:button').click(function(){
@@ -238,6 +251,27 @@ $(function() {
 
         console.log('start game.');
     });
+
+    socket.on('SettlerResponse', function(data){
+        //plantOptions = null;
+        var options = data.options;
+        var ulNode= $("<ul id='PlantationUL'>");
+        $.each(data.options, function(){
+            //plantOptions.push(this.name);
+            var div = $("<li id="+this.id+">"+this.name+"</li>").addClass(this.color);
+            ulNode.append(div);
+        });
+        $('#PlantationTile').empty().append(ulNode);
+
+        $('#PlantationUL li').on('click', function(){
+            var name = $(this).text();
+            var id=this.id;
+            console.log(name+id+' is clicked!');
+            socket.emit('plant selected', [{'id':id,'name':name}]);
+        });
+
+    });
+
 
     function updateGameStatus(){
       var i = Action.index_GameItems;

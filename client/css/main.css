@@ -43,6 +43,8 @@ div{
    text-align: center;
    top: 50%;
    width: 100%;
+
+   display: none;
 }
 
 .startForm {
@@ -52,7 +54,6 @@ div{
 .wrap {
   width:960px;
   margin: 0 auto;
-  display: none;
 }
 
 #header {
@@ -83,7 +84,6 @@ div{
 
 #GameItemsArea {
   width: 100%;
-  height: 400px;
   background-color: #EEE;
   padding: 15px;
 }
@@ -140,7 +140,6 @@ div{
 
 #GameArea {
   width: 100%;
-  height: 400px;
   display: flex;
   flex-flow: column nowrap;
   background-color: #EEE;
@@ -151,7 +150,7 @@ div{
   padding: 15px;
 }
 
-#FiledArea > ul {
+ul {
    display: flex;
    flex-flow: row wrap;
    justify-content:flex-start;
@@ -160,7 +159,7 @@ div{
    padding: 0;
 }
 
-#FiledArea > ul li {
+li {
   text-align: center;
   width: 50px;
   height: 50px;
@@ -223,42 +222,21 @@ div .Ship {
   float:left;
 }
 
-.one{
- background: #fff;
+.yellow {
+  background-color:#FFCC00;
 }
-.two{
- background: #222;
+.white {
+  background-color: #FFFFEE;
 }
-.three{
- background: #999;
+.blue {
+  background-color:#000080;
 }
-.four{
- background: #ccc;
+.lt-brown {
+  background-color:#770000;
 }
-.five{
- background: #ddd;
+.dk-brown {
+  background-color:#330000;
 }
-.wrapper{
- height: 100px; /*this will define the height of the box*/
-}
-.row{
- height: 100%;
- width: 100%;
-}
-.row:after{ /* clearfix */
-  content: "";
-  display: table;
-  clear: both;
-}
-.row .column{
- width: 33%;
- float: left;
- height: 100%;
-}
-.row .column.double{
- width: 66%;
-}
-.row .column .item{
- height: 50%;
- width: 100%;
+.gray {
+  background-color:#808080;
 }

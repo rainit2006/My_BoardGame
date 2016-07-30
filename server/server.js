@@ -2,6 +2,9 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var Plantation = require('./Plantation');
+var Colonists = require('./Colonist');
+var Player=require('./Player');
 
 var settings = require(__dirname + '/../config/settings');
 
@@ -29,15 +32,6 @@ var Roles={
   'Prospector':7 //淘金者
 };
 
-var Plants = [
-  {id:0, name:'free space', price:0, color:'green', num:100}, //id, 名称, 价格， 颜色, 总数
-  {id:1, name:'corn', price:0, color:'yellow', num:10},
-  {id:2, name:'sugar', price:1, color:'white', num:11},
-  {id:3, name:'indigo', price:2, color:'blue', num:11},
-  {id:4, name:'tabacco', price:3, color:'lt brown', num:9},
-  {id:5, name:'coffee', price:4, color:'dk brown', num:9},
-  {id:6, name:'quarry', price:0, color:'gray', num:10}
-];
 
 
 
@@ -54,7 +48,7 @@ var Buildings = [
   //small purple building
   {id:7,name:'small market', points:1, quarries:1, price:1, colonist:1, space:1, color:'purple', TotalNum:5},
   {id:8,name:'hacienda', points:1, quarries:1, price:2, colonist:1, space:1, color:'purple', TotalNum:5}, //农庄
-  {id:9,name:'construction hut', points:1, quarries:2, price:2, colonist:1, space:1, color:'white', TotalNum:5},
+  {id:9,name:'construction hut', points:1, quarries:1, price:2, colonist:1, space:1, color:'white', TotalNum:5},
   {id:10,name:'samll warehouse', points:1, quarries:1, price:3, colonist:1, space:1, color:'purple', TotalNum:5},
   {id:11,name:'hospice', points:2, quarries:2, price:4, colonist:1, space:1, color:'purple', TotalNum:5}, //收容所
   {id:12,name:'office', points:2, quarries:2, price:5, colonist:1, space:1, color:'purple', TotalNum:5}, //分商会
@@ -141,4 +135,44 @@ io.on('connection', function (socket) {
         });
         socket.broadcast.emit('players update', players);
     });
+
+    ////////game role is selected//////////////
+    socket.on('gameRoleSelect', function(data){
+        console.log('gameRoleSelect:'+data.role);
+        var data = data;
+        var role = data.role;
+        switch(role){
+            case 'Settler': //拓荒者
+                data.options = Plantation.getPlatationOptions(true);
+                io.sockets.emit('SettlerResponse', data);
+                break;
+            case 'Trader'://商人
+            case 'Mayor': //市长
+                data.ship = Colonists.updateShip();
+                if(!judgeGameOver()){
+                    io.sockets.emit('MayorResponse', data);
+                }
+                else{
+                    console.log('Game Over!');
+                }
+            case 'Captain': //船长
+            case 'Builder'://建筑士
+            case 'Craftsman': //监管
+            case 'Prospector'://淘金者
+        }
+    });
+
+    socket.on('plant selected', function(data){
+        Plantation.updateNum(data);
+        console.log('plant selected');
+    });
 });
+
+function judgeGameOver(remainder){
+   if(remainder <= 0){
+      return true;
+   }
+   else{
+      return false;
+   }
+}
