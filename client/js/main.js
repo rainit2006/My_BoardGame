@@ -252,24 +252,41 @@ $(function() {
         console.log('start game.');
     });
 
+    socket.on('next round', function(){
+        //change govenor player.
+
+    });
+
+    socket.on('next role', function(){
+        //change next player to select one role.
+
+    });
+
+    socket.on('next player action', function(){
+
+    });
+
     socket.on('SettlerResponse', function(data){
         //plantOptions = null;
         var options = data.options;
+        console.log('plant options:'+options);
         var ulNode= $("<ul id='PlantationUL'>");
-        $.each(data.options, function(){
+        $.each(options, function(index){
             //plantOptions.push(this.name);
-            var div = $("<li id="+this.id+">"+this.name+"</li>").addClass(this.color);
+            var div = $("<li id="+index+">"+this.name+"</li>").addClass(this.color);
             ulNode.append(div);
         });
         $('#PlantationTile').empty().append(ulNode);
 
         $('#PlantationUL li').on('click', function(){
-            var name = $(this).text();
-            var id=this.id;
-            console.log(name+id+' is clicked!');
-            socket.emit('plant selected', [{'id':id,'name':name}]);
+            ///判断操作的player是不是有效的当前player，如果是则传给服务器data。
+            var sendData={};
+            sendData.name = $(this).text();
+            sendData.index=this.id;
+            sendData.player = 0;
+            console.log(sendData.index+':'+sendData.name+' is clicked!');
+            socket.emit('plant selected', sendData);
         });
-
     });
 
 

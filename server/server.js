@@ -2,9 +2,11 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var game = require('./game.js');
 var Plantation = require('./Plantation');
 var Colonists = require('./Colonist');
 var Player=require('./Player');
+
 
 var settings = require(__dirname + '/../config/settings');
 
@@ -17,20 +19,14 @@ var Action={//记录玩家的操作
     id:null
 };
 var players = [];
-var Round = [];
+var playerNum = 1;
+var round = 0;
+var roundAction = 0; //记录每轮里操作的玩家数，当操作过的玩家数等于玩家总数，则开始进入选角阶段。
+var roundRole = 0; //记录选角色的玩家数
 var TradingHouse = [];
 var ColonistsShip = [];
 var GoodsShip = [];
 
-var Roles={
-  'Settler' : 1, //拓荒者
-  'Mayor':2, //市长
-  'Trader':3, //商人
-  'Captain':4, //船长
-  'Builder':5,//建筑士
-  'Craftsman':6, //监管
-  'Prospector':7 //淘金者
-};
 
 
 
@@ -83,11 +79,11 @@ function init() {
 
   players = [];
 
-  GameItemsArray = [];
-  GameItemsArray.push(["玉米", 5, 1]); // "1" stands for "Enable".
-  GameItemsArray.push(["咖啡", 9, 1]);
-  GameItemsArray.push(["item3", 3, 1]);
-  GameItemsArray.push(["item4", 3, 0]);
+  // GameItemsArray = [];
+  // GameItemsArray.push(["玉米", 5, 1]); // "1" stands for "Enable".
+  // GameItemsArray.push(["咖啡", 9, 1]);
+  // GameItemsArray.push(["item3", 3, 1]);
+  // GameItemsArray.push(["item4", 3, 0]);
 
   FiledArray=[];
   for(var i = 0; i < FiledLength; i ++){
@@ -139,11 +135,13 @@ io.on('connection', function (socket) {
     ////////game role is selected//////////////
     socket.on('gameRoleSelect', function(data){
         console.log('gameRoleSelect:'+data.role);
+        roundAction = 0; //重新记录操作的玩家数
         var data = data;
         var role = data.role;
         switch(role){
             case 'Settler': //拓荒者
                 data.options = Plantation.getPlatationOptions(true);
+                //console.log(data.options);
                 io.sockets.emit('SettlerResponse', data);
                 break;
             case 'Trader'://商人
@@ -163,8 +161,23 @@ io.on('connection', function (socket) {
     });
 
     socket.on('plant selected', function(data){
-        Plantation.updateNum(data);
-        console.log('plant selected');
+        var index = data.index;
+        data.options = Plantation.updatePlantOptions(index);
+
+        console.log('after plant selected:'+data.options);
+        roundAction += 1;
+        if(roundAction == playerNum){
+            if(roundRole == playerNum){
+                io.sockets.emit('next round');　//进入下一轮，更换总督玩家
+            }
+            else{
+                Plantation.updateNum();
+                io.sockets.emit('next role');
+            }
+        }
+        else{
+            io.sockets.emit('next player action', data);
+        }
     });
 });
 

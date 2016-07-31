@@ -9,38 +9,53 @@ var Plants = [
 ];
 
 var PlantsNum = [100, 10, 11, 11, 9, 9, 10];
+var PlantOptions;
 
 exports.getPlatationOptions = function (isSettler){
-      var options=[];
+      PlantOptions=[];
+      var tmpNum = PlantsNum.concat();
       if(isSettler){
-        if(PlantsNum[6] > 0){
-            options.push(Plants[6]);
-            console.log('plants.Num[6]:'+ PlantsNum[6]);
+        if(tmpNum[6] > 0){
+            PlantOptions.push({id:Plants[6].id, name:Plants[6].name, color:Plants[6].color, selected:0});
         }
       }
       var items=getRandomItems(5);
       for(var i=0; i< items.length; i++){
          var index = items[i];
-         if(PlantsNum[index] >= 0){
-           options.push(Plants[index]);
+         if(tmpNum[index] > 0){
+           PlantOptions.push({id:Plants[index].id, name:Plants[index].name, color:Plants[index].color, selected:0});
+           tmpNum.splice(index,1, tmpNum[index]-1);
          }
          else{
            ////再做考虑
          }
       }
 
-      console.log('plant name:'+options[0].name);
-      return options;
+      console.log('plant 0 name:'+PlantOptions[0].name+';'+PlantOptions[0].selected);
+      return PlantOptions;
 };
 
-exports.updateNum = function(data){
-    for(var i=0; i<data.length; i++){
-      var num = PlantsNum[data[i].id];
-      if(num > 0){
-          PlantsNum.splice(data[i].id, 1, num-1);
+exports.updatePlantOptions = function(index){
+    console.log('selected index:'+index);
+    PlantOptions[index].selected = 1;
+    console.log(PlantOptions);
+    return PlantOptions;
+};
+
+exports.updateNum = function(){
+    console.log('before updateNum:'+PlantsNum);
+    for(var i=0; i<PlantOptions.length; i++){
+      if(PlantOptions[i].selected == 1){
+          var id= PlantOptions[i].id
+          console.log(id);
+          if(PlantsNum[id] > 0){
+              //PlantsNum.splice(id, 1, num-1);
+              PlantsNum[id]-=1;
+          }
       }
     }
-    console.log(PlantsNum[1]+','+PlantsNum[2]+','+PlantsNum[3]+','+PlantsNum[4]+','+PlantsNum[5]+','+PlantsNum[6]);
+    //console.log(PlantsNum[1]+','+PlantsNum[2]+','+PlantsNum[3]+','+PlantsNum[4]+','+PlantsNum[5]+','+PlantsNum[6]);
+    console.log('after updateNum:'+PlantsNum);
 };
 
 var getRandomItems = function(num){
