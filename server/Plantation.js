@@ -36,9 +36,9 @@ exports.getPlatationOptions = function (isSettler){
 };
 
 exports.updatePlantOptions = function(index){
-    console.log('selected index:'+index);
+    //console.log('selected index:'+index);
     PlantOptions[index].selected = 1;
-    console.log(PlantOptions);
+    //console.log(PlantOptions);
     return PlantOptions;
 };
 
@@ -54,9 +54,17 @@ exports.updateNum = function(){
           }
       }
     }
-    //console.log(PlantsNum[1]+','+PlantsNum[2]+','+PlantsNum[3]+','+PlantsNum[4]+','+PlantsNum[5]+','+PlantsNum[6]);
     console.log('after updateNum:'+PlantsNum);
 };
+
+exports.getPlant = function(index){
+    return Plants[index];
+};
+
+exports.getPlantsNum = function(){
+    return PlantsNum;
+};
+
 
 var getRandomItems = function(num){
    var items=[];

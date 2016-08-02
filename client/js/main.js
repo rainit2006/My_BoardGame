@@ -13,10 +13,10 @@ $(function() {
         id:null
     };
     var MAX_PLAYER = 5;
-    var PlayerArray = [];
+    var Players = [];
     var myPlayer = {
-        name: null,
-        id: null
+        name: 'test',
+        id: 0
     };
     //var plantOptions = [];//记录settle角色时的plantation选项；
     //var plantSelected = []; //记录被选中的plantation；
@@ -33,7 +33,7 @@ $(function() {
 
     function initLoginPage(){
         $('.usernameInput').focus();
-        PlayerArray = [];
+        Players = [];
         myPlayer.name = null;
         myPlayer.id = null;
     }
@@ -42,7 +42,7 @@ $(function() {
       drawLoginPage();
       initGameItems();
       initArea();
-      drawPlayer();
+      drawPlayers();
       drawGameItemsArea();
       drawFiledArea();
       bindClickEvent();
@@ -55,7 +55,7 @@ $(function() {
     function drawLoginPage(){
         $('#playerArea').empty();
         var ulNode = $('<ul>');
-        $.each(PlayerArray, function(){
+        $.each(Players, function(){
             var div = null;
             if(myPlayer.name == this.name){
               div = $("<li>"+this.name+"(★)</li>").addClass('player'+this.id);
@@ -66,23 +66,18 @@ $(function() {
         });
         $('#playerArea').append(ulNode);
 
-        if(PlayerArray.length == 2){
+        if(Players.length == 2){
             $('#startGame').val('Star Game with 2 player');
-        }else if(PlayerArray.length == 3){
+        }else if(Players.length == 3){
             $('#startGame').val('Star Game with 3 player');
-        }else if(PlayerArray.length == 4){
+        }else if(Players.length == 4){
             $('#startGame').val('Star Game with 4 player');
-        }else if(PlayerArray.length == 5){
+        }else if(Players.length == 5){
             $('#startGame').val('Star Game with 5 player');
         }
     }
 
     function initGameItems(){
-        Array = [];
-        GameItemsArray.push(["玉米", 5, 1]); // "1" stands for "Enable".
-        GameItemsArray.push(["咖啡", 9, 1]);
-        GameItemsArray.push(["item3", 3, 1]);
-        GameItemsArray.push(["item4", 3, 0]);
     }
 
     function initArea(){
@@ -96,32 +91,42 @@ $(function() {
         }
     }
 
-    function drawPlayer(){
-      $('#MyPlayerArea').empty().append('<h3>'+myPlayer.name+'</h3>').addClass('player'+myPlayer.id);
-
-      $('#OtherPlayersArea').empty();
+    function drawPlayers(){
+      console.log('drawPlayers');
       var ulNode = $('<ul>');
-      $.each(PlayerArray, function(){
+      $.each(Players, function(){
           var div = null;
-          if(myPlayer.name != this.name){
-            div = $("<li>"+this.name+"</li>").addClass('player'+this.id);
+          var string = null;
+          string = "<p> money:"+this.money+"</p>"+
+                  "<p> colonists:"+this.colonists+"</p>"+
+                  "<p> corn:"+this.corn+"</p>"+
+                  "<p> indigo:"+this.indigo+"</p>"+
+                  "<p> sugar:"+this.sugar+"</p>"+
+                  "<p> tabacco:"+this.tabacco+"</p>"+
+                  "<p> coffee:"+this.coffee+"</p>";
+
+          if(myPlayer.name == this.name){
+              string ="<p> potins:"+this.points+"</p>"+string;
+              $('#MyPlayerArea').empty().append('<h3>'+this.name+'</h3>'+string).addClass('player'+myPlayer.id);
+          }else{
+              div = $("<li id="+this.id+">"+string+"</li>").addClass('player'+this.id);
+              ulNode.append(div);
           }
-          ulNode.append(div);
       });
       $('#OtherPlayersArea').empty().append(ulNode);
     }
 
     function drawGameItemsArea() {
-        var ulNode = $("<ul id='GameItemsUlNode'>");
-        $.each(GameItemsArray, function(){
-              //ulNode.append("<li>"+this[0]+":"+this[1]+"</li>");
-              var liNode = $("<li class='GameItems'>"+this[0]+":"+this[1]+"</li>");
-              if(this[2] === 0){
-                  liNode.attr('disabled', true);
-              }
-              ulNode.append(liNode);
-        });
-        $("#GameItemsArea").empty().append(ulNode);
+        // var ulNode = $("<ul id='GameItemsUlNode'>");
+        // $.each(GameItemsArray, function(){
+        //       //ulNode.append("<li>"+this[0]+":"+this[1]+"</li>");
+        //       var liNode = $("<li class='GameItems'>"+this[0]+":"+this[1]+"</li>");
+        //       if(this[2] === 0){
+        //           liNode.attr('disabled', true);
+        //       }
+        //       ulNode.append(liNode);
+        // });
+        // $("#GameItemsArea").empty().append(ulNode);
     }
 
     function drawFiledArea(){
@@ -154,17 +159,17 @@ $(function() {
 
 
     function bindClickEvent(){
-      $('#GameItemsUlNode li').on('click', function(){
-          var index = $('#GameItemsUlNode li').index(this);
-          console.log(GameItemsArray[index][0]+','+GameItemsArray[index][1] +' is clicked!');
-          Action.index_GameItems = index;
-      });
-
-      $('#FiledAreaNode li').on('click', function(){
-          var index = $('#FiledAreaNode li').index(this);
-          console.log(index+':'+FiledArray[index][0]+','+FiledArray[index][1] +' is clicked!');
-          Action.index_Filed =index;
-      });
+    //   $('#GameItemsUlNode li').on('click', function(){
+    //       var index = $('#GameItemsUlNode li').index(this);
+    //       console.log(GameItemsArray[index][0]+','+GameItemsArray[index][1] +' is clicked!');
+    //       Action.index_GameItems = index;
+    //   });
+    //
+    //   $('#FiledAreaNode li').on('click', function(){
+    //       var index = $('#FiledAreaNode li').index(this);
+    //       console.log(index+':'+FiledArray[index][0]+','+FiledArray[index][1] +' is clicked!');
+    //       Action.index_Filed =index;
+    //   });
     }
 
     $('#enter').click(function(){
@@ -175,7 +180,6 @@ $(function() {
 
             myPlayer.name = username;
             myPlayer.id = createPlayerID();
-            PlayerArray.push(myPlayer);
 
             socket.emit('new player add', myPlayer);
         }
@@ -185,8 +189,8 @@ $(function() {
       var id = 1;
       for(var i=1; i <= MAX_PLAYER; i++){
           var found = false;
-          for(var j=0; j < PlayerArray.length; j++){
-              if(PlayerArray[j].id == i){
+          for(var j=0; j < Players.length; j++){
+              if(Players[j].id == i){
                   found = true;
                   break;
               }
@@ -239,8 +243,8 @@ $(function() {
     });
 
     socket.on('players update', function(data){
-        PlayerArray = data;
-        console.log('players update: '+PlayerArray.length);
+        Players = data;
+        console.log('players update: '+Players.length);
         drawLoginPage();
     });
 
@@ -283,7 +287,7 @@ $(function() {
             var sendData={};
             sendData.name = $(this).text();
             sendData.index=this.id;
-            sendData.player = 0;
+            sendData.player = myPlayer.id;
             console.log(sendData.index+':'+sendData.name+' is clicked!');
             socket.emit('plant selected', sendData);
         });
@@ -301,6 +305,4 @@ $(function() {
       drawFiledArea();
       bindClickEvent();
     }
-
-
 })

@@ -5,7 +5,7 @@ var io = require('socket.io')(http);
 var game = require('./game.js');
 var Plantation = require('./Plantation');
 var Colonists = require('./Colonist');
-var Player=require('./Player');
+var Players=require('./Player');
 
 
 var settings = require(__dirname + '/../config/settings');
@@ -18,7 +18,6 @@ var Action={//记录玩家的操作
     index_Filed:null,
     id:null
 };
-var players = [];
 var playerNum = 1;
 var round = 0;
 var roundAction = 0; //记录每轮里操作的玩家数，当操作过的玩家数等于玩家总数，则开始进入选角阶段。
@@ -77,8 +76,7 @@ http.listen(settings.port, function() {
 function init() {
   //根据player个数决定每次开拓者角色时platation tile数量, colonist总数等。
 
-  players = [];
-
+  Players.initPlayers();
   // GameItemsArray = [];
   // GameItemsArray.push(["玉米", 5, 1]); // "1" stands for "Enable".
   // GameItemsArray.push(["咖啡", 9, 1]);
@@ -93,18 +91,14 @@ function init() {
 
 io.on('connection', function (socket) {
     console.log('connection.');
-    if(players!=null){
-        socket.emit('players update', players); //先把当前player列表广播出去
-    }
 
     socket.on('new player add', function (data) {
             // var player = new Object();
             // player.id = data.id;
             // player.socket = socket.id;
             console.log('new player:' + data.name+','+data.id +','+ socket.id);
-            players.push(data);
-            socket.name = data.name;
-            io.sockets.emit('players update', players);
+            var data = Players.addNewPlayer(data.id, data.name, socket.id);
+            io.sockets.emit('players update', data);
     });
 
     socket.on('start game', function(){
@@ -124,12 +118,9 @@ io.on('connection', function (socket) {
 
     socket.on('disconnect', function(){
         console.log('disconnect: '+socket.name+','+socket.id);
-        players.some(function(v, i){
-            if (v.name == socket.name){
-               players.splice(i,1);
-            }
-        });
-        socket.broadcast.emit('players update', players);
+        //为了避免网络不稳定的脱线，只更新online状态而不真正删除。
+        var data = Players.offlinePlayer(socket.id);
+        socket.broadcast.emit('players update', data);
     });
 
     ////////game role is selected//////////////
@@ -163,6 +154,8 @@ io.on('connection', function (socket) {
     socket.on('plant selected', function(data){
         var index = data.index;
         data.options = Plantation.updatePlantOptions(index);
+        Players.updatePlayer(data.player, 'Settler', index);
+
 
         console.log('after plant selected:'+data.options);
         roundAction += 1;
@@ -171,11 +164,13 @@ io.on('connection', function (socket) {
                 io.sockets.emit('next round');　//进入下一轮，更换总督玩家
             }
             else{
-                Plantation.updateNum();
+
+                console.log('test:'+Players.testPlantsNum());
                 io.sockets.emit('next role');
             }
         }
         else{
+            Plantation.updateNum();
             io.sockets.emit('next player action', data);
         }
     });
