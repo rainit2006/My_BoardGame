@@ -1,4 +1,6 @@
 var Plants = require('./Plantation');
+var Buildings = require('./Building');
+
 
 var Players = [];
 var playerNum = 0;
@@ -26,6 +28,7 @@ exports.addNewPlayer=function(id, name, socketid){
             socket:socketid,
             online:1,
             points:0,
+            addedPoints:0,
             colonists:0,
             money:0,
             corn:0,
@@ -80,19 +83,19 @@ exports.updatePlayer=function(id, role, val1){
         var plant = Plants.getPlant(val1);
         player.PlantArea.push(plant);
         break;
-    case '':
+    case 'Builder':
+        var build = Buildings.getBuild(val1);
+        player.BuildingArea.push(build);
         break;
-    case '':
+    case 'Trader':
         break;
-    case '':
+    case 'Mayor':
         break;
-    case '':
+    case 'Captain':
         break;
-    case '':
+    case 'Craftsman':
         break;
-    case '':
-        break;
-    case '':
+    case 'Prospector':
         break;
   }
 
