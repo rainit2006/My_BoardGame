@@ -58,6 +58,7 @@ exports.updateNum = function(){
 };
 
 exports.getPlant = function(index){
+    PlantsNum[index] -= 1;
     return Plants[index];
 };
 

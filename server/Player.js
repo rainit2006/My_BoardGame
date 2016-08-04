@@ -28,7 +28,6 @@ exports.addNewPlayer=function(id, name, socketid){
             socket:socketid,
             online:1,
             points:0,
-            addedPoints:0,
             colonists:0,
             money:0,
             corn:0,
@@ -80,26 +79,34 @@ exports.updatePlayer=function(id, role, val1){
 
   switch(role){
     case 'Settler':
-        var plant = Plants.getPlant(val1);
-        player.PlantArea.push(plant);
+        player.PlantArea.push(val1);
         break;
     case 'Builder':
-        var build = Buildings.getBuild(val1);
-        player.BuildingArea.push(build);
+        player.BuildingArea.push(val1);
         break;
     case 'Trader':
+        player.money += val1;
         break;
     case 'Mayor':
+        player.BuildingArea = val1.BuildingArea;
+        player.PlantArea = val1.PlantArea;
         break;
     case 'Captain':
+        player.points += val1;
         break;
     case 'Craftsman':
+        player.corn = val1.corn;
+        player.sugar = val1.sugar;
+        player.indigo = val1.indigo;
+        player.tabacco = val1.tabacco;
+        player.coffee = val1.coffee;
         break;
     case 'Prospector':
+        player.money += val1;
         break;
   }
-
-  return Players;
+  console.log(Players);
+  return player;
 };
 
 exports.testPlantsNum = function(){
@@ -125,4 +132,10 @@ var findPlayerbySocket = function(socketid){
       }
   }
   return index;
+};
+
+exports.addMoney = function(name, val){
+  var index = findPlayerbyName(name);
+  Players[index].money +=val;
+  return Players[index];
 };

@@ -18,12 +18,9 @@ var isExsit = function(obj){
   return false;
 };
 
-
-exports.needtoClearTradingHouse = fucntion(){
+exports.getTradingHouse = fucntion(){
   if(TradingHouse.length >= HOUSELENGTH){
     TradingHouse = [];
-    return true;
-  }else{
-      return false;
   }
+  return TradingHouse;
 };

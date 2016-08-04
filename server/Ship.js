@@ -5,7 +5,7 @@ var Ships = [Ship1, Ship2, Ship3];
 
 var SHIPLENGTH = [5, 6, 7];
 
-exports.inputProduct = function(index, product){
+exports.loadProduct = function(index, product){
   if(checkProduct(index, product)){
       Ships[index].id = product.id;
       Ships[index].num += 1;
@@ -22,12 +22,10 @@ var checkProduct = function(index, obj){
 };
 
 
-exports.needtoClearShip = fucntion(index){
+exports.getShips = fucntion(index){
   if(Ships[index].num >= SHIPLENGTH[index]){
     Ships[index].id = null;
     Ships[index].num = 0;
-    return true;
-  }else{
-      return false;
   }
+  return Ships;
 };

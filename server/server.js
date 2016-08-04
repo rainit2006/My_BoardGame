@@ -4,7 +4,10 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var game = require('./game.js');
 var Plantation = require('./Plantation');
-var Colonists = require('./Colonist');
+var Colonist = require('./Colonist');
+var Trading = require('./Trading');
+var Building = require('./Building');
+var Ships = require('./Ship');
 var Players=require('./Player');
 
 
@@ -22,48 +25,6 @@ var playerNum = 1;
 var round = 0;
 var roundAction = 0; //记录每轮里操作的玩家数，当操作过的玩家数等于玩家总数，则开始进入选角阶段。
 var roundRole = 0; //记录选角色的玩家数
-var TradingHouse = [];
-var ColonistsShip = [];
-var GoodsShip = [];
-
-
-
-
-
-var Buildings = [
-  {id:0,name:'free space', points:0, quarries:0, price:0, colonist:0, space:1, color:'green', TotalNum:100, currentNum:100}, //id,名称,分数，最大采石场数，价格，所需奴隶数，需要space数，颜色，总数量
-
-  {id:1,name:'small indigo plant', points:1, quarries:1, price:1, colonist:1, space:1, color:'blue', TotalNum:5},
-  {id:2,name:'indigo plant', points:2, quarries:2, price:3, colonist:3, space:1, color:'blue', TotalNum:5},
-  {id:3,name:'small sugar mill', points:1, quarries:2, price:1, colonist:1, space:1, color:'white', TotalNum:5},
-  {id:4,name:'sugar mill', points:2, quarries:2, price:4, colonist:1, space:1, color:'white', TotalNum:5},
-  {id:5,name:'tabacco storage', points:3, quarries:3, price:5, colonist:3, space:1, color:'lt brown', TotalNum:5},
-  {id:6,name:'coffee roaster', points:3, quarries:3, price:6, colonist:2, space:1, color:'dk brown', TotalNum:5},
-
-  //small purple building
-  {id:7,name:'small market', points:1, quarries:1, price:1, colonist:1, space:1, color:'purple', TotalNum:5},
-  {id:8,name:'hacienda', points:1, quarries:1, price:2, colonist:1, space:1, color:'purple', TotalNum:5}, //农庄
-  {id:9,name:'construction hut', points:1, quarries:1, price:2, colonist:1, space:1, color:'white', TotalNum:5},
-  {id:10,name:'samll warehouse', points:1, quarries:1, price:3, colonist:1, space:1, color:'purple', TotalNum:5},
-  {id:11,name:'hospice', points:2, quarries:2, price:4, colonist:1, space:1, color:'purple', TotalNum:5}, //收容所
-  {id:12,name:'office', points:2, quarries:2, price:5, colonist:1, space:1, color:'purple', TotalNum:5}, //分商会
-  {id:13,name:'large market', points:2, quarries:2, price:5, colonist:1, space:1, color:'purple', TotalNum:5},
-  {id:14,name:'large warehouse', points:2, quarries:2, price:6, colonist:1, space:1, color:'purple', TotalNum:5},
-  {id:15,name:'factory', points:3, quarries:3, price:7, colonist:1, space:1, color:'purple', TotalNum:5},
-  {id:16,name:'university', points:3, quarries:3, price:8, colonist:1, space:1, color:'purple', TotalNum:5},
-  {id:17,name:'harbor', points:3, quarries:3, price:8, colonist:1, space:1, color:'purple', TotalNum:5},
-  {id:18,name:'wharf', points:3, quarries:3, price:9, colonist:1, space:1, color:'purple', TotalNum:5}, //船坞
-
-  //big purple building
-  {id:19,name:'guild hall', points:4, quarries:4, price:10, colonist:1, space:2, color:'purple', TotalNum:5}, //公会大厅
-  {id:20,name:'residence', points:4, quarries:4, price:10, colonist:1, space:2, color:'purple', TotalNum:5}, //公馆
-  {id:21,name:'fortress', points:4, quarries:4, price:10, colonist:1, space:2, color:'purple', TotalNum:5}, //堡垒
-  {id:22,name:'customs house', points:4, quarries:4, price:10, colonist:1, space:2, color:'purple', TotalNum:5},//海关
-  {id:23,name:'city hall', points:4, quarries:4, price:10, colonist:1, space:2, color:'purple', TotalNum:5}//市政厅
-];
-
-
-var ColonistsShip = {};
 
 
 app.use(express.static(__dirname + '/../client'));
@@ -136,44 +97,140 @@ io.on('connection', function (socket) {
                 io.sockets.emit('SettlerResponse', data);
                 break;
             case 'Trader'://商人
+                io.sockets.emit('TraderResponse', data);
+                break;
             case 'Mayor': //市长
-                data.ship = Colonists.updateShip();
-                if(!judgeGameOver()){
-                    io.sockets.emit('MayorResponse', data);
-                }
-                else{
-                    console.log('Game Over!');
-                }
+                io.sockets.emit('MayorResponse', data);
+                break;
             case 'Captain': //船长
+                io.sockets.emit('CaptainResponse', data);
+                break;
             case 'Builder'://建筑士
+                io.sockets.emit('BuilderResponse', data);
+                break;
             case 'Craftsman': //监管
+                io.sockets.emit('CraftsmanResponse', data);
+                break;
             case 'Prospector'://淘金者
+                io.sockets.emit('ProspectorResponse', data);
+                break;
         }
     });
 
-    socket.on('plant selected', function(data){
-        var index = data.index;
-        data.options = Plantation.updatePlantOptions(index);
-        Players.updatePlayer(data.player, 'Settler', index);
+    // socket.on('plant selected', function(data){
+    //     var index = data.index;
+    //     data.options = Plantation.updatePlantOptions(index);
+    //     Players.updatePlayer(data.player, 'Settler', index);
+    //
+    //
+    //     console.log('after plant selected:'+data.options);
+    //     roundAction += 1;
+    //     if(roundAction == playerNum){
+    //         if(roundRole == playerNum){
+    //             io.sockets.emit('next round');　//进入下一轮，更换总督玩家
+    //         }
+    //         else{
+    //
+    //             console.log('test:'+Players.testPlantsNum());
+    //             io.sockets.emit('next role');
+    //         }
+    //     }
+    //     else{
+    //         Plantation.updateNum();
+    //         io.sockets.emit('next player action', data);
+    //     }
+    // });
 
+    socket.on('player select', function(data){
+        var role = data.role;
+        switch (role) {
+            case 'Settler': //拓荒者
+                var index = data.index;
+                data.options = Plantation.updatePlantOptions(index);
+                var plant = Plantation.getPlant(index);
+                data.player = Players.updatePlayer(data.player.id, role, plant);
 
-        console.log('after plant selected:'+data.options);
-        roundAction += 1;
+                console.log('after plant selected:'+data.options);
+                roundAction += 1;
+                break;
+            case 'Trader'://商人
+                //如果玩家没有选择货物交易，则进入下一个玩家
+                if(data.product == null){
+                    roundAction += 1;
+                    break;
+                }
+                var money = data.product.price;
+                data.money = money;
+                data.player = Players.updatePlayer(data.player.id, role, money);
+                data.result = Trading.inputProduct(data.product);
+                if(!data.result){
+                    io.sockets.emit('result error', data);
+                    return;
+                }
+                data.Trading = Trading.getTradingHouse();
+                //console.log(data.options);
+                roundAction += 1;
+                break;
+            case 'Mayor': //市长
+                //更新每个玩家的buildarea和plantArea
+                data.player = Players.updatePlayer(data.player.id, role, data.player);
+                roundAction += 1;
+                break;
+            case 'Captain': //船长
+                //船长的次数轮回要等玩家没有货物放到船上时，才算结束
+                if(data.product == null){
+                    roundAction +=1;
+                    break;
+                }
+                var points = 0;
+                for(var i=0; i< data.product.length; i++){
+                      points += 1;
+                }
+                data.result = Ships.loadProduct(data.product);
+                if(!data.result){
+                    io.sockets.emit('result error', data);
+                    return;
+                }
+                data.points = points;
+                data.player = Players.addPoints(data.player.id, role, points);
+                data.Ships = Ships.getShips();
+                roundAction += 1;
+                break;
+            case 'Builder'://建筑士
+                var build = Buildings.getBuild(data.indexBuild);
+                data.player = Players.updateplayer(data.player.id, role, build);
+                roundAction += 1;
+                break;
+            case 'Craftsman': //监管
+                data.player = Players.updateplayer(data.player.id, role, data.player);
+                roundAction += 1;
+                break;
+            case 'Prospector'://淘金者
+                var money = data.money;
+                data.player = Players.updateplayer(data.player.id, role, money);
+                roundAction += playerNum;
+                break;
+        }
         if(roundAction == playerNum){
             if(roundRole == playerNum){
-                io.sockets.emit('next round');　//进入下一轮，更换总督玩家
+              if(!judgeGameOver()){
+                  data.ColonistsShip = Colonist.updateShip();
+                  io.sockets.emit('next round');　//进入下一轮，更换总督玩家
+              }
+              else{
+                  console.log('Game Over!');
+              }
             }
             else{
-
                 console.log('test:'+Players.testPlantsNum());
                 io.sockets.emit('next role');
             }
         }
         else{
-            Plantation.updateNum();
             io.sockets.emit('next player action', data);
         }
     });
+
 });
 
 function judgeGameOver(remainder){
