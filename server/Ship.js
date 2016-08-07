@@ -15,14 +15,14 @@ exports.loadProduct = function(index, product){
 };
 
 var checkProduct = function(index, obj){
-  if(Ships[index].id == null) ||(Ships[index].id == obj.id)){
+  if((Ships[index].id == null)||(Ships[index].id == obj.id)){
       return true;
   }
   return false;
 };
 
 
-exports.getShips = fucntion(index){
+exports.getShips = function(index){
   if(Ships[index].num >= SHIPLENGTH[index]){
     Ships[index].id = null;
     Ships[index].num = 0;

@@ -50,6 +50,7 @@ div{
   display: none;
 }
 
+
 .wrap {
   width:960px;
   margin: 0 auto;
@@ -239,4 +240,7 @@ div .Ship {
 }
 .gray {
   background-color:#808080;
+}
+.green {
+  background-color:#669900;
 }

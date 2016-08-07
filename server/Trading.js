@@ -18,7 +18,7 @@ var isExsit = function(obj){
   return false;
 };
 
-exports.getTradingHouse = fucntion(){
+exports.getTradingHouse = function(){
   if(TradingHouse.length >= HOUSELENGTH){
     TradingHouse = [];
   }

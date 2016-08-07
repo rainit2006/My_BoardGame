@@ -5,6 +5,7 @@
         <title>My Board Game</title>
         <link rel="stylesheet" href="css/main.css" />
         <link rel="stylesheet" href="css/table.css" />
+        <link rel="stylesheet" href="css/MessageBox.css" />
     </head>
     <body>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -21,27 +22,36 @@
                 <input id="startGame" type="button" value="Start Game">
             </div>
         </div>
-
+        <div id="popup1" class="overlay">
+            <div class="popup">
+                <h2 id="popupTitle">Title</h2>
+                <p id="message" class="content">Text</p>
+                <div id="element" class="content"></div>
+                <div class="buttonArea">
+                    <input id="ConfirmBtn" type="button" value="Confirm">
+                    <input id="SkipBtn" type="button" value="Skip">
+                    <input id="OKBtn" type="button" value="OK">
+                    <input id="CancelBtn" type="button" value="Cancel">
+                </div>
+            </div>
+        </div>
         <div class="wrap">
               <div id="header">HEADER</div>
               <div id="middle">
                   <div id ="leftArea">
                       <div id = "MyPlayerArea">MY Area</div>
-                      <div id = "BuildingArea">
-                          <!--h3>Game Items</h3><p-->
-                          <!--ul>
-                              <li>1</li>
-                              <li>2</li>
-                              <li>3</li>
-                              <li>4</li>
-                              <li>5</li>
-                              <li>6</li>
-                              <li>7</li>
-                              <li>8</li>
-                              <li>9</li>
-                          </ul-->
+                      <div id="productArea">
+                          <ul id="product">
+                              <li　id="0">Corn:0</li>
+                              <li id="1">Sugar:0</li>
+                              <li id="2">Indigo:0</li>
+                              <li id="3">Tabacco:0</li>
+                              <li id="4">Coffee:0</li>
+                          </ul>
                       </div>
-                      <div id= "plantationArea"></div>
+                      <div id = "BuildingArea">
+                      </div>
+                      <div id= "plantArea"></div>
                   </div>
                   <div id="rightArea">
                       <div id = "OtherPlayersArea">OtherPlayers</div>
@@ -71,7 +81,7 @@
                               <div id="BuilderDIV">
                                   <input type="button" id="Builder" value="Builder">
                                   <div id="BuildingItems">
-                                      <div class="Table">
+                                      <div class="Table"　id="BuildTable">
                                           <div class="Heading">
                                               <div class="Cell">
                                                   <p>quarries:1</p>

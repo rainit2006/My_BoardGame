@@ -9,21 +9,21 @@ var Plants = [
 ];
 
 var PlantsNum = [100, 10, 11, 11, 9, 9, 10];
-var PlantOptions;
+var PlantOptions = [];
 
 exports.getPlatationOptions = function (isSettler){
       PlantOptions=[];
       var tmpNum = PlantsNum.concat();
       if(isSettler){
         if(tmpNum[6] > 0){
-            PlantOptions.push({id:Plants[6].id, name:Plants[6].name, color:Plants[6].color, selected:0});
+            PlantOptions.push(Plants[6]);
         }
       }
       var items=getRandomItems(5);
       for(var i=0; i< items.length; i++){
          var index = items[i];
          if(tmpNum[index] > 0){
-           PlantOptions.push({id:Plants[index].id, name:Plants[index].name, color:Plants[index].color, selected:0});
+           PlantOptions.push(Plants[index]);
            tmpNum.splice(index,1, tmpNum[index]-1);
          }
          else{
@@ -31,14 +31,22 @@ exports.getPlatationOptions = function (isSettler){
          }
       }
 
-      console.log('plant 0 name:'+PlantOptions[0].name+';'+PlantOptions[0].selected);
+      //console.log('plant options:');
+      //console.log(PlantOptions);
       return PlantOptions;
 };
 
-exports.updatePlantOptions = function(index){
-    //console.log('selected index:'+index);
-    PlantOptions[index].selected = 1;
-    //console.log(PlantOptions);
+exports.updatePlantOptions = function(id){
+    for(var i=0; i<PlantOptions.length; i++){
+        if(PlantOptions[i].id == id){
+            console.log(i);
+            PlantOptions.splice(i, 1);
+            break;
+        }
+    }
+
+    console.log('plant options:');
+    console.log(PlantOptions);
     return PlantOptions;
 };
 
@@ -54,11 +62,13 @@ exports.updateNum = function(){
           }
       }
     }
-    console.log('after updateNum:'+PlantsNum);
+    //console.log('after updateNum:'+PlantsNum);
 };
 
 exports.getPlant = function(index){
     PlantsNum[index] -= 1;
+    //console.log('getPlant:');
+    //console.log(Plants[index]);
     return Plants[index];
 };
 

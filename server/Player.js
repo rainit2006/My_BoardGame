@@ -1,5 +1,5 @@
-var Plants = require('./Plantation');
-var Buildings = require('./Building');
+//var Plants = require('./Plantation');
+//var Buildings = require('./Building');
 
 
 var Players = [];
@@ -19,7 +19,7 @@ exports.addNewPlayer=function(id, name, socketid){
         Players[index].online = 1;
 
         playerOnlineNum +=1;
-        console.log("Players is replaced.");
+        //console.log("Players is replaced.");
 
     }else{
         var player = {
@@ -30,21 +30,22 @@ exports.addNewPlayer=function(id, name, socketid){
             points:0,
             colonists:0,
             money:0,
+            squarry:0,
             corn:0,
             sugar:0,
             indigo:0,
             tabacco:0,
             coffee:0,
-            PlantArea:[],
-            BuildingArea: []};
+            plantArea:[],
+            buildingArea: []};
         Players.push(player);
 
         playerNum += 1;
         playerOnlineNum += 1;
-        console.log("Players pushed.");
+        //console.log("Players pushed.");
     }
 
-    console.log(Players);
+    //console.log(Players);
     return Players;
 };
 
@@ -61,7 +62,7 @@ var findPlayerbyName = function(name){
           break;
       }
   }
-  console.log("index:"+index);
+  console.log("findPlayerbyName index:"+index);
   return index;
 };
 
@@ -74,22 +75,27 @@ exports.getPlayerOnlineNum = function(){
 };
 
 
-exports.updatePlayer=function(id, role, val1){
-  var player = Players[id];
+exports.updatePlayer=function(name, role, val1){
+  var index = findPlayerbyName(name);
+  var player = Players[index];
+  //console.log('player:');
+  //console.log(player);
 
   switch(role){
     case 'Settler':
-        player.PlantArea.push(val1);
+        console.log('Settler plant:');
+        console.log(val1);
+        player.plantArea.push(val1);
         break;
     case 'Builder':
-        player.BuildingArea.push(val1);
+        player.buildingArea.push(val1);
         break;
     case 'Trader':
         player.money += val1;
         break;
     case 'Mayor':
-        player.BuildingArea = val1.BuildingArea;
-        player.PlantArea = val1.PlantArea;
+        player.buildingArea = val1.buildingArea;
+        player.plantArea = val1.plantArea;
         break;
     case 'Captain':
         player.points += val1;
@@ -105,13 +111,13 @@ exports.updatePlayer=function(id, role, val1){
         player.money += val1;
         break;
   }
-  console.log(Players);
+  //console.log(Players);
   return player;
 };
 
-exports.testPlantsNum = function(){
-  return Plants.getPlantsNum();
-};
+// exports.testPlantsNum = function(){
+//   return Plants.getPlantsNum();
+// };
 
 exports.offlinePlayer = function(socketid){
   var index = findPlayerbySocket(socketid);
@@ -139,3 +145,12 @@ exports.addMoney = function(name, val){
   Players[index].money +=val;
   return Players[index];
 };
+
+exports.nextPlayer = function(name){
+  console.log('nextPlayer: name='+name);
+  var index = findPlayerbyName(name) + 1;
+  if(index >= Players.length){
+    index = 0;
+  }
+  return Players[index];
+}

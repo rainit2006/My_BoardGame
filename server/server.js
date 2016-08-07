@@ -58,8 +58,11 @@ io.on('connection', function (socket) {
             // player.id = data.id;
             // player.socket = socket.id;
             console.log('new player:' + data.name+','+data.id +','+ socket.id);
-            var data = Players.addNewPlayer(data.id, data.name, socket.id);
-            io.sockets.emit('players update', data);
+            var sendData = {};
+            sendData.players = Players.addNewPlayer(data.id, data.name, socket.id);
+            playerNum = sendData.players.length;
+            console.log('player num is:'+ playerNum);
+            io.sockets.emit('players update', sendData);
     });
 
     socket.on('start game', function(){
@@ -88,31 +91,32 @@ io.on('connection', function (socket) {
     socket.on('gameRoleSelect', function(data){
         console.log('gameRoleSelect:'+data.role);
         roundAction = 0; //重新记录操作的玩家数
-        var data = data;
+        var sendData = data;
         var role = data.role;
+        data.nextPlayer = data.player;
         switch(role){
             case 'Settler': //拓荒者
                 data.options = Plantation.getPlatationOptions(true);
                 //console.log(data.options);
-                io.sockets.emit('SettlerResponse', data);
+                io.sockets.emit('SettlerResponse', sendData);
                 break;
             case 'Trader'://商人
-                io.sockets.emit('TraderResponse', data);
+                io.sockets.emit('TraderResponse', sendData);
                 break;
             case 'Mayor': //市长
-                io.sockets.emit('MayorResponse', data);
+                io.sockets.emit('MayorResponse', sendData);
                 break;
             case 'Captain': //船长
-                io.sockets.emit('CaptainResponse', data);
+                io.sockets.emit('CaptainResponse', sendData);
                 break;
             case 'Builder'://建筑士
-                io.sockets.emit('BuilderResponse', data);
+                io.sockets.emit('BuilderResponse', sendData);
                 break;
             case 'Craftsman': //监管
-                io.sockets.emit('CraftsmanResponse', data);
+                io.sockets.emit('CraftsmanResponse', sendData);
                 break;
             case 'Prospector'://淘金者
-                io.sockets.emit('ProspectorResponse', data);
+                io.sockets.emit('ProspectorResponse', sendData);
                 break;
         }
     });
@@ -142,15 +146,23 @@ io.on('connection', function (socket) {
     // });
 
     socket.on('player select', function(data){
+        var sendData = {};
         var role = data.role;
+        sendData.nextPlayer = Players.nextPlayer(data.player.name);
+        console.log('next player will be: '+sendData.nextPlayer.name);
+
+        sendData.role=role;
+
         switch (role) {
             case 'Settler': //拓荒者
-                var index = data.index;
-                data.options = Plantation.updatePlantOptions(index);
-                var plant = Plantation.getPlant(index);
-                data.player = Players.updatePlayer(data.player.id, role, plant);
+                var plantID = data.index;
+                sendData.options = Plantation.updatePlantOptions(plantID);
+                var plant = Plantation.getPlant(plantID);
+                console.log('Settler player name:'+data.player.name);
+                sendData.player = Players.updatePlayer(data.player.name, role, plant);
 
-                console.log('after plant selected:'+data.options);
+                //console.log('after plant selected:');
+                //console.log(data.options);
                 roundAction += 1;
                 break;
             case 'Trader'://商人
@@ -160,20 +172,20 @@ io.on('connection', function (socket) {
                     break;
                 }
                 var money = data.product.price;
-                data.money = money;
-                data.player = Players.updatePlayer(data.player.id, role, money);
-                data.result = Trading.inputProduct(data.product);
-                if(!data.result){
+                sendData.money = money;
+                sendData.player = Players.updatePlayer(data.player.id, role, money);
+                sendData.result = Trading.inputProduct(data.product);
+                if(!sendData.result){
                     io.sockets.emit('result error', data);
                     return;
                 }
-                data.Trading = Trading.getTradingHouse();
+                sendData.Trading = Trading.getTradingHouse();
                 //console.log(data.options);
                 roundAction += 1;
                 break;
             case 'Mayor': //市长
                 //更新每个玩家的buildarea和plantArea
-                data.player = Players.updatePlayer(data.player.id, role, data.player);
+                sendData.player = Players.updatePlayer(data.player.id, role, data.player);
                 roundAction += 1;
                 break;
             case 'Captain': //船长
@@ -186,49 +198,54 @@ io.on('connection', function (socket) {
                 for(var i=0; i< data.product.length; i++){
                       points += 1;
                 }
-                data.result = Ships.loadProduct(data.product);
-                if(!data.result){
+                sendData.result = Ships.loadProduct(data.product);
+                if(!sendData.result){
                     io.sockets.emit('result error', data);
                     return;
                 }
-                data.points = points;
-                data.player = Players.addPoints(data.player.id, role, points);
-                data.Ships = Ships.getShips();
+                sendData.points = points;
+                sendData.player = Players.addPoints(data.player.id, role, points);
+                sendData.Ships = Ships.getShips();
                 roundAction += 1;
                 break;
             case 'Builder'://建筑士
                 var build = Buildings.getBuild(data.indexBuild);
-                data.player = Players.updateplayer(data.player.id, role, build);
+                sendData.player = Players.updateplayer(data.player.id, role, build);
                 roundAction += 1;
                 break;
             case 'Craftsman': //监管
-                data.player = Players.updateplayer(data.player.id, role, data.player);
+                sendData.player = Players.updateplayer(data.player.id, role, data.player);
                 roundAction += 1;
                 break;
             case 'Prospector'://淘金者
-                var money = data.money;
-                data.player = Players.updateplayer(data.player.id, role, money);
+        var money = game.getMoney(role);
+                sendData.player = Players.updateplayer(data.player.id, role, money);
                 roundAction += playerNum;
                 break;
         }
+
+        console.log('roundAction:'+roundAction);
         if(roundAction == playerNum){
             if(roundRole == playerNum){
               if(!judgeGameOver()){
-                  data.ColonistsShip = Colonist.updateShip();
-                  io.sockets.emit('next round');　//进入下一轮，更换总督玩家
+                  sendData.ColonistsShip = Colonist.updateShip();
+                  console.log('emit : next round');
+                  io.sockets.emit('next round', sendData);　//进入下一轮，更换总督玩家
               }
               else{
                   console.log('Game Over!');
               }
             }
             else{
-                console.log('test:'+Players.testPlantsNum());
-                io.sockets.emit('next role');
+              console.log('emit :next role');
+              io.sockets.emit('next role', sendData);
             }
         }
         else{
-            io.sockets.emit('next player action', data);
+            console.log('emit :'+ (role+'Response'));
+            io.sockets.emit((role+'Response'), sendData);
         }
+
     });
 
 });
