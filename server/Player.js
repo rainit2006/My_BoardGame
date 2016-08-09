@@ -5,6 +5,7 @@
 var Players = [];
 var playerNum = 0;
 var playerOnlineNum = 0;
+var rolePlayerName = "";
 
 exports.initPlayers= function(){
    Players = [];
@@ -37,7 +38,7 @@ exports.addNewPlayer=function(id, name, socketid){
             // indigo:0,
             // tabacco:0,
             // coffee:0,
-            products:[0,0,0,0,0],//corn, sugar, indigo, tabacco,coffee
+            products:[1,0,2,0,0],//corn, sugar, indigo, tabacco,coffee
             plantArea:[],
             buildingArea: []};
         Players.push(player);
@@ -83,6 +84,10 @@ exports.getPlayers = function(){
 
 exports.updatePlayer=function(name, role, val1){
   var index = findPlayerbyName(name);
+  if(index < 0){
+    console.log("updatePlayer failed! name is"+name);
+    return;
+  }
   var player = Players[index];
   //console.log('player:');
   //console.log(player);
@@ -97,7 +102,14 @@ exports.updatePlayer=function(name, role, val1){
         player.buildingArea.push(val1);
         break;
     case 'Trader':
-        player.money += val1;
+        console.log("updatePlayer. val1 is");
+        console.log(val1);
+        player.money += val1.price;
+        if(player.name == rolePlayerName){
+          player.money += 1;
+          rolePlayerName = "";
+        }
+        player.products[val1.id-1] -= 1;
         break;
     case 'Mayor':
         player.totalColonists = val1.totalColonists;
@@ -156,7 +168,9 @@ exports.addMoney = function(name, val){
 
 exports.addColonits = function(name, val){
    var index = findPlayerbyName(name);
-   Players[index].totalColonists = val;
+   Players[index].totalColonists += val;
+   Players[index].freeColonists += val;
+   return Players[index];
 };
 
 exports.nextPlayer = function(name){
@@ -166,4 +180,8 @@ exports.nextPlayer = function(name){
     index = 0;
   }
   return Players[index];
+}
+
+exports.setRolePayerName = function(name){
+  rolePlayerName = name;
 }

@@ -94,6 +94,7 @@ io.on('connection', function (socket) {
         var sendData = {};
         var role = data.role;
         sendData.role = role;
+        Players.setRolePayerName(data.player.name);
         sendData.nextPlayer = data.player;
         switch(role){
             case 'Settler': //拓荒者
@@ -106,6 +107,7 @@ io.on('connection', function (socket) {
                 break;
             case 'Mayor': //市长
                 sendData.colonist = Colonist.allotByPlayer(roundAction, Players.getPlayerNum());
+                console.log("allot colonists:"+sendData.colonist);
                 //io.sockets.emit('MayorResponse', sendData);
                 break;
             case 'Captain': //船长
@@ -174,28 +176,32 @@ io.on('connection', function (socket) {
                 //如果玩家没有选择货物交易，则进入下一个玩家
                 if(data.product == null){
                     roundAction += 1;
+                    sendData.player = null;
+                    sendData.tradingHouse = Trading.getTradingHouse();
                     break;
                 }
                 var money = data.product.price;
                 sendData.money = money;
-                sendData.player = Players.updatePlayer(data.player.id, role, money);
+                sendData.player = Players.updatePlayer(data.player.name, role, data.product);
                 sendData.result = Trading.inputProduct(data.product);
                 if(!sendData.result){
                     io.sockets.emit('result error', data);
                     return;
                 }
-                sendData.Trading = Trading.getTradingHouse();
+                sendData.tradingHouse = Trading.getTradingHouse();
                 //console.log(data.options);
                 roundAction += 1;
                 break;
             case 'Mayor': //市长
                 //更新每个玩家的buildarea和plantArea
-                sendData.player = Players.updatePlayer(data.player.name, role, data.player);
+                Players.updatePlayer(data.player.name, role, data.player);
                 roundAction += 1;
                 //计算下一个玩家的奴隶数
-                sendData.colonist = Colonist.allotByPlayer(roundAction, Players.getPlayerNum());
-                Players.addColonits(data.player.name, sendData.colonist);
-                console.log("Mayor colonist:"+sendData.colonist);
+                if(roundAction < playerNum){
+                    sendData.colonist = Colonist.allotByPlayer(roundAction, Players.getPlayerNum());
+                    sendData.player = Players.addColonits(sendData.nextPlayer.name, sendData.colonist);
+                    console.log("Mayor colonist:"+sendData.colonist);
+                }
                 break;
             case 'Captain': //船长
                 //船长的次数轮回要等玩家没有货物放到船上时，才算结束

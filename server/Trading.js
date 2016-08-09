@@ -10,8 +10,8 @@ exports.inputProduct = function(product){
 };
 
 var isExsit = function(obj){
-  for(var i=0; i < Trading.length; i++){
-      if(Trading[i].id == obj.id){
+  for(var i=0; i < TradingHouse.length; i++){
+      if(TradingHouse[i].id == obj.id){
           return true;
       }
   }

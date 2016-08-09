@@ -1,42 +1,6 @@
-/////////Global variables////////////
-var BuildingAreaMaxNum = 12;
-var PlantationAreaMaxNum = 12;
-
-var Action={//记录玩家的操作
-    index_GameItems:null,
-    index_Filed:null,
-    id:null
-};
-var MAX_PLAYER = 5;
-var PLANTATION = ['corn', 'sugar', 'indigo', 'tabacco', 'coffee'];
-var Players = [];
-var myPlayer = {
-    name: 'test',
-    id: 0,
-    select:null, //记录用户的选择
-    points:0,
-    money:0,
-    totalColonists:0,
-    freeColonists:0,
-    quarry:0,
-    // corn:0,
-    // indigo:0,
-    // sugar:0,
-    // tabacco:0,
-    // coffee:0,
-    products:[1,0,1,0,0],//corn, sugar indigo, tabacco,coffee
-    plantArea:[],
-    buildArea:[]
-};
-var playerNum = 1;
-var currentRole = null;
-var options = null;
-
-
+///////////////////////////////////
 $(function() {
     var socket = io();
-
-
 
     window.onload = function(){
         //socket.emit('connect');
@@ -93,7 +57,6 @@ $(function() {
     //       Action.index_Filed =index;
     //   });
     }
-
 
 
     $('#enter').click(function(){
@@ -185,72 +148,22 @@ $(function() {
         }
         if(data.nextPlayer.name != myPlayer.name){
             console.log(data.nextPlayer.name+' is not '+myPlayer.name);
+            updatePlayers(data);
+            drawPlayers();
             return;
         }
 
         var titleString = currentRole;
-        var contentString = "";
         //console.log("player name:"+myPlayer.name);
         switch (currentRole) {
           case 'Settler':
-              options = data.options;
-              //console.log('plant options:'+options);
-              contentString = "请选择你想要的plant.";
-              $('#message').empty().text(contentString);
-
-              var ulNode= $("<ul id='PlantationUL'>");
-              $.each(options, function(index){
-                  //plantOptions.push(this.name);
-                  var div = $("<li id="+index+">"+this.name+"</li>").addClass(this.color);
-                  ulNode.append(div);
-              });
-              $('#element').empty().append(ulNode);
-
-              $('#element li').on('click', function(){
-                  ///判断操作的player是不是有效的当前player，如果是则传给服务器data。
-                  myPlayer.select = this.id;
-                  $('#message').text(contentString).append("<p>你选择的是："+options[this.id].name+"</p>");
-              });
+              settlerProcess(data);
               break;
           case 'Mayor':
-              myPlayer.freeColonists += data.colonist;
-              myPlayer.totalColonists += data.colonist;
-              drawColonistList();
+              mayorProcess(data);
               break;
           case 'Trader':
-              var bonus = 1;
-              var tradingHouse = data.tradingHouse;
-              drawTradingHouse(tradingHouse);
-
-              options = [];
-              for(var i=0; i<myPlayer.products.length; i++){
-                  if(myPlayer.products[i] != 0){
-                      if(!existInTradingHouse(i, tradingHouse)){
-                          options.push(PLANTATION[i]);
-                      }
-                  }
-              }
-              if(options.length <= 0){
-                  contentString = "没有可以贩卖的货物。";
-              }else{
-                  contentString = "请选择要贩卖的货物:";
-              }
-              $('#message').empty().text(contentString);
-
-              var ulNode= $("<ul>");
-              $.each(options, function(index){
-                  //plantOptions.push(this.name);
-                  var div = $("<li>"+options[index]+"</li>");
-                  ulNode.append(div);
-              });
-              $('#element').empty().append(ulNode);
-
-              $('#element li').on('click', function(){
-                  ///判断操作的player是不是有效的当前player，如果是则传给服务器data。
-                  console.log($(this).text());
-                  //myPlayer.select = this;
-                  //$('#message').text(contentString).append("<p>你选择的是："+options[this.id].name+"</p>");
-              });
+              traderProcess(data);
               break;
           case 'Captain':
               break;
@@ -292,15 +205,19 @@ $(function() {
                 }else if(btnName == "Skip"){
                     sendData.index = 0;
                 }
+                console.log(sendData.index+':'+options[myPlayer.select]+' is clicked!');
                 break;
             case 'Mayor':
                 //没有什么特别要处理的
+                break;
+            case 'Trader':
+                sendData.product = myPlayer.select;
                 break;
             default:
         }
         sendData.player = myPlayer;
         sendData.role = currentRole;
-        console.log(sendData.index+':'+options[myPlayer.select].name+' is clicked!');
+
         socket.emit('player select', sendData);
         drawPlayers();
 
@@ -330,6 +247,11 @@ $(function() {
     socket.on('next role', function(data){
         //change next player to select one role.
         console.log('next role');
+        updatePlayers(data);
+        drawPlayers();
+        if(data.tradingHouse != null){
+          drawTradingHouse(data.tradingHouse);
+        }
     });
 
 
@@ -371,6 +293,22 @@ $(function() {
     // socket.on('CraftsmanResponse', function(data){
     //     //计算好myPlayer玩家的生成货物，告诉给server
     // });
+    function updatePlayers(data){
+        if(data == null){
+            console.log("updatePlayers failed: data is null");
+            return;
+        }
+        if(data.player == null){
+            console.log("updatePlayers failed: data.player is null");
+            return;
+        }
+        if(myPlayer.name == data.player.name){
+            myPlayer = data.player;
+        }else{
+            var index = findPlayerbyName(data.player.name);
+            Players[index] = data.player;
+        }
+    }
 
     function updateGameStatus(){
       var i = Action.index_GameItems;

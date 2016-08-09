@@ -1,4 +1,10 @@
 //////Mayor//////
+function mayorProcess(data){
+    myPlayer.freeColonists += data.colonist;
+    myPlayer.totalColonists += data.colonist;
+    drawColonistList();
+}
+
 function drawColonistList(){
     var contentString = "请分配你的奴隶. 空闲奴隶："+myPlayer.freeColonists+"人";
     $('#message').empty().text(contentString);
@@ -19,6 +25,9 @@ function drawColonistList(){
         minusBtn = "<input class='minus' type='button' data-index='"+index+"' value='Minus' disabled='true'>";
       }else{
         minusBtn = "<input class='minus' type='button' data-index='"+index+"' value='Minus'>";
+      }
+      if(myPlayer.freeColonists == 0){
+        addBtn = "<input class='add' type='button' data-index='"+index +"' value='Plus' disabled='true'>";
       }
       selectItem += "<div>"+ItemNode+addBtn+minusBtn+"</div>";
     });
