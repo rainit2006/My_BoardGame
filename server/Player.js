@@ -28,14 +28,16 @@ exports.addNewPlayer=function(id, name, socketid){
             socket:socketid,
             online:1,
             points:0,
-            colonists:0,
+            totalColonists:0,
+            freeColonists:0,
             money:0,
-            squarry:0,
-            corn:0,
-            sugar:0,
-            indigo:0,
-            tabacco:0,
-            coffee:0,
+            quarry:0,
+            // corn:0,
+            // sugar:0,
+            // indigo:0,
+            // tabacco:0,
+            // coffee:0,
+            products:[0,0,0,0,0],//corn, sugar, indigo, tabacco,coffee
             plantArea:[],
             buildingArea: []};
         Players.push(player);
@@ -74,6 +76,10 @@ exports.getPlayerOnlineNum = function(){
   return playerOnlineNum;
 };
 
+exports.getPlayers = function(){
+  return Players;
+};
+
 
 exports.updatePlayer=function(name, role, val1){
   var index = findPlayerbyName(name);
@@ -94,6 +100,8 @@ exports.updatePlayer=function(name, role, val1){
         player.money += val1;
         break;
     case 'Mayor':
+        player.totalColonists = val1.totalColonists;
+        player.freeColonists = val1.freeColonists;
         player.buildingArea = val1.buildingArea;
         player.plantArea = val1.plantArea;
         break;
@@ -144,6 +152,11 @@ exports.addMoney = function(name, val){
   var index = findPlayerbyName(name);
   Players[index].money +=val;
   return Players[index];
+};
+
+exports.addColonits = function(name, val){
+   var index = findPlayerbyName(name);
+   Players[index].totalColonists = val;
 };
 
 exports.nextPlayer = function(name){

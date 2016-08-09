@@ -1,12 +1,15 @@
 var colonistsNum = 90;
 var Ship = 4; //记录船上奴隶数目
+
 exports.updateShip = function(){
     Ship = calculateColonists();
     return newShip;
 };
 
-exports.updteRemainder = function(){
+
+exports.updateRemainder = function(){
     colonistsNum -= Ship;
+    Ship = 0;
     console.log('colonists remainder:'+colonistsNum);
 };
 
@@ -24,6 +27,14 @@ exports.initColonistNum = function(playerNum){
       default: colonistsNum = 90;
     }
 };
+
+exports.allotByPlayer = function(num, playerNum){
+    var number = Math.floor(Ship/playerNum);
+    if(Ship%playerNum-num > 0){
+       number += 1;
+    }
+    return number;
+}
 
 var calculateColonists = function(){
     //根据player的空白奴隶数，计算ship上的奴隶数

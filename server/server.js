@@ -91,34 +91,37 @@ io.on('connection', function (socket) {
     socket.on('gameRoleSelect', function(data){
         console.log('gameRoleSelect:'+data.role);
         roundAction = 0; //重新记录操作的玩家数
-        var sendData = data;
+        var sendData = {};
         var role = data.role;
-        data.nextPlayer = data.player;
+        sendData.role = role;
+        sendData.nextPlayer = data.player;
         switch(role){
             case 'Settler': //拓荒者
-                data.options = Plantation.getPlatationOptions(true);
+                sendData.options = Plantation.getPlatationOptions(true);
                 //console.log(data.options);
-                io.sockets.emit('SettlerResponse', sendData);
                 break;
             case 'Trader'://商人
-                io.sockets.emit('TraderResponse', sendData);
+                //io.sockets.emit('TraderResponse', sendData);
+                sendData.tradingHouse = Trading.getTradingHouse();
                 break;
             case 'Mayor': //市长
-                io.sockets.emit('MayorResponse', sendData);
+                sendData.colonist = Colonist.allotByPlayer(roundAction, Players.getPlayerNum());
+                //io.sockets.emit('MayorResponse', sendData);
                 break;
             case 'Captain': //船长
-                io.sockets.emit('CaptainResponse', sendData);
+                //io.sockets.emit('CaptainResponse', sendData);
                 break;
             case 'Builder'://建筑士
-                io.sockets.emit('BuilderResponse', sendData);
+                //io.sockets.emit('BuilderResponse', sendData);
                 break;
             case 'Craftsman': //监管
-                io.sockets.emit('CraftsmanResponse', sendData);
+                //io.sockets.emit('CraftsmanResponse', sendData);
                 break;
             case 'Prospector'://淘金者
-                io.sockets.emit('ProspectorResponse', sendData);
+                //io.sockets.emit('ProspectorResponse', sendData);
                 break;
         }
+        io.sockets.emit('RoleResponse', sendData);
     });
 
     // socket.on('plant selected', function(data){
@@ -156,11 +159,13 @@ io.on('connection', function (socket) {
         switch (role) {
             case 'Settler': //拓荒者
                 var plantID = data.index;
+                if(plantID != 0){
+                    var plant = Plantation.getPlant(plantID);
+                    sendData.player = Players.updatePlayer(data.player.name, role, plant);
+                }else{
+                    sendData.player = null;
+                }
                 sendData.options = Plantation.updatePlantOptions(plantID);
-                var plant = Plantation.getPlant(plantID);
-                console.log('Settler player name:'+data.player.name);
-                sendData.player = Players.updatePlayer(data.player.name, role, plant);
-
                 //console.log('after plant selected:');
                 //console.log(data.options);
                 roundAction += 1;
@@ -185,8 +190,12 @@ io.on('connection', function (socket) {
                 break;
             case 'Mayor': //市长
                 //更新每个玩家的buildarea和plantArea
-                sendData.player = Players.updatePlayer(data.player.id, role, data.player);
+                sendData.player = Players.updatePlayer(data.player.name, role, data.player);
                 roundAction += 1;
+                //计算下一个玩家的奴隶数
+                sendData.colonist = Colonist.allotByPlayer(roundAction, Players.getPlayerNum());
+                Players.addColonits(data.player.name, sendData.colonist);
+                console.log("Mayor colonist:"+sendData.colonist);
                 break;
             case 'Captain': //船长
                 //船长的次数轮回要等玩家没有货物放到船上时，才算结束
@@ -237,7 +246,12 @@ io.on('connection', function (socket) {
               }
             }
             else{
+              if(role == 'Mayor'){
+                  Colonist.updateRemainder();
+                  sendData.ColonistsShip = 0;
+              }
               console.log('emit :next role');
+
               io.sockets.emit('next role', sendData);
             }
         }
