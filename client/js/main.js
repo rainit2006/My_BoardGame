@@ -132,6 +132,7 @@ $(function() {
       sendData.role = currentRole;
       sendData.player = myPlayer;
       if(currentRole == 'Mayor'){
+          ///需要在client里先计算，以便分配人员。
           myPlayer.freeColonists += 1;
       }
       socket.emit('gameRoleSelect', sendData);
@@ -170,10 +171,10 @@ $(function() {
           case 'Builder':
               break;
           case 'Craftsman':
+              craftsmanProcess(data);
               break;
           case 'Prospector':
               break;
-
           default:
 
         }
@@ -298,15 +299,28 @@ $(function() {
             console.log("updatePlayers failed: data is null");
             return;
         }
-        if(data.player == null){
-            console.log("updatePlayers failed: data.player is null");
-            return;
+        if(data.players != null){
+            $.each(data.players, function(index){
+              if(myPlayer.name == data.players[index].name){
+                  myPlayer = data.player[index];
+              }else{
+                  var index = findPlayerbyName(data.players[index].name);
+                  Players[index] = data.players[index];
+              }
+            });
         }
-        if(myPlayer.name == data.player.name){
-            myPlayer = data.player;
-        }else{
-            var index = findPlayerbyName(data.player.name);
-            Players[index] = data.player;
+        if((data.player != null)){
+            if(myPlayer.name == data.player.name){
+                myPlayer = data.player;
+            }else{
+                var index = findPlayerbyName(data.player.name);
+                Players[index] = data.player;
+            }
+        }
+
+        if((data.players == null)&&(data.player == null)){
+            console.log("updatePlayers failed: data.players/player are null");
+            return;
         }
     }
 

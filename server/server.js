@@ -66,6 +66,7 @@ io.on('connection', function (socket) {
     });
 
     socket.on('start game', function(){
+        Players.resetPlayers();
         io.sockets.emit('start game');
     });
 
@@ -219,22 +220,22 @@ io.on('connection', function (socket) {
                     return;
                 }
                 sendData.points = points;
-                sendData.player = Players.addPoints(data.player.id, role, points);
+                sendData.player = Players.addPoints(data.player.name, role, points);
                 sendData.Ships = Ships.getShips();
                 roundAction += 1;
                 break;
             case 'Builder'://建筑士
                 var build = Buildings.getBuild(data.indexBuild);
-                sendData.player = Players.updateplayer(data.player.id, role, build);
+                sendData.player = Players.updatePlayer(data.player.name, role, build);
                 roundAction += 1;
                 break;
             case 'Craftsman': //监管
-                sendData.player = Players.updateplayer(data.player.id, role, data.player);
+                sendData.player = Players.updatePlayer(data.player.name, role, data.player);
                 roundAction += 1;
                 break;
             case 'Prospector'://淘金者
         var money = game.getMoney(role);
-                sendData.player = Players.updateplayer(data.player.id, role, money);
+                sendData.player = Players.updateplayer(data.player.name, role, money);
                 roundAction += playerNum;
                 break;
         }

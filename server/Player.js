@@ -7,8 +7,31 @@ var playerNum = 0;
 var playerOnlineNum = 0;
 var rolePlayerName = "";
 
-exports.initPlayers= function(){
-   Players = [];
+exports.initPlayers = function(){
+    Players = [];
+}
+
+exports.resetPlayers= function(){
+   if(Players == null){
+     return;
+   }
+   for(var i=0; i < Players.length; i++){
+      var player = Players[i];
+      player.points=0;
+      player.totalColonists=0;
+      player.freeColonists=0;
+      player.money=0;
+      player.quarry=0;
+      // corn=0;
+      // sugar=0;
+      // indigo=0;
+      // tabacco=0;
+      // coffee=0;
+      player.products=[0,0,0,0,0];//corn, sugar, indigo, tabacco,coffee
+      player.plantArea=[];
+      player.buildingArea= [];
+   }
+   return;
 };
 
 exports.addNewPlayer=function(id, name, socketid){
@@ -38,7 +61,7 @@ exports.addNewPlayer=function(id, name, socketid){
             // indigo:0,
             // tabacco:0,
             // coffee:0,
-            products:[1,0,2,0,0],//corn, sugar, indigo, tabacco,coffee
+            products:[0,0,0,0,0],//corn, sugar, indigo, tabacco,coffee
             plantArea:[],
             buildingArea: []};
         Players.push(player);
@@ -121,11 +144,7 @@ exports.updatePlayer=function(name, role, val1){
         player.points += val1;
         break;
     case 'Craftsman':
-        player.corn = val1.corn;
-        player.sugar = val1.sugar;
-        player.indigo = val1.indigo;
-        player.tabacco = val1.tabacco;
-        player.coffee = val1.coffee;
+        player.products = val1.products;
         break;
     case 'Prospector':
         player.money += val1;
