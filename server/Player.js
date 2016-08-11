@@ -142,11 +142,13 @@ exports.updatePlayer=function(name, role, val1){
         player.plantArea = val1.plantArea;
         break;
     case 'Captain':
-        player.points += val1;
+        player.points += val1[1];
         if(player.name == rolePlayerName){
           player.points += 1;
           rolePlayerName = "";
         }
+        var index = val1[0]-1;
+        player.products[index] -= val1[1];
         break;
     case 'Craftsman':
         player.products = val1.products;

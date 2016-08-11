@@ -5,9 +5,9 @@ var Ships = [Ship1, Ship2, Ship3];
 
 var SHIPLENGTH = [5, 6, 7];
 
-exports.loadProduct = function(index, product, number){
-  if(checkProduct(index, product)){
-      Ships[index].name = product.name;
+exports.loadProduct = function(index, name, number){
+  if(checkProduct(index, name)){
+      Ships[index].name = name;
       Ships[index].num += number;
       if(Ships[index].num > SHIPLENGTH[index]){
           Ships[index].num = SHIPLENGTH[index];
@@ -17,8 +17,8 @@ exports.loadProduct = function(index, product, number){
   return false;
 };
 
-var checkProduct = function(index, obj){
-  if((Ships[index].name == null)||(Ships[index].name == obj.name)){
+var checkProduct = function(index, name){
+  if((Ships[index].name == null)||(Ships[index].name == name)){
       return true;
   }
   return false;

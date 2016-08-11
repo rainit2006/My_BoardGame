@@ -147,10 +147,16 @@ $(function() {
           var index = findPlayerbyName(data.player.name);
           Players[index] = data.player;
         }
+        if(data.ship != null){
+            SHIPS = data.ship;
+        }
+        if(data.colonistsShip != null){
+            COLONISTSHIP = data.colonistsShip;
+        }
+        updatePlayers(data);
+        drawPlayers();
         if(data.nextPlayer.name != myPlayer.name){
             console.log(data.nextPlayer.name+' is not '+myPlayer.name);
-            updatePlayers(data);
-            drawPlayers();
             return;
         }
 
@@ -162,12 +168,14 @@ $(function() {
               break;
           case 'Mayor':
               mayorProcess(data);
+              drawColonistShipsArea();
               break;
           case 'Trader':
               traderProcess(data);
               break;
           case 'Captain':
               captainProcess(data);
+              drawShipsArea();
               break;
           case 'Builder':
               builderProcess(data);
@@ -220,7 +228,7 @@ $(function() {
                 break;
             case 'Captain':
                 if(btnName == "Confirm"){
-                    sendData.product = PLANTS[myPlayer.select[0]].name;
+                    sendData.product = PLANTS[myPlayer.select[0]].id;
                     sendData.productNum = myPlayer.select[2];
                     sendData.ship = myPlayer.select[1];
                 }
@@ -264,6 +272,12 @@ $(function() {
     socket.on('next round', function(data){
         //change govenor player.
         console.log('next round');
+        SHIPS = data.ships;
+        COLONISTSHIP = data.colonistsShip;
+        drawPlayers();
+        drawShipsArea();
+        drawColonistShipsArea();
+        drawBuildings();
     });
 
     socket.on('next role', function(data){

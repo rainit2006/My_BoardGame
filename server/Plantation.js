@@ -67,10 +67,11 @@ exports.updateNum = function(){
 };
 
 exports.getPlant = function(index){
-    PlantsNum[index] -= 1;
-    //console.log('getPlant:');
-    //console.log(Plants[index]);
     return Plants[index];
+};
+
+exports.takeoutPlant = function(index){
+    PlantsNum[index] -= 1;
 };
 
 exports.getPlantsNum = function(){

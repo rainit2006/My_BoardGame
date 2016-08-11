@@ -166,6 +166,7 @@ io.on('connection', function (socket) {
             case 'Settler': //拓荒者
                 var plantID = data.index;
                 if(plantID != 0){
+                    Plantation.takeoutPlant(plantID);
                     var plant = Plantation.getPlant(plantID);
                     sendData.player = Players.updatePlayer(data.player.name, role, plant);
                 }else{
@@ -214,15 +215,16 @@ io.on('connection', function (socket) {
                     break;
                 }
                 var points = data.productNum;
-                sendData.result = Ships.loadProduct(data.ship, data.product, points);
+                var plant = Plantation.getPlant(data.product);
+                sendData.result = Ships.loadProduct(data.ship, plant.name, points);
                 if(!sendData.result){
+                    console.log('err: captian loadproduct failed!');
                     io.sockets.emit('result error', data);
                     return;
                 }
                 sendData.points = points;
-                sendData.player = Players.updatePlayer(data.player.name, role, points);
+                sendData.player = Players.updatePlayer(data.player.name, role, [plant.id, points]);
                 sendData.ships = Ships.getShips();
-                roundAction += 1;
                 break;
             case 'Builder'://建筑士
                 if(data.build == null){
@@ -249,6 +251,7 @@ io.on('connection', function (socket) {
         if(roundAction == playerNum){
             if(roundRole == playerNum){
               if(!judgeGameOver()){
+                  sendData.players = Players.getPlayers();
                   sendData.colonistsShip = Colonist.updateShip();
                   sendData.ships = Ships.updateShips();
                   console.log('emit : next round');
@@ -261,7 +264,7 @@ io.on('connection', function (socket) {
             else{
               if(role == 'Mayor'){
                   Colonist.updateRemainder();
-                  sendData.ColonistsShip = 0;
+                  sendData.colonistsShip = 0;
               }
               console.log('emit :next role');
 
@@ -269,8 +272,8 @@ io.on('connection', function (socket) {
             }
         }
         else{
-            console.log('emit :'+ (role+'Response'));
-            io.sockets.emit((role+'Response'), sendData);
+            console.log('emit RoleResponse:'+role);
+            io.sockets.emit('RoleResponse', sendData);
         }
 
     });

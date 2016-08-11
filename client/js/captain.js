@@ -23,7 +23,7 @@ function captainProcess(data){
           }
       }
   });
-  if(options == null){
+  if(options.length == 0){
     var contentString = "你没有能交易的货物.";
     $('#message').empty().text(contentString);
     $('#element').empty();

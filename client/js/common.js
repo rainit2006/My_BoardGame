@@ -51,6 +51,7 @@ var BUILDINGS = [
 ];
 var SHIPS = [];
 var SHIPLENGTH = [5, 6, 7];
+var COLONISTSHIP = 4;
 
 var Players = [];
 var myPlayer = {
