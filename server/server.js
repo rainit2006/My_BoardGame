@@ -6,7 +6,7 @@ var game = require('./game.js');
 var Plantation = require('./Plantation');
 var Colonist = require('./Colonist');
 var Trading = require('./Trading');
-var Building = require('./Building');
+var Buildings = require('./Building');
 var Ships = require('./Ship');
 var Players=require('./Player');
 
@@ -97,6 +97,7 @@ io.on('connection', function (socket) {
         sendData.role = role;
         Players.setRolePayerName(data.player.name);
         sendData.nextPlayer = data.player;
+        sendData.rolePlayer = data.player.name;
         switch(role){
             case 'Settler': //拓荒者
                 sendData.options = Plantation.getPlatationOptions(true);
@@ -115,6 +116,7 @@ io.on('connection', function (socket) {
                 //io.sockets.emit('CaptainResponse', sendData);
                 break;
             case 'Builder'://建筑士
+                sendData.buildingsNum = Buildings.getBuildingsNum();
                 //io.sockets.emit('BuilderResponse', sendData);
                 break;
             case 'Craftsman': //监管
@@ -225,8 +227,12 @@ io.on('connection', function (socket) {
                 roundAction += 1;
                 break;
             case 'Builder'://建筑士
-                var build = Buildings.getBuild(data.indexBuild);
-                sendData.player = Players.updatePlayer(data.player.name, role, build);
+                if(data.build == null){
+                    roundAction +=1;
+                    break;
+                }
+                var build = Buildings.takeoutBuild(data.build);
+                sendData.player = Players.updatePlayer(data.player.name, role, [build, data.price]);
                 roundAction += 1;
                 break;
             case 'Craftsman': //监管

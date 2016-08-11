@@ -167,8 +167,10 @@ $(function() {
               traderProcess(data);
               break;
           case 'Captain':
+              captainProcess(data);
               break;
           case 'Builder':
+              builderProcess(data);
               break;
           case 'Craftsman':
               craftsmanProcess(data);
@@ -214,6 +216,15 @@ $(function() {
             case 'Trader':
                 sendData.product = myPlayer.select;
                 break;
+            case 'Builder':
+                if(btnName == "Confirm"){
+                    sendData.build = myPlayer.select[0];
+                    myPlayer.buildArea.push(BUILDINGS[sendData.build]);
+                    sendData.price = myPlayer.select[1];
+                }else{
+                    sendData.build = null;
+                }
+                break;
             default:
         }
         sendData.player = myPlayer;
@@ -221,6 +232,7 @@ $(function() {
 
         socket.emit('player select', sendData);
         drawPlayers();
+
 
         $('#element').empty();
         $('#popup1').hide();

@@ -20,7 +20,7 @@ exports.resetPlayers= function(){
       player.points=0;
       player.totalColonists=0;
       player.freeColonists=0;
-      player.money=0;
+      player.money=20;
       player.quarry=0;
       // corn=0;
       // sugar=0;
@@ -29,7 +29,7 @@ exports.resetPlayers= function(){
       // coffee=0;
       player.products=[0,0,0,0,0];//corn, sugar, indigo, tabacco,coffee
       player.plantArea=[];
-      player.buildingArea= [];
+      player.buildArea= [];
    }
    return;
 };
@@ -54,7 +54,7 @@ exports.addNewPlayer=function(id, name, socketid){
             points:0,
             totalColonists:0,
             freeColonists:0,
-            money:0,
+            money:20,
             quarry:0,
             // corn:0,
             // sugar:0,
@@ -63,7 +63,7 @@ exports.addNewPlayer=function(id, name, socketid){
             // coffee:0,
             products:[0,0,0,0,0],//corn, sugar, indigo, tabacco,coffee
             plantArea:[],
-            buildingArea: []};
+            buildArea: []};
         Players.push(player);
 
         playerNum += 1;
@@ -122,7 +122,8 @@ exports.updatePlayer=function(name, role, val1){
         player.plantArea.push(val1);
         break;
     case 'Builder':
-        player.buildingArea.push(val1);
+        player.buildArea.push(val1[0]);
+        player.money -= val1[1];
         break;
     case 'Trader':
         console.log("updatePlayer. val1 is");
@@ -137,7 +138,7 @@ exports.updatePlayer=function(name, role, val1){
     case 'Mayor':
         player.totalColonists = val1.totalColonists;
         player.freeColonists = val1.freeColonists;
-        player.buildingArea = val1.buildingArea;
+        player.buildArea = val1.buildArea;
         player.plantArea = val1.plantArea;
         break;
     case 'Captain':

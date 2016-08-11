@@ -91,6 +91,15 @@ div{
   font-size: 10px;
 }
 
+#buildArea li{
+  font-size: 5px;
+}
+
+#buildArea p{
+  font-size: 10px;
+}
+
+
 
 #GameItemsArea {
   width: 100%;
@@ -253,4 +262,7 @@ div .Ship {
 }
 .green {
   background-color:#669900;
+}
+.purple {
+  background-color:#D0B0FF;
 }

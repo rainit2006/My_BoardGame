@@ -62,8 +62,8 @@
       for(var i=0; i<myPlayer.plantArea.length; i++ ){
           var plant = myPlayer.plantArea[i];
           node += "<li class='"+plant.color +"'><p>"+plant.name
-                  +"</p>已有："+plant.actualColonist+";"
-                  +"空缺："+(plant.needColonist - plant.actualColonist)+"</li>";
+                  +"</p>已有奴隶："+plant.actualColonist+";"
+                  +"空缺奴隶："+(plant.needColonist - plant.actualColonist)+"</li>";
       }
       for(var j=0; j < (PlantationAreaMaxNum - myPlayer.plantArea.length); j++  ){
           node +="<li class='green'></li>";
@@ -72,6 +72,21 @@
     }
 
     function drawMyBuildArea(){
-
+      var node="";
+      var spaceLength = 0;
+      // if(myPlayer.buildArea == null){
+      //   return;
+      // }
+      for(var i=0; i<myPlayer.buildArea.length; i++ ){
+          var build = myPlayer.buildArea[i];
+          node += "<li class='"+build.color +"'><p>"+build.name
+                  +"</p>已有奴隶："+build.actualColonist+";"
+                  +"空缺奴隶："+(build.needColonist - build.actualColonist)+"</li>";
+          spaceLength += build.space;
+      }
+      for(var j=0; j < (PlantationAreaMaxNum - spaceLength); j++  ){
+          node +="<li class='gray'></li>";
+      }
+      $('#buildArea').empty().append("<ul>"+node+"</ul>");
     };
 /////////////////////////////////////
