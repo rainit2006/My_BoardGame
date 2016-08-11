@@ -1,31 +1,44 @@
-var Ship1 = {id:null, num:0};
-var Ship2 = {id:null, num:0};
-var Ship3 = {id:null, num:0};
+var Ship1 = {name:null, num:0};
+var Ship2 = {name:null, num:0};
+var Ship3 = {name:null, num:0};
 var Ships = [Ship1, Ship2, Ship3];
 
 var SHIPLENGTH = [5, 6, 7];
 
-exports.loadProduct = function(index, product){
+exports.loadProduct = function(index, product, number){
   if(checkProduct(index, product)){
-      Ships[index].id = product.id;
-      Ships[index].num += 1;
+      Ships[index].name = product.name;
+      Ships[index].num += number;
+      if(Ships[index].num > SHIPLENGTH[index]){
+          Ships[index].num = SHIPLENGTH[index];
+      }
       return true;
   }
   return false;
 };
 
 var checkProduct = function(index, obj){
-  if((Ships[index].id == null)||(Ships[index].id == obj.id)){
+  if((Ships[index].name == null)||(Ships[index].name == obj.name)){
       return true;
   }
   return false;
 };
 
 
-exports.getShips = function(index){
-  if(Ships[index].num >= SHIPLENGTH[index]){
-    Ships[index].id = null;
-    Ships[index].num = 0;
+exports.getShip = function(index){
+  return Ships[index];
+};
+
+exports.getShips = function(){
+  return Ships;
+}
+
+exports.updateShips = function(){
+  for(var i=0; i < 3; i++){
+      if(Ships[i].num == SHIPLENGTH[i]){
+          Ships[i].name = null;
+          Ships[i].num = 0;
+      }
   }
   return Ships;
-};
+}

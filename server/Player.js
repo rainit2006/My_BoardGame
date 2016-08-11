@@ -143,6 +143,10 @@ exports.updatePlayer=function(name, role, val1){
         break;
     case 'Captain':
         player.points += val1;
+        if(player.name == rolePlayerName){
+          player.points += 1;
+          rolePlayerName = "";
+        }
         break;
     case 'Craftsman':
         player.products = val1.products;

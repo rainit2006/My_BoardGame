@@ -214,7 +214,16 @@ $(function() {
                 //没有什么特别要处理的
                 break;
             case 'Trader':
-                sendData.product = myPlayer.select;
+                if(btnName == "Confirm"){
+                    sendData.product = myPlayer.select;
+                }
+                break;
+            case 'Captain':
+                if(btnName == "Confirm"){
+                    sendData.product = PLANTS[myPlayer.select[0]].name;
+                    sendData.productNum = myPlayer.select[2];
+                    sendData.ship = myPlayer.select[1];
+                }
                 break;
             case 'Builder':
                 if(btnName == "Confirm"){

@@ -113,6 +113,7 @@ io.on('connection', function (socket) {
                 //io.sockets.emit('MayorResponse', sendData);
                 break;
             case 'Captain': //船长
+                sendData.ships = Ships.getShips();
                 //io.sockets.emit('CaptainResponse', sendData);
                 break;
             case 'Builder'://建筑士
@@ -212,18 +213,15 @@ io.on('connection', function (socket) {
                     roundAction +=1;
                     break;
                 }
-                var points = 0;
-                for(var i=0; i< data.product.length; i++){
-                      points += 1;
-                }
-                sendData.result = Ships.loadProduct(data.product);
+                var points = data.productNum;
+                sendData.result = Ships.loadProduct(data.ship, data.product, points);
                 if(!sendData.result){
                     io.sockets.emit('result error', data);
                     return;
                 }
                 sendData.points = points;
-                sendData.player = Players.addPoints(data.player.name, role, points);
-                sendData.Ships = Ships.getShips();
+                sendData.player = Players.updatePlayer(data.player.name, role, points);
+                sendData.ships = Ships.getShips();
                 roundAction += 1;
                 break;
             case 'Builder'://建筑士
@@ -233,6 +231,7 @@ io.on('connection', function (socket) {
                 }
                 var build = Buildings.takeoutBuild(data.build);
                 sendData.player = Players.updatePlayer(data.player.name, role, [build, data.price]);
+                sendData.buildingsNum = Buildings.getBuildingsNum();
                 roundAction += 1;
                 break;
             case 'Craftsman': //监管
@@ -250,7 +249,8 @@ io.on('connection', function (socket) {
         if(roundAction == playerNum){
             if(roundRole == playerNum){
               if(!judgeGameOver()){
-                  sendData.ColonistsShip = Colonist.updateShip();
+                  sendData.colonistsShip = Colonist.updateShip();
+                  sendData.ships = Ships.updateShips();
                   console.log('emit : next round');
                   io.sockets.emit('next round', sendData);　//进入下一轮，更换总督玩家
               }
