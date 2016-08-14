@@ -147,8 +147,8 @@ $(function() {
           var index = findPlayerbyName(data.player.name);
           Players[index] = data.player;
         }
-        if(data.ship != null){
-            SHIPS = data.ship;
+        if(data.ships != null){
+            SHIPS = data.ships;
         }
         if(data.colonistsShip != null){
             COLONISTSHIP = data.colonistsShip;
@@ -188,7 +188,6 @@ $(function() {
           default:
 
         }
-
         $('#ConfirmBtn').show();
         $('#SkipBtn').show();
         $('#OKBtn').hide();

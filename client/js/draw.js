@@ -1,13 +1,15 @@
 ////////////draw////////////////////////
 function drawLoginPage(){
     $('#playerArea').empty();
+
     var ulNode = $('<ul>');
     $.each(Players, function(){
+        var img = "<img src='../image/face"+this.id+".jpg'>";
         var div = null;
         if(myPlayer.name == this.name){
-          div = $("<li>"+this.name+"(★)</li>").addClass('player'+this.id);
+          div = $("<li>"+img+"<div>"+this.name+"(★)</div></li>").addClass('player'+this.id);
         }else{
-          div = $("<li>"+this.name+"</li>").addClass('player'+this.id);
+          div = $("<li>"+img+"<div>"+this.name+"</div></li>").addClass('player'+this.id);
         }
         ulNode.append(div);
     });
@@ -33,12 +35,13 @@ function drawOtherPlayers(){
   var ulNode = $('<ul>');
   $.each(Players, function(){
       if(myPlayer.name != this.name){
+          var img = "<img src='../image/face"+this.id+".jpg'>";
           var string = "<p>"+this.name+"</p>"+"<p> money:"+this.money+"</p>"+
                 "<p> colonists:"+this.totalColonists+"(残余："+this.freeColonists+")"+"</p>"+
                 "<p>quarry:"+this.quarry+"</p>"+
                 "<p>product:"+this.products[0]+";"+this.products[1]+";"+this.products[2]+";"+this.products[3]+";"+this.products[4]+"</p>";
 
-          vardiv = $("<li id="+this.id+">"+string+"</li>").addClass('player'+this.id);
+          var div = $("<li id="+this.id+">"+img+string+"</li>").addClass('player'+this.id);
           ulNode.append(div);
       }
   });
@@ -46,12 +49,13 @@ function drawOtherPlayers(){
 }
 
 function drawMyPlayer(){
+  var img = "<img src='../image/face"+myPlayer.id+".jpg'>";
   var string ="<p> potins:"+myPlayer.points+"</p>"+"<p> money:"+myPlayer.money+"</p>"+
           "<p> colonists:"+myPlayer.totalColonists+"(残余："+myPlayer.freeColonists+")"+"</p>"+
           "<p>quarry:"+myPlayer.quarry+"</p>"+
           "<p>product:"+myPlayer.products[0]+";"+myPlayer.products[1]+";"+myPlayer.products[2]+";"+myPlayer.products[3]+";"+myPlayer.products[4]+"</p>";
 
-  $('#MyPlayerArea').empty().append('<h3>'+myPlayer.name+'</h3>'+string).addClass('player'+myPlayer.id);
+  $('#MyPlayerArea').empty().append(img+'<h3>'+myPlayer.name+'</h3>'+string).addClass('player'+myPlayer.id);
 
   drawMyPlantArea();
   drawMyBuildArea();

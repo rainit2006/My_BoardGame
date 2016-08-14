@@ -1,11 +1,12 @@
+var Ship0 = {name:null, num:0};
 var Ship1 = {name:null, num:0};
 var Ship2 = {name:null, num:0};
-var Ship3 = {name:null, num:0};
-var Ships = [Ship1, Ship2, Ship3];
+var Ships = [Ship0, Ship1, Ship2];
 
 var SHIPLENGTH = [5, 6, 7];
 
 exports.loadProduct = function(index, name, number){
+  console.log('Ship loadproduct:'+index+";"+name+";"+number);
   if(checkProduct(index, name)){
       Ships[index].name = name;
       Ships[index].num += number;

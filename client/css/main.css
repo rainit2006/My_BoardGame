@@ -1,188 +1,29 @@
-html, body {
+/*********変数定義*****************/
+html {
     width: 100%;
     height: 100%;
+
+    background-color: #87CEEB;
+    background-image: url("../image/bk.jpg");
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: top;
 }
+
 body {
-    margin: 0;
+    margin: auto;
+    width:85%;
+    --player-area-height: 250px;
+    --player-img-size: 150px;
 }
 
 div{
-  border: 1px solid gray;
+  /*border: 1px solid gray;*/
 }
 
-.loginPage {
-  width:960px;
-  margin: 0 auto;
-}
-
-#playerArea {
-
-}
-
-#playerArea > ul {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content:space-around;
-  align-items: center;
-  padding: 0;
-  margin:0;
-  list-style:none;
-}
-
-#playerArea > ul li{
-  width: 150px;
-  height: 150px;
-  list-style:none;
-}
-
-.loginForm {
-   height: 100px;
-   margin-top: -100px;
-   position: absolute;
-
-   text-align: center;
-   top: 50%;
-   width: 100%;
-
-}
-
-.startForm {
-  display: none;
-}
-
-
-.wrap {
-  width:960px;
-  margin: 0 auto;
-  display: none;
-}
-
-#header {
-  width:100%;
-  height: 100px;
-  margin:15px 0px;
-  text-align: center;
-  background-color: #EEE;
-}
-
-#middle {
-  display: flex;
-  flex-flow:row wrap;
-  background-color: blue;
-
-}
-
-#leftArea {
-  flex: 1 0 200px;
-  padding: 0px 0px;
-  background-color: yellow;
-}
-
-#MyPlayerArea {
-  width: 100%;
-  height: 200px;
-}
-
-#plantArea li{
-  font-size: 5px;
-}
-
-#plantArea p{
+p {
+  line-height: 1px;
   font-size: 10px;
-}
-
-#buildArea li{
-  font-size: 5px;
-}
-
-#buildArea p{
-  font-size: 10px;
-}
-
-
-
-#GameItemsArea {
-  width: 100%;
-  background-color: #EEE;
-  padding: 15px;
-}
-
-#GameItemsArea > ul {
-   display: flex;
-   flex-flow: row wrap;
-   justify-content:flex-start;
-   align-items: center;
-   list-style:none;
-   padding: 0;
-   margin:0;
-}
-
-#GameItemsArea > ul li {
-  text-align: center;
-  background-color: #069;
-  width: 50px;
-  height: 50px;
-  border: 1px solid gray;
-}
-
-#GameItemsArea > ul li[disabled]{
-  background-color: #ff0;
-}
-
-#rightArea {
-  flex: 2 0 auto;
-  padding:0 0px;
-  background-color: red;
-}
-
-#OtherPlayersArea {
-  width: 100%;
-  height: 200px;
-  background-color: #EEE;
-}
-
-#OtherPlayersArea > ul {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content:space-around;
-  align-items: center;
-  padding: 0;
-  margin:0;
-  list-style:none;
-}
-
-#OtherPlayersArea > ul li{
-  width: 80px;
-  height: 80px;
-  list-style:none;
-}
-
-#GameArea {
-  width: 100%;
-  display: flex;
-  flex-flow: column nowrap;
-  background-color: #EEE;
-}
-
-#FiledArea {
-  flex: 2;
-  padding: 15px;
-}
-
-ul {
-   display: flex;
-   flex-flow: row wrap;
-   justify-content:flex-start;
-   align-items: center;
-   list-style:none;
-   padding: 0;
-}
-
-li {
-  text-align: center;
-  width: 100px;
-  height: 50px;
-  border: 1px solid gray;
 }
 
 .vacant {
@@ -190,9 +31,9 @@ li {
 }
 
 .player1 {
-  background-color: red;
   border-color: red;
   font-size: 5px;
+
 }
 
 .player2 {
@@ -215,32 +56,6 @@ li {
   border-color: green;
 }
 
-#TradingArea {
-  flex:1;
-}
-
-#ShipArea {
-  flex:1;
-  display: flex;
-  flex-flow: row nowrap;
-}
-
-div .Ship {
-  flex:1;
-}
-
-#SubmitArea {
-  flex:1;
-  background-color: #EEE;
-}
-
-#footer {
-  width:100%;
-  height:20px;
-  text-align: center;
-  background-color: #EEE;
-  float:left;
-}
 
 .yellow {
   background-color:#FFCC00;
@@ -265,4 +80,229 @@ div .Ship {
 }
 .purple {
   background-color:#D0B0FF;
+}
+
+hr {
+	/*border-top: 0.5px solid #bbb;*/
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: #bbb;
+  border: 0;  /*デフォルトデザインでは線がある場合があるので、消しておく。*/
+}
+
+/**************loginPage****************************/
+.loginPage {
+/*  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;*/
+  padding-top: 100px;
+  width:100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.loginForm {
+   height: 100px;
+   margin-top: 200px;
+   text-align: center;
+   width: 100%;
+
+   /*background-color: #87CEEB;*/
+}
+
+
+#playerArea {
+  padding: 50px;
+}
+
+#playerArea > ul {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content:space-around;
+  align-items: center;
+  padding: 0;
+  margin:0;
+  list-style:none;
+  border-style: 1px;
+}
+
+#playerArea > ul li{
+  width: 150px;
+  height: 150px;
+  list-style:none;
+}
+
+#playerArea img{
+  width: var(--player-img-size);
+  height: var(--player-img-size);
+}
+
+
+.startForm {
+  display: none;
+  text-align: center;
+}
+
+/***************game page*************************************/
+.wrap {
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  bottom: 50px;
+  left: 50px;
+  margin: 50px,0px,50px,0;
+  opacity: 1;
+  display: none;
+}
+
+
+#header {
+  width:auto;
+  height: 180px;
+  text-align: center;
+  background-image: url("../image/myLOGO.png");
+  background-repeat: no-repeat;
+  background-position: top;
+}
+
+#middle {
+  display: flex;
+  flex-flow:row wrap;
+  background-color: #EEE;
+  background-image: url("../image/lawn0.jpg");
+  background-repeat: repeat;
+}
+
+#leftArea {
+  flex: 1 0 200px;
+  width: 300px;
+  padding: 0px 0px;
+  border: 0.5px solid #bbb;
+}
+
+#MyPlayerArea {
+  width: 60%;
+  height: var(--player-area-height);
+  border-style: 1px;
+  padding-left: 20%;
+  padding-right:20%;
+  padding-top: 20px;
+}
+
+#MyPlayerArea img{
+  width: var(--player-img-size);
+  height: var(--player-img-size);
+}
+
+#plantArea, #buildArea{
+  padding-left: 20px;
+  text-align: center;
+}
+
+#plantArea, #buildArea li{
+  font-size: 5px;
+  border-width: 1px;
+  border-color: #808000;
+}
+
+#plantArea, #buildArea p{
+  font-size: 10px;
+}
+
+
+#rightArea {
+  width:500px;
+  flex: 2 0 auto;
+  padding:0 0px;
+}
+
+#OtherPlayersArea {
+  width: 100%;
+  height: var(--player-area-height);
+}
+
+#OtherPlayerArea img{
+  width: var(--player-img-size);
+  height: var(--player-img-size);
+}
+
+
+#OtherPlayersArea > ul {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content:space-around;
+  align-items: center;
+  padding: 0;
+  margin:0;
+  /*list-style:none;*/
+}
+
+#OtherPlayersArea > ul li{
+  width: 80px;
+  height: 80px;
+  list-style:none;
+}
+
+#GameArea {
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+#RolesArea {
+  width:100%;
+  display: flex;
+  flex-direction:column;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#RolesArea .group {
+  display: flex;
+  flex-direction:row;
+  flex-wrap: wrap;
+  justify-content:space-around;
+  text-align: center;
+  margin: 20px;
+}
+
+
+ul {
+   display: flex;
+   flex-flow: row wrap;
+   justify-content:flex-start;
+   align-items: center;
+   list-style:none;
+   padding: 0;
+}
+
+li {
+  text-align: center;
+  width: 100px;
+  height: 50px;
+  border: 1px solid gray;
+}
+
+#TradingArea {
+  flex:1;
+}
+
+#ShipArea {
+  flex:1;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+div .Ship {
+  flex:1;
+}
+
+#footer {
+  width:100%;
+  height:20px;
+  text-align: center;
+  float:left;
 }

@@ -27,6 +27,7 @@ function captainProcess(data){
     var contentString = "你没有能交易的货物.";
     $('#message').empty().text(contentString);
     $('#element').empty();
+    $('#ConfirmBtn').prop('disabled', true);
     return;
   }
   $('#element').empty().append("<p>Product:</p>").append(ulNode1);
