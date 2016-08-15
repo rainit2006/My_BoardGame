@@ -20,6 +20,7 @@ $(function() {
       initGameItems();
       initArea();
       drawPlayers();
+      drawBuildings();
       bindClickEvent();
 
       console.log("init done.");
@@ -153,8 +154,12 @@ $(function() {
         if(data.colonistsShip != null){
             COLONISTSHIP = data.colonistsShip;
         }
+        if(data.buildingsNum != null){
+           BUILDINGSNUM  = data.buildingsNum;
+        }
         updatePlayers(data);
         drawPlayers();
+        drawBuildings();
         if(data.nextPlayer.name != myPlayer.name){
             console.log(data.nextPlayer.name+' is not '+myPlayer.name);
             return;
@@ -264,8 +269,10 @@ $(function() {
 
     socket.on('players update', function(data){
         Players = data.players;
+        BUILDINGSNUM = data.buildingsNum;
         console.log('players update: '+Players.length);
         drawLoginPage();
+        drawBuildings();
     });
 
     socket.on('next round', function(data){
@@ -284,6 +291,7 @@ $(function() {
         console.log('next role');
         updatePlayers(data);
         drawPlayers();
+        drawBuildings();
         if(data.tradingHouse != null){
           drawTradingHouse(data.tradingHouse);
         }

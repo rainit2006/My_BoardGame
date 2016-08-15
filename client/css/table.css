@@ -1,6 +1,9 @@
   .Table
    {
        display: table;
+       width:90%;
+       background-color: #EEE;
+       text-align: center;
    }
    .Title
    {
@@ -8,17 +11,21 @@
        text-align: center;
        font-weight: bold;
        font-size: larger;
-   }
+    }
    .Heading
    {
        display: table-row;
        font-weight: bold;
        text-align: center;
+       height: 50px;
    }
+
    .Row
    {
        display: table-row;
+       height: 50px;
    }
+
    .Cell
    {
        display: table-cell;
@@ -26,4 +33,13 @@
        border-width: thin;
        padding-left: 5px;
        padding-right: 5px;
+   }
+
+   .grayCell{
+     display: table-cell;
+     border: solid;
+     border-width: thin;
+     padding-left: 5px;
+     padding-right: 5px;
+     background-color: #A9A9A9;
    }

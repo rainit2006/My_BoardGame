@@ -111,5 +111,15 @@ function drawColonistShipsArea(){
 }
 
 function drawBuildings(){
-
+  $.each(BUILDINGS, function(index){
+      if(index != 0){
+          var node = "<h3>"+this.name+"</h3><p>数量："+BUILDINGSNUM[index]+"</p><p>points:"+this.points+"</p><p>price:"+this.price+"</p><p>colonist:"+this.needColonist+"</p>";
+          $("#build"+index).empty().append(node);
+          if(BUILDINGSNUM[index] == 0){
+            $("#build"+index).addClass("gray");
+          }else{
+            $("#build"+index).addClass(this.color);
+          }
+      }
+  });
 }

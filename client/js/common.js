@@ -25,13 +25,13 @@ var BUILDINGS = [
   {id:2,name:'indigo plant', points:2, quarry:2, price:3, needColonist:3, actualColonist:0, space:1, color:'blue' },
   {id:3,name:'small sugar mill', points:1, quarry:2, price:1, needColonist:1, actualColonist:0, space:1, color:'white' },
   {id:4,name:'sugar mill', points:2, quarry:2, price:4, needColonist:1, actualColonist:0, space:1, color:'white' },
-  {id:5,name:'tabacco storage', points:3, quarry:3, price:5, needColonist:3, actualColonist:0, space:1, color:'lt brown' },
-  {id:6,name:'coffee roaster', points:3, quarry:3, price:6, needColonist:2, actualColonist:0, space:1, color:'dk brown' },
+  {id:5,name:'tabacco storage', points:3, quarry:3, price:5, needColonist:3, actualColonist:0, space:1, color:'lt-brown' },
+  {id:6,name:'coffee roaster', points:3, quarry:3, price:6, needColonist:2, actualColonist:0, space:1, color:'dk-brown' },
 
   //small purple building
   {id:7,name:'small market', points:1, quarry:1, price:1, needColonist:1, actualColonist:0, space:1, color:'purple' },
   {id:8,name:'hacienda', points:1, quarry:1, price:2, needColonist:1, actualColonist:0, space:1, color:'purple' }, //农庄
-  {id:9,name:'construction hut', points:1, quarry:1, price:2, needColonist:1, actualColonist:0, space:1, color:'white' },
+  {id:9,name:'construction hut', points:1, quarry:1, price:2, needColonist:1, actualColonist:0, space:1, color:'purple' },
   {id:10,name:'samll warehouse', points:1, quarry:1, price:3, needColonist:1, actualColonist:0, space:1, color:'purple' },
   {id:11,name:'hospice', points:2, quarry:2, price:4, needColonist:1, actualColonist:0, space:1, color:'purple' }, //收容所
   {id:12,name:'office', points:2, quarry:2, price:5, needColonist:1, actualColonist:0, space:1, color:'purple' }, //分商会
@@ -49,6 +49,8 @@ var BUILDINGS = [
   {id:22,name:'customs house', points:4, quarry:4, price:10, needColonist:1, actualColonist:0, space:2, color:'purple' },//海关
   {id:23,name:'city hall', points:4, quarry:4, price:10, needColonist:1, actualColonist:0, space:2, color:'purple' }//市政厅
 ];
+var BUILDINGSNUM = [];
+
 var SHIPS = [];
 var SHIPLENGTH = [5, 6, 7];
 var COLONISTSHIP = 4;

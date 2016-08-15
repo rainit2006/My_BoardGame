@@ -60,6 +60,7 @@ io.on('connection', function (socket) {
             console.log('new player:' + data.name+','+data.id +','+ socket.id);
             var sendData = {};
             sendData.players = Players.addNewPlayer(data.id, data.name, socket.id);
+            sendData.buildingsNum = Buildings.getBuildingsNum();
             playerNum = sendData.players.length;
             console.log('player num is:'+ playerNum);
             io.sockets.emit('players update', sendData);
