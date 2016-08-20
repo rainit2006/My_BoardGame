@@ -57,7 +57,7 @@ function captainProcess(data){
   //         }else{
   //             productNum = SHIPLENGTH[shipIndex]-SHIPS[shipIndex].num;
   //         }
-  //         myPlayer.select = [plantIndex, shipIndex, productNum];
+  //         mySelect.select = [plantIndex, shipIndex, productNum];
   //         string2 += ". 可装载的货物数量是:"+productNum;
   //         $('#message').empty().text(contentString).append(string2);
   //     });
@@ -88,7 +88,7 @@ $(document).on('click', '#productUL li',function(){
         }else{
             productNum = SHIPLENGTH[shipIndex]-SHIPS[shipIndex].num;
         }
-        myPlayer.select = [plantIndex, shipIndex, productNum];
+        mySelect.select = [plantIndex, shipIndex, productNum];
         string2 += ". 可装载的货物数量是:"+productNum;
         $('#message').empty().text("请选择货物和船只.").append(string2);
     });

@@ -41,7 +41,7 @@ function builderProcess(data){
         var id = $(this).children(':selected').attr('id');
         console.log("selected build is "+id);
         var price = $('#buildList').val();
-        myPlayer.select = [id, price];
+        mySelect.select = [id, price];
         $('#message').text(contentString).append("<p>你选择的是："+BUILDINGS[id].name+".  价格："+price+"</p>");
     });
 }

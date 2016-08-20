@@ -3,7 +3,7 @@ var Ship = 4; //记录船上奴隶数目
 
 exports.updateShip = function(){
     Ship = calculateColonists();
-    return newShip;
+    return Ship;
 };
 
 
@@ -37,6 +37,7 @@ exports.allotByPlayer = function(num, playerNum){
 }
 
 var calculateColonists = function(){
+    var num = 4;
     //根据player的空白奴隶数，计算ship上的奴隶数
-    return 4;
+    return num;
 };

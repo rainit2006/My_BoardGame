@@ -134,6 +134,7 @@ exports.updatePlayer=function(name, role, val1){
           rolePlayerName = "";
         }
         player.products[val1.id-1] -= 1;
+
         break;
     case 'Mayor':
         player.totalColonists = val1.totalColonists;
@@ -171,6 +172,7 @@ exports.offlinePlayer = function(socketid){
       Players[index].online = 0;
       playerOnlineNum -= 1;
   }
+  return Players;
 };
 
 var findPlayerbySocket = function(socketid){
@@ -210,4 +212,17 @@ exports.nextPlayer = function(name){
 
 exports.setRolePayerName = function(name){
   rolePlayerName = name;
+}
+
+exports.containBuilding = function(player, building){
+  var result = false;
+  for(var i =0; i<player.buildArea.length; i++){
+    if(player.buildArea[i].name == building){
+        if（player.buildArea[i].actualColonist == 1）{
+            result = true;
+            return result;
+        }
+    }
+  }
+  return result;
 }

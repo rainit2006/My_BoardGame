@@ -17,6 +17,8 @@ var Roles=[
   {'id':5, 'name':'Craftsman', 'active':1, 'money':0}, //监管
   {'id':6, 'name':'Prospector', 'active':1, 'money':0} //淘金者
 ];
+var rolePlayer;
+
 var PLANTS = [
   {id:0, name:'free space', price:0, color:'green', needColonist:1, actualColonist:0}, //id, 名称, 价格， 颜色, 总数
   {id:1, name:'corn', price:0, color:'yellow', needColonist:1, actualColonist:0},
@@ -70,7 +72,6 @@ var Players = [];
 var myPlayer = {
     name: 'test',
     id: 0,
-    select:null, //记录用户的选择
     points:0,
     money:20,
     totalColonists:0,
@@ -85,6 +86,9 @@ var myPlayer = {
     plantArea:[],
     buildArea:[]
 };
+
+var mySelect = {select:null, extra:null}; //记录用户的选择
+
 var playerNum = 1;
 var currentRole = null;
 var options = null;

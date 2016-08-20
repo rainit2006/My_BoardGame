@@ -67,3 +67,11 @@ exports.allotMoneyForRoles = function(){
 exports.getAllRoles = function(){
     return Roles;
 }
+
+exports.getRoleMoney = function(role){
+  for(var i=0; i<Roles.length; i++){
+      if(Roles[i].name == role){
+         return Roles[i].money;
+      }
+  }
+}

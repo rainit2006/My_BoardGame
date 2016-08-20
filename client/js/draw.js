@@ -107,7 +107,7 @@ function drawMyBuildArea(){
 function drawRoles(){
   $.each(Roles, function(){
       if(this.money > 0){
-        $(".roleCoin[data-role="+this.name+"]").append("<span><img src='../image/coin.png'> "+this.money+"</span>");
+        $(".roleCoin[data-role="+this.name+"]").empty().append("<span><img src='../image/coin.png'> "+this.money+"</span>");
       }else{
         $(".roleCoin[data-role="+this.name+"]").empty();
       }

@@ -10,20 +10,35 @@ var Plants = [
 
 var PlantsNum = [100, 10, 11, 11, 9, 9, 10];
 var PlantOptions = [];
+var extraOptions = [];
 
-exports.getPlatationOptions = function (isSettler){
+  exports.getPlatationOptions = function(isSettler){
       PlantOptions=[];
+      extraOptions=[];
+      if(isSettler){
+          PlantOptions = getOptions(true);
+      }else{
+          PlantOptions = getOptions(false);
+      }
+      extraOptions = getOptions(false);
+      return {arr1:PlantOtions,
+              arr2:extraOptions};
+  }
+
+
+  function getOptions(isSettler){
+      var options;
       var tmpNum = PlantsNum.concat();
       if(isSettler){
         if(tmpNum[6] > 0){
-            PlantOptions.push(Plants[6]);
+            options.push(Plants[6]);
         }
       }
       var items=getRandomItems(5);
       for(var i=0; i< items.length; i++){
          var index = items[i];
          if(tmpNum[index] > 0){
-           PlantOptions.push(Plants[index]);
+           options.push(Plants[index]);
            tmpNum.splice(index,1, tmpNum[index]-1);
          }
          else{
@@ -33,7 +48,7 @@ exports.getPlatationOptions = function (isSettler){
 
       //console.log('plant options:');
       //console.log(PlantOptions);
-      return PlantOptions;
+      return options;
 };
 
 exports.updatePlantOptions = function(id){
@@ -83,7 +98,8 @@ var getRandomItems = function(num){
    var items=[];
 
    for(var i=0; i<num; i++){
-       items.push(i+1);
+       var index = Math.floor( Math.random() * 5 )+1 ;
+       items.push(index);
    }
    return items;
 };

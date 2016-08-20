@@ -155,11 +155,12 @@ $(function() {
           Roles = data.roles;
           drawRoles();
         }
+        rolePlayer = data.rolePlayer;
 
         //plantOptions = null;
         console.log('RoleResponse:'+currentRole+';'+data.nextPlayer.name);
         //show message.
-        if(data.message != null){
+        if(data.messages != null){
             showMessage(data);
         }
         if(data.player != null){
@@ -229,37 +230,39 @@ $(function() {
         switch (currentRole) {
             case 'Settler':
                 if(btnName == "Confirm"){
-                    sendData.index=options[myPlayer.select].id;
-                    console.log("selected plant :"+options[myPlayer.select].name);
-                    myPlayer.plantArea.push(options[myPlayer.select]);
-                    if(options[myPlayer.select].name == 'quarry'){
+                    sendData.index=options[mySelect.select].id;
+                    console.log("selected plant :"+options[mySelect.select].name);
+                    var plant = options.arr1[mySelect.select];
+                    myPlayer.plantArea.push(plant);
+                    if(options[mySelect.select].name == 'quarry'){
                         myPlayer.quarry += 1;
                     }
+
                 }else if(btnName == "Skip"){
                     sendData.index = 0;
                 }
-                console.log(sendData.index+':'+options[myPlayer.select]+' is clicked!');
+                console.log(sendData.index+':'+options[mySelect.select]+' is clicked!');
                 break;
             case 'Mayor':
                 //没有什么特别要处理的
                 break;
             case 'Trader':
                 if(btnName == "Confirm"){
-                    sendData.product = myPlayer.select;
+                    sendData.product = mySelect.select;
                 }
                 break;
             case 'Captain':
                 if(btnName == "Confirm"){
-                    sendData.product = PLANTS[myPlayer.select[0]].id;
-                    sendData.productNum = myPlayer.select[2];
-                    sendData.ship = myPlayer.select[1];
+                    sendData.product = PLANTS[mySelect.select[0]].id;
+                    sendData.productNum = mySelect.select[2];
+                    sendData.ship = mySelect.select[1];
                 }
                 break;
             case 'Builder':
                 if(btnName == "Confirm"){
-                    sendData.build = myPlayer.select[0];
+                    sendData.build = mySelect.select[0];
                     myPlayer.buildArea.push(BUILDINGS[sendData.build]);
-                    sendData.price = myPlayer.select[1];
+                    sendData.price = mySelect.select[1];
                 }else{
                     sendData.build = null;
                 }
@@ -286,6 +289,7 @@ $(function() {
     // });
 
     socket.on('players update', function(data){
+
         Players = data.players;
         BUILDINGSNUM = data.buildingsNum;
         console.log('players update: '+Players.length);
@@ -297,7 +301,7 @@ $(function() {
         //change govenor player.
         console.log('next round');
         //show message.
-        if(data.message != null){
+        if(data.messages != null){
             showMessage(data);
         }
         if(data.roles != null){
@@ -317,7 +321,7 @@ $(function() {
         //change next player to select one role.
         console.log('next role');
         //show message.
-        if(data.message != null){
+        if(data.messages != null){
             showMessage(data);
         }
 
@@ -392,6 +396,14 @@ $(function() {
                 Players[index] = data.player;
             }
         }
+        if(data.nextPlayer != null){
+          if(myPlayer.name == data.nextPlayer.name){
+              myPlayer = data.nextPlayer;
+          }else{
+              var index = findPlayerbyName(data.nextPlayer.name);
+              Players[index] = data.nextPlayer;
+          }
+        }
 
         if((data.players == null)&&(data.player == null)){
             console.log("updatePlayers failed: data.players/player are null");
@@ -429,4 +441,16 @@ $(function() {
       });
       return result;
     }
+
+    function containBuilding(building){
+      var result = false;
+      if(myPlayer.buildArea[i].name == building){
+            if（myPlayer.buildArea[i].actualColonist == 1）{
+                result = true;
+                return result;
+            }
+      }
+      return result;
+    }
+
 })

@@ -1,6 +1,9 @@
 function showMessage(data){
   var options = [];
-  addMessageElement(data.message, options);
+  $.each(data.messages, function(index){
+      var message = data.messages[index];
+      addMessageElement(message, options);
+  });
 }
 
 function addMessageElement (el, options) {
