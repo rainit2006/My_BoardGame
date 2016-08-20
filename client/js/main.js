@@ -19,8 +19,12 @@ $(function() {
       drawLoginPage();
       initGameItems();
       initArea();
+      drawRoles();
       drawPlayers();
       drawBuildings();
+      drawTradeArea();
+      drawShipsArea();
+      drawColonistShipsArea();
       bindClickEvent();
 
       console.log("init done.");
@@ -128,7 +132,12 @@ $(function() {
     ////当角色被选择时，触发click事件
     $('.role').click(function(){
       console.log($(this).data('role') +' is clicked');
-      currentRole = $(this).data('role');
+
+      var selected = $(this).data('role');
+      if(checkRoleActivity(selected) == 0){
+          return;
+      }
+      currentRole = selected;
       var sendData={};
       sendData.role = currentRole;
       sendData.player = myPlayer;
@@ -142,8 +151,17 @@ $(function() {
 
     socket.on('RoleResponse', function(data){
         currentRole = data.role;
+        if(data.roles != null){
+          Roles = data.roles;
+          drawRoles();
+        }
+
         //plantOptions = null;
         console.log('RoleResponse:'+currentRole+';'+data.nextPlayer.name);
+        //show message.
+        if(data.message != null){
+            showMessage(data);
+        }
         if(data.player != null){
           var index = findPlayerbyName(data.player.name);
           Players[index] = data.player;
@@ -278,6 +296,15 @@ $(function() {
     socket.on('next round', function(data){
         //change govenor player.
         console.log('next round');
+        //show message.
+        if(data.message != null){
+            showMessage(data);
+        }
+        if(data.roles != null){
+          Roles = data.roles;
+          drawRoles();
+        }
+
         SHIPS = data.ships;
         COLONISTSHIP = data.colonistsShip;
         drawPlayers();
@@ -289,11 +316,17 @@ $(function() {
     socket.on('next role', function(data){
         //change next player to select one role.
         console.log('next role');
+        //show message.
+        if(data.message != null){
+            showMessage(data);
+        }
+
         updatePlayers(data);
         drawPlayers();
         drawBuildings();
         if(data.tradingHouse != null){
-          drawTradingHouse(data.tradingHouse);
+          TRADINGHOUSE = data.tradingHouse;
+          drawTradeArea();
         }
     });
 
@@ -381,5 +414,19 @@ $(function() {
           if(Players[i].name == name)
             return i;
       }
+    }
+
+    function checkRoleActivity(role){
+      var result = 0;
+      $.each(Roles, function(){
+          if(this.name == role){
+              if(this.active == 1){
+                result = 1;
+              }else{
+                 result = 0;
+              }
+          }
+      });
+      return result;
     }
 })

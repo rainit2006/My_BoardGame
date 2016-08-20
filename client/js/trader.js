@@ -1,12 +1,12 @@
 //////Trader////
 function traderProcess(data){
-  var tradingHouse = data.tradingHouse;
-  drawTradingHouse(tradingHouse);
+  TRADINGHOUSE = data.tradingHouse;
+  drawTradeArea();
 
   options = [];
   for(var i=0; i<myPlayer.products.length; i++){
       if(myPlayer.products[i] != 0){
-          if(!existInTradingHouse(i, tradingHouse)){
+          if(!existInTradingHouse(i, TRADINGHOUSE)){
               options.push(PLANTS[i+1]);
           }
       }
@@ -46,14 +46,14 @@ function existInTradingHouse(index, house){
   return false;
 }
 
-function drawTradingHouse(house){
-    if(house == null){
-      $('#TradingHouse').empty();
-      return;
-    }
-    var string="";
-    for(var i=0; i<house.length; i++){
-      var string = string + "<li>"+house[i].name+"</li>";
-    }
-    $('#TradingHouse').empty().append("<ul>"+string+"</ul>");
-}
+// function drawTradingHouse(house){
+//     if(house == null){
+//       $('#TradingHouse').empty();
+//       return;
+//     }
+//     var string="";
+//     for(var i=0; i<house.length; i++){
+//       var string = string + "<li>"+house[i].name+"</li>";
+//     }
+//     $('#TradingHouse').empty().append("<ul>"+string+"</ul>");
+// }

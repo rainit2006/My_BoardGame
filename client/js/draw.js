@@ -36,10 +36,17 @@ function drawOtherPlayers(){
   $.each(Players, function(){
       if(myPlayer.name != this.name){
           var img = "<img src='../image/face"+this.id+".jpg'>";
-          var string = "<p>"+this.name+"</p>"+"<p> money:"+this.money+"</p>"+
-                "<p> colonists:"+this.totalColonists+"(残余："+this.freeColonists+")"+"</p>"+
-                "<p>quarry:"+this.quarry+"</p>"+
-                "<p>product:"+this.products[0]+";"+this.products[1]+";"+this.products[2]+";"+this.products[3]+";"+this.products[4]+"</p>";
+          // var string = "<p>"+this.name+"</p>"+"<p> money:"+this.money+"</p>"+
+          //       "<p> colonists:"+this.totalColonists+"(残余："+this.freeColonists+")"+"</p>"+
+          //       "<p>quarry:"+this.quarry+"</p>"+
+          //       "<p>product:"+this.products[0]+";"+this.products[1]+";"+this.products[2]+";"+this.products[3]+";"+this.products[4]+"</p>";
+
+          var string ="<h3>"+this.name+"</h3><p><img src='../image/coin.png'> "+myPlayer.money+"</p>"+
+                  "<p><img src='../image/worker.png'> "+myPlayer.totalColonists+"(残余："+myPlayer.freeColonists+")"+
+                  "  <img src='../image/quarry.png'> "+myPlayer.quarry+"</p>"+
+                  "<p><img src='../image/corn.png'> "+myPlayer.products[0]+"<img src='../image/sugar.png'> "+myPlayer.products[1]+
+                    "<img src='../image/indigo.png'> "+myPlayer.products[2]+"<img src='../image/tobacco.png'> "+
+                    myPlayer.products[3]+"<img src='../image/coffee.png'> "+myPlayer.products[4]+"</p>";
 
           var div = $("<li id="+this.id+">"+img+string+"</li>").addClass('player'+this.id);
           ulNode.append(div);
@@ -50,10 +57,12 @@ function drawOtherPlayers(){
 
 function drawMyPlayer(){
   var img = "<img src='../image/face"+myPlayer.id+".jpg'>";
-  var string ="<p> potins:"+myPlayer.points+"</p>"+"<p> money:"+myPlayer.money+"</p>"+
-          "<p> colonists:"+myPlayer.totalColonists+"(残余："+myPlayer.freeColonists+")"+"</p>"+
-          "<p>quarry:"+myPlayer.quarry+"</p>"+
-          "<p>product:"+myPlayer.products[0]+";"+myPlayer.products[1]+";"+myPlayer.products[2]+";"+myPlayer.products[3]+";"+myPlayer.products[4]+"</p>";
+  var string ="<p><img src='../image/point.png'> "+myPlayer.points+"<img src='../image/coin.png'> "+myPlayer.money+"  </p>"+
+          "<p><img src='../image/worker.png'> "+myPlayer.totalColonists+"(残余："+myPlayer.freeColonists+")"+
+          "  <img src='../image/quarry.png'> "+myPlayer.quarry+"</p>"+
+          "<p><img src='../image/corn.png'> "+myPlayer.products[0]+"<img src='../image/sugar.png'> "+myPlayer.products[1]+
+            "<img src='../image/indigo.png'> "+myPlayer.products[2]+"<img src='../image/tobacco.png'> "+
+            myPlayer.products[3]+"<img src='../image/coffee.png'> "+myPlayer.products[4]+"</p>";
 
   $('#MyPlayerArea').empty().append(img+'<h3>'+myPlayer.name+'</h3>'+string).addClass('player'+myPlayer.id);
 
@@ -93,7 +102,34 @@ function drawMyBuildArea(){
   }
   $('#buildArea').empty().append("<ul>"+node+"</ul>");
 };
+
 /////////////////////////////////////
+function drawRoles(){
+  $.each(Roles, function(){
+      if(this.money > 0){
+        $(".roleCoin[data-role="+this.name+"]").append("<span><img src='../image/coin.png'> "+this.money+"</span>");
+      }else{
+        $(".roleCoin[data-role="+this.name+"]").empty();
+      }
+      if(this.active == 0){
+        $("#"+this.name).addClass("disabled");
+      }else{
+        $("#"+this.name).removeClass("disabled");
+      }
+  });
+}
+
+function drawTradeArea(){
+    $('#TradingHouse').empty();
+    for(var i=0; i<TRADINGHOUSE.length; i++){
+        $('#TradingHouse').append("<li class='"+TRADINGHOUSE[i].color+"'><img src='../image/"+TRADINGHOUSE[i].name+".png'></li>");
+    }
+    for(var i=0; i<(HOUSELENGTH-TRADINGHOUSE.length); i++){
+        $('#TradingHouse').append("<li></li>");
+    }
+
+}
+
 function drawShipsArea(){
   for(var i = 0; i<3; i++){
       $('#Ship'+i).empty();
@@ -107,7 +143,17 @@ function drawShipsArea(){
 }
 
 function drawColonistShipsArea(){
-  $('ColonistsShip').empty().append('<p>奴隶数:'+COLONISTSHIP+'</p>');
+  var node="";
+  var length;
+  if(COLONISTSHIP == null){
+      length = 4;
+  }else{
+      length = COLONISTSHIP;
+  }
+  for(var i=0; i<length; i++){
+      node += "<img src='image/worker.png'>";
+  }
+  $('#ColonistsShip').empty().append(node);
 }
 
 function drawBuildings(){

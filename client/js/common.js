@@ -8,12 +8,21 @@ var Action={//记录玩家的操作
     id:null
 };
 var MAX_PLAYER = 5;
+var Roles=[
+  {'id':0, 'name':'Settler', 'active':1, 'money':0}, //拓荒者
+  {'id':1, 'name':'Mayor', 'active':1, 'money':0}, //市长
+  {'id':2, 'name':'Trader', 'active':1, 'money':0}, //商人
+  {'id':3, 'name':'Captain', 'active':1, 'money':0}, //船长
+  {'id':4, 'name':'Builder', 'active':1, 'money':0},//建筑士
+  {'id':5, 'name':'Craftsman', 'active':1, 'money':0}, //监管
+  {'id':6, 'name':'Prospector', 'active':1, 'money':0} //淘金者
+];
 var PLANTS = [
   {id:0, name:'free space', price:0, color:'green', needColonist:1, actualColonist:0}, //id, 名称, 价格， 颜色, 总数
   {id:1, name:'corn', price:0, color:'yellow', needColonist:1, actualColonist:0},
   {id:2, name:'sugar', price:1, color:'white', needColonist:1, actualColonist:0},
   {id:3, name:'indigo', price:2, color:'blue', needColonist:1, actualColonist:0},
-  {id:4, name:'tabacco', price:3, color:'lt-brown', needColonist:1, actualColonist:0},
+  {id:4, name:'tobacco', price:3, color:'lt-brown', needColonist:1, actualColonist:0},
   {id:5, name:'coffee', price:4, color:'dk-brown', needColonist:1, actualColonist:0},
   {id:6, name:'quarry', price:0, color:'gray', needColonist:1, actualColonist:0}
 ];
@@ -25,7 +34,7 @@ var BUILDINGS = [
   {id:2,name:'indigo plant', points:2, quarry:2, price:3, needColonist:3, actualColonist:0, space:1, color:'blue' },
   {id:3,name:'small sugar mill', points:1, quarry:2, price:1, needColonist:1, actualColonist:0, space:1, color:'white' },
   {id:4,name:'sugar mill', points:2, quarry:2, price:4, needColonist:1, actualColonist:0, space:1, color:'white' },
-  {id:5,name:'tabacco storage', points:3, quarry:3, price:5, needColonist:3, actualColonist:0, space:1, color:'lt-brown' },
+  {id:5,name:'tobacco storage', points:3, quarry:3, price:5, needColonist:3, actualColonist:0, space:1, color:'lt-brown' },
   {id:6,name:'coffee roaster', points:3, quarry:3, price:6, needColonist:2, actualColonist:0, space:1, color:'dk-brown' },
 
   //small purple building
@@ -51,9 +60,11 @@ var BUILDINGS = [
 ];
 var BUILDINGSNUM = [];
 
-var SHIPS = [];
+var SHIPS = [{name:null, num:0},{name:null, num:0},{name:null, num:0}];
 var SHIPLENGTH = [5, 6, 7];
 var COLONISTSHIP = 4;
+var TRADINGHOUSE = [];
+var HOUSELENGTH = 4;
 
 var Players = [];
 var myPlayer = {
@@ -68,9 +79,9 @@ var myPlayer = {
     // corn:0,
     // indigo:0,
     // sugar:0,
-    // tabacco:0,
+    // tobacco:0,
     // coffee:0,
-    products:[1,0,1,0,0],//corn, sugar indigo, tabacco,coffee
+    products:[1,0,1,0,0],//corn, sugar indigo, tobacco,coffee
     plantArea:[],
     buildArea:[]
 };

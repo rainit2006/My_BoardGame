@@ -43,3 +43,8 @@
      padding-right: 5px;
      background-color: #A9A9A9;
    }
+
+   .grayCell img{
+     width: 30px;
+     height:30px;
+   }

@@ -43,3 +43,10 @@ exports.updateShips = function(){
   }
   return Ships;
 }
+
+exports.initShips = function(){
+  Ship0 = {name:null, num:0};
+  Ship1 = {name:null, num:0};
+  Ship2 = {name:null, num:0};
+  Ships = [Ship0, Ship1, Ship2];
+}

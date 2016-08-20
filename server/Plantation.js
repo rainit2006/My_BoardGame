@@ -3,7 +3,7 @@ var Plants = [
   {id:1, name:'corn', price:0, color:'yellow', needColonist:1, actualColonist:0},
   {id:2, name:'sugar', price:1, color:'white', needColonist:1, actualColonist:0},
   {id:3, name:'indigo', price:2, color:'blue', needColonist:1, actualColonist:0},
-  {id:4, name:'tabacco', price:3, color:'lt-brown', needColonist:1, actualColonist:0},
+  {id:4, name:'tobacco', price:3, color:'lt-brown', needColonist:1, actualColonist:0},
   {id:5, name:'coffee', price:4, color:'dk-brown', needColonist:1, actualColonist:0},
   {id:6, name:'quarry', price:0, color:'gray', needColonist:1, actualColonist:0}
 ];

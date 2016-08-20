@@ -58,19 +58,19 @@ p {
 
 
 .yellow {
-  background-color:#FFCC00;
+  background-color:#FFFFBB;
 }
 .white {
   background-color: #FFFFEE;
 }
 .blue {
-  background-color:#000080;
+  background-color:#CCFFFF;
 }
 .lt-brown {
-  background-color:#770000;
+  background-color:#FFE4C4;
 }
 .dk-brown {
-  background-color:#330000;
+  background-color:#CD853F;
 }
 .gray {
   background-color:#EEE;
@@ -81,6 +81,29 @@ p {
 .purple {
   background-color:#D0B0FF;
 }
+
+.corn {
+  background-image: url("./image/corn.png");
+  background-color:#FFCC00;
+}
+.sugar {
+  background-image: url("./image/sugar.png");
+  background-color: #FFFFEE;
+}
+.indigo {
+  background-image: url("./image/indigo.png");
+  background-color:#000080;
+}
+.tobacco {
+  background-image: url("./image/tobacco.png");
+  background-color:#770000;
+}
+.coffee {
+  background-image: url("./image/coffee.png");
+  background-color:#330000;
+}
+
+
 
 hr {
 	/*border-top: 0.5px solid #bbb;*/
@@ -177,15 +200,26 @@ hr {
 }
 
 #leftArea {
-  flex: 1 0 200px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
   width: 300px;
   padding: 0px 0px;
   border: 0.5px solid #bbb;
 }
 
+.MyArea{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  border-radius: 0.8;
+}
+
 #MyPlayerArea {
-  width: 60%;
-  height: var(--player-area-height);
+  width: 100%;
   border-style: 1px;
   padding-left: 20%;
   padding-right:20%;
@@ -196,6 +230,44 @@ hr {
   width: var(--player-img-size);
   height: var(--player-img-size);
 }
+
+#MyPlayerArea p img{
+  width: 20px;
+  height: 20px;
+}
+
+#leftArea ul {
+   display: flex;
+   flex-flow: row wrap;
+   justify-content:flex-start;
+   align-items: center;
+   list-style:none;
+   padding: 0;
+}
+
+#leftArea li {
+  text-align: center;
+  width: 100px;
+  height: 50px;
+  border: 1px solid gray;
+}
+
+/*
+ul {
+   display: flex;
+   flex-flow: row wrap;
+   justify-content:flex-start;
+   align-items: center;
+   list-style:none;
+   padding: 0;
+}
+
+li {
+  text-align: center;
+  width: 100px;
+  height: 50px;
+  border: 1px solid gray;
+}*/
 
 #plantArea, #buildArea{
   padding-left: 20px;
@@ -212,12 +284,6 @@ hr {
   font-size: 10px;
 }
 
-
-#rightArea {
-  width:500px;
-  flex: 2 0 auto;
-  padding:0 0px;
-}
 
 #OtherPlayersArea {
   width: 100%;
@@ -246,10 +312,42 @@ hr {
   list-style:none;
 }
 
+
+
+#rightArea {
+  width:500px;
+  flex: 2 0 auto;
+  padding:0 0px;
+}
+
+
 #GameArea {
   width: 100%;
   display: flex;
   flex-flow: column nowrap;
+}
+
+.messages {
+  height: 100%;
+  margin: 0;
+  overflow-y: scroll;
+  padding: 10px 20px 10px 20px;
+}
+
+.messageRole {
+  color:yellow;
+}
+
+.messageSelect {
+  color:blue;
+}
+
+.messageGameOver {
+  color:red;
+}
+
+.messageNewRound{
+  color:red;
 }
 
 #RolesArea {
@@ -269,21 +367,51 @@ hr {
   margin: 20px;
 }
 
-
-ul {
-   display: flex;
-   flex-flow: row wrap;
-   justify-content:flex-start;
-   align-items: center;
-   list-style:none;
-   padding: 0;
+#RolesArea img{
+  width: 100px;
+  height: 100px;
 }
 
-li {
-  text-align: center;
+#RolesArea .disabled{
+  background-color: gray;
+  opacity: 0.2;
+}
+
+#seaArea {
+  background-image: url("../image/sea.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#seaArea img{
   width: 100px;
   height: 50px;
-  border: 1px solid gray;
+}
+
+
+#seaArea li img{
+  width: 40px;
+  height: 40px;
+}
+
+#colonistArea {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+#ColonistsShip {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+#ColonistsShip img{
+  width: 50px;
+  height: 50px;
+  padding:10px;
 }
 
 #TradingArea {
@@ -293,11 +421,33 @@ li {
 #ShipArea {
   flex:1;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
 }
 
-div .Ship {
-  flex:1;
+.shipDiv{
+  padding: 2px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.shipDiv img{
+  width: 100px;
+  height: 100px;
+}
+
+.Ship {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  list-style: none;
+  padding-left: 30px;
+}
+
+.Ship li {
+  width: 50px;
+  height: 50px;
+  padding: 5px;
 }
 
 #footer {
@@ -305,4 +455,7 @@ div .Ship {
   height:20px;
   text-align: center;
   float:left;
+  background-image: url("../image/sea.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }

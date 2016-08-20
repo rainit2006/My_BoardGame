@@ -24,3 +24,7 @@ exports.getTradingHouse = function(){
   }
   return TradingHouse;
 };
+
+exports.iniTradingHouse = function(){
+  TradingHouse = [];
+}

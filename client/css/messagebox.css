@@ -10,11 +10,12 @@
 }
 
 .popup {
-  margin: 70px auto;
+  margin: 200px auto;
   padding: 20px;
   background: #fff;
+  background-image: url("../image/bk-pop.jpg");
   border-radius: 5px;
-  width: 50%;
+  width: 70%;
   position: relative;
   transition: all 5s ease-in-out;
 }
