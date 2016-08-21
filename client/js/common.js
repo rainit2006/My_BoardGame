@@ -60,14 +60,14 @@ var BUILDINGS = [
   {id:22,name:'customs house', points:4, quarry:4, price:10, needColonist:1, actualColonist:0, space:2, color:'purple' },//海关
   {id:23,name:'city hall', points:4, quarry:4, price:10, needColonist:1, actualColonist:0, space:2, color:'purple' }//市政厅
 ];
-var BUILDINGSNUM = [];
+var BUILDINGSNUM = [100, 5,5,5,5,5,5,  5,5,5,5,5,5,5,5,5,5,5,5,  5,5,5,5,5];
 
 var SHIPS = [{name:null, num:0},{name:null, num:0},{name:null, num:0}];
 var SHIPLENGTH = [5, 6, 7];
 var COLONISTSHIP = 4;
 var TRADINGHOUSE = [];
 var HOUSELENGTH = 4;
-
+var Messages = [];
 var Players = [];
 var myPlayer = {
     name: 'test',
@@ -92,3 +92,17 @@ var mySelect = {select:null, extra:null}; //记录用户的选择
 var playerNum = 1;
 var currentRole = null;
 var options = null;
+
+
+function containBuilding(name){
+  var result = false;
+  for(var i =0; i<myPlayer.buildArea.length; i++){
+      if(myPlayer.buildArea[i].name == name){
+            if(myPlayer.buildArea[i].actualColonist == 1){
+                result = true;
+                return result;
+            }
+      }
+  }
+  return result;
+}

@@ -1,6 +1,11 @@
 var colonistsNum = 90;
 var Ship = 4; //记录船上奴隶数目
 
+exports.init = function(playerNum){
+    initColonistNum(playerNum);
+    Ship = 4;
+}
+
 exports.updateShip = function(){
     Ship = calculateColonists();
     return Ship;
@@ -13,7 +18,7 @@ exports.updateRemainder = function(){
     console.log('colonists remainder:'+colonistsNum);
 };
 
-exports.initColonistNum = function(playerNum){
+function initColonistNum(playerNum){
     switch (playerNum) {
       case 3:
           colonistsNum = 90;

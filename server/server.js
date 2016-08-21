@@ -32,14 +32,19 @@ app.use(express.static(__dirname + '/../client'));
 
 http.listen(settings.port, function() {
       console.log("server listen");
-     init();
+      Players.initPlayers();
+      init();
  })
 
 function init() {
   //根据player个数决定每次开拓者角色时platation tile数量, colonist总数等。
 
-  Players.initPlayers();
   game.init();
+  Buildings.iniBuildings();
+  Ships.initShips();
+  Trading.init();
+  Plantation.init();
+  Colonist.init(playerNum);
 }
 
 io.on('connection', function (socket) {
@@ -50,6 +55,7 @@ io.on('connection', function (socket) {
             // player.id = data.id;
             // player.socket = socket.id;
             console.log('new player:' + data.name+','+data.id +','+ socket.id);
+            socket.name = data.name;
             var sendData={};
             sendData.players = Players.addNewPlayer(data.id, data.name, socket.id);
             sendData.buildingsNum = Buildings.getBuildingsNum();
@@ -60,9 +66,7 @@ io.on('connection', function (socket) {
 
     socket.on('start game', function(){
         Players.resetPlayers();
-        game.init();
-        Trading.iniTradingHouse();
-        Ships.initShips();
+        init();
         io.sockets.emit('start game');
     });
 
@@ -123,7 +127,7 @@ io.on('connection', function (socket) {
                 break;
             case 'Mayor': //市长
                 sendData.colonist = Colonist.allotByPlayer(roundAction, Players.getPlayerNum());
-                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"获得"+sendData.colonist+"个奴隶.</span></li>";
+                var message = "<li class='message'><span class='messageSelect'>"+sendData.nextPlayer.name+"获得"+sendData.colonist+"个奴隶.</span></li>";
                 sendData.messages.push(message);
                 console.log("allot colonists:"+sendData.colonist);
                 //io.sockets.emit('MayorResponse', sendData);
@@ -178,22 +182,30 @@ io.on('connection', function (socket) {
         sendData.nextPlayer = Players.nextPlayer(data.player.name);
         console.log('next player will be: '+sendData.nextPlayer.name);
 
+        if(data.messages != null){
+            sendData.messages = data.messages;
+        }
         sendData.role=role;
         switch (role) {
             case 'Settler': //拓荒者
-                var plantID = data.index;
-                if(plantID != 0){
-                    Plantation.takeoutPlant(plantID);
-                    var plant = Plantation.getPlant(plantID);
+                if(data.index != null){
+                    Plantation.takeoutPlant(data.index);
+                    var plant = Plantation.getPlant(data.index);
+                    //如果玩家拥有【建筑小屋】，则可以自动获得一个拓荒者.
+                    if(containBuilding(data.player, 'hospice')){
+                       plant.actualColonist += 1;
+                       sendData.messages.push("<li class='message'><span class='messageSelect'>"+data.player.name+"因为有【收容所】所以同时获得一个开拓者.</span></li>");
+                    }
                     sendData.player = Players.updatePlayer(data.player.name, role, plant);
-                    var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"选择了"+plant.name+".</span></li>";
-                    sendData.messages.push(message);
-                }else{
-                    sendData.player = null;
-                    var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"放弃了选择.</span></li>";
-                    sendData.messages.push(message);
                 }
-                sendData.options = Plantation.updatePlantOptions(plantID);
+                if(data.extraIndex != null){
+                    Plantation.takeoutPlant(data.extraIndex);
+                    var plant = Plantation.getPlant(data.extraIndex);
+                    sendData.player = Players.updatePlayer(data.player.name, role, plant);
+                }
+
+                var extraPlant = Plantation.getPlant(data.extraIndex);
+                sendData.options = Plantation.updatePlantationOptions();
                 //console.log('after plant selected:');
                 //console.log(data.options);
                 roundAction += 1;
@@ -231,14 +243,15 @@ io.on('connection', function (socket) {
                 break;
             case 'Mayor': //市长
                 //更新每个玩家的buildarea和plantArea
-                Players.updatePlayer(data.player.name, role, data.player);
+                sendData.player = Players.updatePlayer(data.player.name, role, data.player);
+
                 roundAction += 1;
                 //计算下一个玩家的奴隶数
                 if(roundAction < playerNum){
                     sendData.colonist = Colonist.allotByPlayer(roundAction, Players.getPlayerNum());
-                    sendData.player = Players.addColonits(sendData.nextPlayer.name, sendData.colonist);
+                    sendData.nextPlayer = Players.addColonits(sendData.nextPlayer.name, sendData.colonist);
                     console.log("Mayor colonist:"+sendData.colonist);
-                    var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"获得了"+sendData.colonist+"个奴隶. </span></li>";
+                    var message = "<li class='message'><span class='messageSelect'>"+sendData.nextPlayer.name+"获得了"+sendData.colonist+"个奴隶. </span></li>";
                     sendData.messages.push(message);
                 }
                 break;
@@ -270,7 +283,7 @@ io.on('connection', function (socket) {
                 var build = Buildings.takeoutBuild(data.build);
                 sendData.player = Players.updatePlayer(data.player.name, role, [build, data.price]);
                 sendData.buildingsNum = Buildings.getBuildingsNum();
-                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"获得了"+sendData.colonist+"个奴隶. </span></li>";
+                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"选择了"+build.name+". </span></li>";
                 sendData.messages.push(message);
                 roundAction += 1;
                 break;
@@ -344,4 +357,17 @@ function judgeGameOver(remainder){
    else{
       return false;
    }
+}
+
+function containBuilding(player, name){
+  var result = false;
+  for(var i =0; i<player.buildArea.length; i++){
+    if(player.buildArea[i].name == name){
+        if(player.buildArea[i].actualColonist == 1){
+            result = true;
+            return result;
+        }
+    }
+  }
+  return result;
 }

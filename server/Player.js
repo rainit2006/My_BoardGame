@@ -88,7 +88,7 @@ var findPlayerbyName = function(name){
           break;
       }
   }
-  console.log("findPlayerbyName index:"+index);
+  //console.log("findPlayerbyName index:"+index);
   return index;
 };
 
@@ -120,6 +120,9 @@ exports.updatePlayer=function(name, role, val1){
         console.log('Settler plant:');
         console.log(val1);
         player.plantArea.push(val1);
+        // if(val1.name =="quarry" ){
+        //   player.quarry += 1;
+        // }
         break;
     case 'Builder':
         player.buildArea.push(val1[0]);
@@ -202,7 +205,7 @@ exports.addColonits = function(name, val){
 };
 
 exports.nextPlayer = function(name){
-  console.log('nextPlayer: name='+name);
+  //console.log('nextPlayer: name='+name);
   var index = findPlayerbyName(name) + 1;
   if(index >= Players.length){
     index = 0;
@@ -214,11 +217,11 @@ exports.setRolePayerName = function(name){
   rolePlayerName = name;
 }
 
-exports.containBuilding = function(player, building){
+exports.containBuilding = function(player, name){
   var result = false;
   for(var i =0; i<player.buildArea.length; i++){
-    if(player.buildArea[i].name == building){
-        if（player.buildArea[i].actualColonist == 1）{
+    if(player.buildArea[i].name == name){
+        if(player.buildArea[i].actualColonist == 1){
             result = true;
             return result;
         }

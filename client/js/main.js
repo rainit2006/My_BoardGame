@@ -19,12 +19,10 @@ $(function() {
       drawLoginPage();
       initGameItems();
       initArea();
-      drawRoles();
+
       drawPlayers();
-      drawBuildings();
-      drawTradeArea();
-      drawShipsArea();
-      drawColonistShipsArea();
+      drawGameArea();
+
       bindClickEvent();
 
       console.log("init done.");
@@ -108,11 +106,10 @@ $(function() {
       return $('<div/>').text(input).text();
    }
 
-   socket.on('start game', function(){
+   socket.on('start game', function(data){
        $('.loginPage').fadeOut("slow");
        $('.wrap').show();
        initWrap();
-
        console.log('start game.');
    });
 
@@ -150,35 +147,8 @@ $(function() {
 
 
     socket.on('RoleResponse', function(data){
-        currentRole = data.role;
-        if(data.roles != null){
-          Roles = data.roles;
-          drawRoles();
-        }
-        rolePlayer = data.rolePlayer;
+        updateGameStatus(data);
 
-        //plantOptions = null;
-        console.log('RoleResponse:'+currentRole+';'+data.nextPlayer.name);
-        //show message.
-        if(data.messages != null){
-            showMessage(data);
-        }
-        if(data.player != null){
-          var index = findPlayerbyName(data.player.name);
-          Players[index] = data.player;
-        }
-        if(data.ships != null){
-            SHIPS = data.ships;
-        }
-        if(data.colonistsShip != null){
-            COLONISTSHIP = data.colonistsShip;
-        }
-        if(data.buildingsNum != null){
-           BUILDINGSNUM  = data.buildingsNum;
-        }
-        updatePlayers(data);
-        drawPlayers();
-        drawBuildings();
         if(data.nextPlayer.name != myPlayer.name){
             console.log(data.nextPlayer.name+' is not '+myPlayer.name);
             return;
@@ -230,16 +200,23 @@ $(function() {
         switch (currentRole) {
             case 'Settler':
                 if(btnName == "Confirm"){
-                    sendData.index=options[mySelect.select].id;
-                    console.log("selected plant :"+options[mySelect.select].name);
-                    var plant = options.arr1[mySelect.select];
-                    myPlayer.plantArea.push(plant);
-                    if(options[mySelect.select].name == 'quarry'){
-                        myPlayer.quarry += 1;
+                    sendData.index=mySelect.select;
+                    //console.log("selected plant :"+options[mySelect.select].name);
+                    var plant = PLANTS[mySelect.select];
+                    // myPlayer.plantArea.push(plant);
+                    // if(options[mySelect.select].name == 'quarry'){
+                    //     myPlayer.quarry += 1;
+                    // }
+                    Messages.push("<li class='message'><span class='messageSelect'>"+myPlayer.name+"选择了"+plant.name+".</span></li>");
+                    if(mySelect.extra != null){
+                        sendData.extraIndex = mySelect.extra;
+                        var plant = PLANTS[mySelect.extra];
+                        Messages.push("<li class='message'><span class='messageSelect'>"+myPlayer.name+"因为有【农庄】所以额外获得一个"+plant.name+".</span></li>");
                     }
 
                 }else if(btnName == "Skip"){
-                    sendData.index = 0;
+                    sendData.index = null;
+                    Messages.push("<li class='message'><span class='messageSelect'>"+data.player.name+"放弃了选择.</span></li>");
                 }
                 console.log(sendData.index+':'+options[mySelect.select]+' is clicked!');
                 break;
@@ -271,7 +248,7 @@ $(function() {
         }
         sendData.player = myPlayer;
         sendData.role = currentRole;
-
+        sendData.messages = Messages;
         socket.emit('player select', sendData);
         drawPlayers();
 
@@ -288,6 +265,38 @@ $(function() {
     //
     // });
 
+    function updateGameStatus(data){
+        Messages = [];
+        currentRole = data.role;
+        if(data.roles != null){
+          Roles = data.roles;
+          drawRoles();
+        }
+        rolePlayer = data.rolePlayer;
+
+        //plantOptions = null;
+        console.log('RoleResponse:'+currentRole+';'+data.nextPlayer.name);
+        //show message.
+        if(data.messages != null){
+            showMessage(data);
+        }
+        // if(data.player != null){
+        //   updatePlayer(data.player);
+        // }
+        if(data.ships != null){
+            SHIPS = data.ships;
+        }
+        if(data.colonistsShip != null){
+            COLONISTSHIP = data.colonistsShip;
+        }
+        if(data.buildingsNum != null){
+           BUILDINGSNUM  = data.buildingsNum;
+        }
+        updatePlayers(data);
+        drawPlayers();
+        drawGameArea();
+    }
+
     socket.on('players update', function(data){
 
         Players = data.players;
@@ -300,79 +309,27 @@ $(function() {
     socket.on('next round', function(data){
         //change govenor player.
         console.log('next round');
-        //show message.
-        if(data.messages != null){
-            showMessage(data);
-        }
-        if(data.roles != null){
-          Roles = data.roles;
-          drawRoles();
-        }
-
-        SHIPS = data.ships;
-        COLONISTSHIP = data.colonistsShip;
-        drawPlayers();
-        drawShipsArea();
-        drawColonistShipsArea();
-        drawBuildings();
+        updateGameStatus(data);
     });
 
     socket.on('next role', function(data){
         //change next player to select one role.
         console.log('next role');
-        //show message.
-        if(data.messages != null){
-            showMessage(data);
-        }
 
-        updatePlayers(data);
-        drawPlayers();
-        drawBuildings();
-        if(data.tradingHouse != null){
-          TRADINGHOUSE = data.tradingHouse;
-          drawTradeArea();
-        }
+        updateGameStatus(data);
     });
 
 
-    // socket.on('TraderResponse', function(data){
-    //
-    //     //玩家click货物时，发送消息
-    //     // $('#productUL li').on('click', function(){
-    //     //     ///判断操作的player是不是有效的当前player，如果是则传给服务器data。
-    //     //     var sendData={};
-    //     //     sendData.name = $(this).text();
-    //     //     sendData.index=this.id;
-    //     //     myPlayer.plantArea.push(options[index]);
-    //     //     sendData.player = myPlayer;
-    //     //     sendData.role = "SettlerResponse";
-    //     //     console.log(sendData.index+':'+sendData.name+' is clicked!');
-    //     //     socket.emit('plant selected', sendData);
-    //     // });
-    // });
-    //
-    // socket.on('MayorResponse', function(data){
-    //     //自动分配奴隶数给玩家
-    //     var colonistsNum = data.colonists;
-    //     var playerNum = data.playerNum;
-    //     var colonists = colonistsNum/playerNum;
-    //     //玩家选择奴隶的分配（点击plantArea或BuildArea），然后把player状态发给server。
-    //     var sendData = {};
-    //     sendData.role = 'Mayor';
-    //     socket.emit('plant selected', sendData);
-    // });
-    //
-    // socket.on('CaptainResponse', function(data){
-    //     //玩家选择货物和船
-    // });
-    //
-    // socket.on('BuilderResponse', function(data){
-    //     //玩家选择建筑物
-    // });
-    //
-    // socket.on('CraftsmanResponse', function(data){
-    //     //计算好myPlayer玩家的生成货物，告诉给server
-    // });
+    // function updatePlayer(player){
+    //     if(player.name == myPlayer. name){
+    //         myPlayer = player;
+    //     }else{
+    //         var index = findPlayerbyName(player.name);
+    //         Players[index] = player;
+    //     }
+    // }
+
+
     function updatePlayers(data){
         if(data == null){
             console.log("updatePlayers failed: data is null");
@@ -381,7 +338,10 @@ $(function() {
         if(data.players != null){
             $.each(data.players, function(index){
               if(myPlayer.name == data.players[index].name){
-                  myPlayer = data.player[index];
+                  myPlayer = data.players[index];
+                  if(myPlayer == null){
+                    console.log("ERR: myPlayer is null!");
+                  }
               }else{
                   var index = findPlayerbyName(data.players[index].name);
                   Players[index] = data.players[index];
@@ -391,6 +351,9 @@ $(function() {
         if((data.player != null)){
             if(myPlayer.name == data.player.name){
                 myPlayer = data.player;
+                if(myPlayer == null){
+                  console.log("ERR: myPlayer is null!");
+                }
             }else{
                 var index = findPlayerbyName(data.player.name);
                 Players[index] = data.player;
@@ -409,16 +372,6 @@ $(function() {
             console.log("updatePlayers failed: data.players/player are null");
             return;
         }
-    }
-
-    function updateGameStatus(){
-      var i = Action.index_GameItems;
-      var j = Action.index_Filed;
-      GameItemsArray[i][1] = GameItemsArray[i][1] - 1;
-      FiledArray[j][0] = GameItemsArray[i][0];
-      FiledArray[j][1] = Action.id;
-
-      bindClickEvent();
     }
 
     function findPlayerbyName(name){
@@ -441,16 +394,4 @@ $(function() {
       });
       return result;
     }
-
-    function containBuilding(building){
-      var result = false;
-      if(myPlayer.buildArea[i].name == building){
-            if（myPlayer.buildArea[i].actualColonist == 1）{
-                result = true;
-                return result;
-            }
-      }
-      return result;
-    }
-
 })

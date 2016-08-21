@@ -1,5 +1,6 @@
 function builderProcess(data){
     //console.log('plant options:'+options);
+    mySelect = {select:null, extra:null};
     var contentString = "你拥有金钱:"+myPlayer.money+".空地数量："+(BuildingAreaMaxNum - myPlayer.buildArea.length)+".能购买的Building是：";
     $('#message').empty().text(contentString);
     var bonus = 0;

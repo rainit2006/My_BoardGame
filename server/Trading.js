@@ -1,6 +1,11 @@
 var TradingHouse = [];
 var HOUSELENGTH = 4;
 
+exports.init = function(){
+    TradingHouse = [];
+    HOUSELENGTH = 4;
+}
+
 exports.inputProduct = function(product){
   if(!isExsit(product)){
       TradingHouse.push(product);

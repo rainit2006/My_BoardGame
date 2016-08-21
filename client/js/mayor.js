@@ -12,46 +12,85 @@ function drawColonistList(){
     var selectItem="";
     $.each(myPlayer.plantArea, function(index){
       var plant = myPlayer.plantArea[index];
-
       var ItemNode = plant.name+".已拥有:"+plant.actualColonist+"人; 残缺:"+(plant.needColonist - plant.actualColonist)+"人.";
       var addBtn ="";
       var minusBtn="";
       if((plant.needColonist - plant.actualColonist) == 0){
-        addBtn = "<input class='add' type='button' data-index='"+index +"' value='Plus' disabled='true'>";
+        addBtn = "<input class='add' type='button' data-index='p"+index +"' value='Plus' disabled='true'>";
       }else{
-        addBtn = "<input class='add' type='button' data-index='"+index +"' value='Plus'>";
+        addBtn = "<input class='add' type='button' data-index='p"+index +"' value='Plus'>";
       }
       if(plant.actualColonist == 0){
-        minusBtn = "<input class='minus' type='button' data-index='"+index+"' value='Minus' disabled='true'>";
+        minusBtn = "<input class='minus' type='button' data-index='p"+index+"' value='Minus' disabled='true'>";
       }else{
-        minusBtn = "<input class='minus' type='button' data-index='"+index+"' value='Minus'>";
+        minusBtn = "<input class='minus' type='button' data-index='p"+index+"' value='Minus'>";
       }
       if(myPlayer.freeColonists == 0){
-        addBtn = "<input class='add' type='button' data-index='"+index +"' value='Plus' disabled='true'>";
+        addBtn = "<input class='add' type='button' data-index='p"+index +"' value='Plus' disabled='true'>";
       }
       selectItem += "<div>"+ItemNode+addBtn+minusBtn+"</div>";
     });
-    $('#element').empty().append(selectItem);
+    $('#element').empty().append("<p>Plant Area</p>").append(selectItem).append("<hr>");
 
 
+    selectItem="";
+    $.each(myPlayer.buildArea, function(index){
+      var build = myPlayer.buildArea[index];
+      ItemNode = build.name+".已拥有:"+build.actualColonist+"人; 残缺:"+(build.needColonist - build.actualColonist)+"人.";
+      var addBtn ="";
+      var minusBtn="";
+      if((build.needColonist - build.actualColonist) == 0){
+        addBtn = "<input class='add' type='button' data-index='b"+index +"' value='Plus' disabled='true'>";
+      }else{
+        addBtn = "<input class='add' type='button' data-index='b"+index +"' value='Plus'>";
+      }
+      if(build.actualColonist == 0){
+        minusBtn = "<input class='minus' type='button' data-index='b"+index+"' value='Minus' disabled='true'>";
+      }else{
+        minusBtn = "<input class='minus' type='button' data-index='b"+index+"' value='Minus'>";
+      }
+      if(build.freeColonists == 0){
+        addBtn = "<input class='add' type='button' data-index='b"+index +"' value='Plus' disabled='true'>";
+      }
+      selectItem += "<div>"+ItemNode+addBtn+minusBtn+"</div>";
+    });
+    $('#element').append("<p>Build Area</p>").append(selectItem);
 }
 
 $(document).on('click', '.add',function(){
-    var index = $(this).data("index");
+    var indexInfo = $(this).data("index");
+    var type = indexInfo.charAt(0);
+    var index = indexInfo.substring(1);
     console.log("add:"+index);
-    var plant = myPlayer.plantArea[index];
-    plant.actualColonist += 1;
-    myPlayer.freeColonists -= 1;
-    contentString = "请分配你的奴隶. 空闲奴隶："+myPlayer.freeColonists+"人";
+
+    if(type == "p"){
+      var plant = myPlayer.plantArea[index];
+      plant.actualColonist += 1;
+      myPlayer.freeColonists -= 1;
+    }else if(type == "b"){
+        var build = myPlayer.buildArea[index];
+        build.actualColonist += 1;
+        myPlayer.freeColonists -= 1;
+    }
+    //contentString = "请分配你的奴隶. 空闲奴隶："+myPlayer.freeColonists+"人";
     drawColonistList();
 });
 
 $(document).on('click', '.minus',function(){
-    var index = $(this).data("index");
+    var indexInfo = $(this).data("index");
+    var type = indexInfo.charAt(0);
+    var index = indexInfo.substring(1);
     console.log("minus"+index);
-    var plant = myPlayer.plantArea[index];
-    plant.actualColonist -= 1;
-    myPlayer.freeColonists += 1;
-    contentString = "请分配你的奴隶. 空闲奴隶："+myPlayer.freeColonists+"人";
+    if(type == "p"){
+        var plant = myPlayer.plantArea[index];
+        plant.actualColonist -= 1;
+        myPlayer.freeColonists += 1;
+    }else if(type == "b"){
+        var build = myPlayer.buildArea[index];
+        build.actualColonist -= 1;
+        myPlayer.freeColonists += 1;
+    }
+
+    //contentString = "请分配你的奴隶. 空闲奴隶："+myPlayer.freeColonists+"人";
     drawColonistList();
 });

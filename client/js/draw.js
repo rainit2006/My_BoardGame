@@ -104,6 +104,15 @@ function drawMyBuildArea(){
 };
 
 /////////////////////////////////////
+function drawGameArea(){
+    drawRoles();
+    drawTradeArea();
+    drawShipsArea();
+    drawColonistShipsArea();
+    drawBuildings();
+}
+
+
 function drawRoles(){
   $.each(Roles, function(){
       if(this.money > 0){
@@ -118,6 +127,7 @@ function drawRoles(){
       }
   });
 }
+
 
 function drawTradeArea(){
     $('#TradingHouse').empty();
