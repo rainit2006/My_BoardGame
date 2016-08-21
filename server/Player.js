@@ -1,7 +1,7 @@
 //var Plants = require('./Plantation');
 //var Buildings = require('./Building');
 
-
+var MAX_PLAYER = 5;
 var Players = [];
 var playerNum = 0;
 var playerOnlineNum = 0;
@@ -27,19 +27,24 @@ exports.resetPlayers= function(){
       // indigo=0;
       // tabacco=0;
       // coffee=0;
-      player.products=[0,0,0,0,0];//corn, sugar, indigo, tabacco,coffee
-      player.plantArea=[];
-      player.buildArea= [];
+      player.products=[1,1,4,1,1];//corn, sugar, indigo, tabacco,coffee
+      //player.plantArea=[];
+      player.plantArea=[{id:4, name:'tobacco', price:3, color:'lt-brown', needColonist:1, actualColonist:1}];
+      //player.buildArea=[];
+      player.buildArea= [
+          {id:7,name:'small market', points:1, quarry:1, price:1, needColonist:1, actualColonist:1, space:1, color:'purple' },
+          {id:13,name:'large market', points:2, quarry:2, price:5, needColonist:1, actualColonist:1, space:1, color:'purple' }
+          ];
    }
    return;
 };
 
-exports.addNewPlayer=function(id, name, socketid){
+exports.addNewPlayer=function(name, socketid){
     if((Players.length > 0) && (findPlayerbyName(name) >= 0)){
         var index = findPlayerbyName(name);
         //var player = Players[index];
         Players[index].socket = socketid;
-        Players[index].id = id;
+        Players[index].id = createPlayerID();
         Players[index].online = 1;
 
         playerOnlineNum +=1;
@@ -47,7 +52,7 @@ exports.addNewPlayer=function(id, name, socketid){
 
     }else{
         var player = {
-            id:id,
+            id:createPlayerID(),
             name:name,
             socket:socketid,
             online:1,
@@ -61,9 +66,15 @@ exports.addNewPlayer=function(id, name, socketid){
             // indigo:0,
             // tabacco:0,
             // coffee:0,
-            products:[0,0,0,0,0],//corn, sugar, indigo, tabacco,coffee
-            plantArea:[],
-            buildArea: []};
+            products:[1,1,4,1,1],//corn, sugar, indigo, tabacco,coffee
+            //plantArea:[],
+            plantArea:[{id:4, name:'tobacco', price:3, color:'lt-brown', needColonist:1, actualColonist:1}],
+            //buildArea:[]
+            buildArea: [
+                {id:7,name:'small market', points:1, quarry:1, price:1, needColonist:1, actualColonist:1, space:1, color:'purple' },
+                {id:13,name:'large market', points:2, quarry:2, price:5, needColonist:1, actualColonist:1, space:1, color:'purple' }
+                ]
+        };
         Players.push(player);
 
         playerNum += 1;
@@ -129,14 +140,10 @@ exports.updatePlayer=function(name, role, val1){
         player.money -= val1[1];
         break;
     case 'Trader':
-        console.log("updatePlayer. val1 is");
-        console.log(val1);
-        player.money += val1.price;
-        if(player.name == rolePlayerName){
-          player.money += 1;
-          rolePlayerName = "";
-        }
-        player.products[val1.id-1] -= 1;
+        //console.log("updatePlayer. val1 is");
+        //console.log(val1);
+        player.money += val1[0];
+        player.products[val1[1]-1] -= 1;
 
         break;
     case 'Mayor':
@@ -228,4 +235,25 @@ exports.containBuilding = function(player, name){
     }
   }
   return result;
+}
+
+function createPlayerID(){
+  var id = 0;
+  if(Players == null){
+    return id;
+  }
+  for(var i=0; i < MAX_PLAYER; i++){
+      var found = false;
+      for(var j=0; j < Players.length; j++){
+          if(Players[j].id == i){
+              found = true;
+              break;
+          }
+      }
+      if(!found){
+        id=i;
+        break;
+      }
+  }
+  return id;
 }

@@ -1,4 +1,5 @@
 /////////Global variables////////////
+var gameStart = false;
 var BuildingAreaMaxNum = 12;
 var PlantationAreaMaxNum = 12;
 

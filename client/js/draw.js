@@ -4,7 +4,7 @@ function drawLoginPage(){
 
     var ulNode = $('<ul>');
     $.each(Players, function(){
-        var img = "<img src='../image/face"+this.id+".jpg'>";
+        var img = "<img src='../image/face"+this.id+".png'>";
         var div = null;
         if(myPlayer.name == this.name){
           div = $("<li>"+img+"<div>"+this.name+"(★)</div></li>").addClass('player'+this.id);
@@ -35,7 +35,7 @@ function drawOtherPlayers(){
   var ulNode = $('<ul>');
   $.each(Players, function(){
       if(myPlayer.name != this.name){
-          var img = "<img src='../image/face"+this.id+".jpg'>";
+          var img = "<img src='../image/face"+this.id+".png'>";
           // var string = "<p>"+this.name+"</p>"+"<p> money:"+this.money+"</p>"+
           //       "<p> colonists:"+this.totalColonists+"(残余："+this.freeColonists+")"+"</p>"+
           //       "<p>quarry:"+this.quarry+"</p>"+
@@ -56,7 +56,7 @@ function drawOtherPlayers(){
 }
 
 function drawMyPlayer(){
-  var img = "<img src='../image/face"+myPlayer.id+".jpg'>";
+  var img = "<img src='../image/face"+myPlayer.id+".png'>";
   var string ="<p><img src='../image/point.png'> "+myPlayer.points+"<img src='../image/coin.png'> "+myPlayer.money+"  </p>"+
           "<p><img src='../image/worker.png'> "+myPlayer.totalColonists+"(残余："+myPlayer.freeColonists+")"+
           "  <img src='../image/quarry.png'> "+myPlayer.quarry+"</p>"+

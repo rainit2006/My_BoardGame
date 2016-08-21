@@ -17,48 +17,10 @@ $(function() {
 
     function initWrap(){
       drawLoginPage();
-      initGameItems();
-      initArea();
-
       drawPlayers();
       drawGameArea();
 
-      bindClickEvent();
-
       console.log("init done.");
-    }
-
-
-
-
-    function initGameItems(){
-    }
-
-    function initArea(){
-        // MyBuildingArray=[];
-        // MyPlantationArray=[];
-        // for(var i = 0; i < BuildingAreaMaxNum; i ++){
-        //     MyBuildingArray.push(["空地", 0]); //param： 建筑种类，奴隶数
-        // }
-        // for(var i = 0; i < PlantationAreaMaxNum; i ++){
-        //     MyBuildingArray.push(["空地"]); //param： 土地种类
-        // }
-    }
-
-
-
-    function bindClickEvent(){
-    //   $('#GameItemsUlNode li').on('click', function(){
-    //       var index = $('#GameItemsUlNode li').index(this);
-    //       console.log(GameItemsArray[index][0]+','+GameItemsArray[index][1] +' is clicked!');
-    //       Action.index_GameItems = index;
-    //   });
-    //
-    //   $('#FiledAreaNode li').on('click', function(){
-    //       var index = $('#FiledAreaNode li').index(this);
-    //       console.log(index+':'+FiledArray[index][0]+','+FiledArray[index][1] +' is clicked!');
-    //       Action.index_Filed =index;
-    //   });
     }
 
 
@@ -67,34 +29,11 @@ $(function() {
         if (username) {
             $('.loginForm').fadeOut("slow");
             $('.startForm').show();
-
+            socket.emit('new player join', username);
             myPlayer.name = username;
-            myPlayer.id = createPlayerID();
-
-            socket.emit('new player add', myPlayer);
         }
     });
 
-    function createPlayerID(){
-      var id = 1;
-      if(Players == null){
-        return id;
-      }
-      for(var i=1; i <= MAX_PLAYER; i++){
-          var found = false;
-          for(var j=0; j < Players.length; j++){
-              if(Players[j].id == i){
-                  found = true;
-                  break;
-              }
-          }
-          if(!found){
-            id=i;
-            break;
-          }
-      }
-      return id;
-    }
 
 
     $('#startGame').click(function(){
@@ -109,7 +48,8 @@ $(function() {
    socket.on('start game', function(data){
        $('.loginPage').fadeOut("slow");
        $('.wrap').show();
-       initWrap();
+       //initWrap();
+       updateGameStatus(data);
        console.log('start game.');
    });
 
@@ -267,15 +207,19 @@ $(function() {
 
     function updateGameStatus(data){
         Messages = [];
-        currentRole = data.role;
+
+        if(data.role != null){
+          currentRole = data.role;
+        }
+
         if(data.roles != null){
           Roles = data.roles;
           drawRoles();
         }
-        rolePlayer = data.rolePlayer;
+        if(data.rolePlayer != null){
+          rolePlayer = data.rolePlayer;
+        }
 
-        //plantOptions = null;
-        console.log('RoleResponse:'+currentRole+';'+data.nextPlayer.name);
         //show message.
         if(data.messages != null){
             showMessage(data);
@@ -292,18 +236,20 @@ $(function() {
         if(data.buildingsNum != null){
            BUILDINGSNUM  = data.buildingsNum;
         }
+        if(data.tradingHouse != null){
+          TRADINGHOUSE = data.tradingHouse;
+        }
         updatePlayers(data);
+
+        ///draw
         drawPlayers();
         drawGameArea();
     }
 
     socket.on('players update', function(data){
-
-        Players = data.players;
-        BUILDINGSNUM = data.buildingsNum;
-        console.log('players update: '+Players.length);
+        console.log('players update: '+data.players.length);
+        updatePlayers(data);
         drawLoginPage();
-        drawBuildings();
     });
 
     socket.on('next round', function(data){
@@ -336,6 +282,7 @@ $(function() {
             return;
         }
         if(data.players != null){
+            Players = data.players;
             $.each(data.players, function(index){
               if(myPlayer.name == data.players[index].name){
                   myPlayer = data.players[index];

@@ -50,24 +50,32 @@ function init() {
 io.on('connection', function (socket) {
     console.log('connection.');
 
-    socket.on('new player add', function (data) {
-            // var player = new Object();
-            // player.id = data.id;
-            // player.socket = socket.id;
-            console.log('new player:' + data.name+','+data.id +','+ socket.id);
-            socket.name = data.name;
-            var sendData={};
-            sendData.players = Players.addNewPlayer(data.id, data.name, socket.id);
-            sendData.buildingsNum = Buildings.getBuildingsNum();
-            playerNum = sendData.players.length;
-            console.log('player num is:'+ playerNum);
-            io.sockets.emit('players update', sendData);
+    socket.on('new player join', function (data) {
+        // var player = new Object();
+        // player.id = data.id;
+        // player.socket = socket.id;
+        console.log('new player:' + data+','+ socket.id);
+        socket.name = data;
+        var sendData={};
+        sendData.players = Players.addNewPlayer(data, socket.id);
+
+
+        playerNum = sendData.players.length;
+        console.log('player num is:'+ playerNum);
+        io.sockets.emit('players update', sendData);
     });
 
     socket.on('start game', function(){
         Players.resetPlayers();
         init();
-        io.sockets.emit('start game');
+        var sendData = {};
+        ////传递一些游戏初始状态/
+        sendData.ships = Ships.getShips();
+        sendData.colonistsShip = Colonist.updateShip();
+        sendData.tradingHouse = Trading.getTradingHouse();
+        sendData.buildingsNum = Buildings.getBuildingsNum();
+
+        io.sockets.emit('start game', sendData);
     });
 
     socket.on('submit', function(data){
@@ -221,23 +229,27 @@ io.on('connection', function (socket) {
                     break;
                 }
                 var money = data.product.price;
-                sendData.money = money;
-                sendData.player = Players.updatePlayer(data.player.name, role, data.product);
+                if(data.player.name == rolePlayer){
+                    money += 1;
+                }
+                ////拥有小市场大厅，则多卖1金币
+                if(containBuilding(data.player, 'small market')){
+                    money += 1;
+                }
+                ////拥有大市场大厅，则多卖2金币
+                if(containBuilding(data.player, 'large market')){
+                    money += 2;
+                }
+                sendData.player = Players.updatePlayer(data.player.name, role, [money, data.product.id]);
+                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"贩卖了"+data.product.name+". 共获得了"+money+"金币. </span></li>";
+                sendData.messages.push(message);
+
                 sendData.result = Trading.inputProduct(data.product);
                 if(!sendData.result){
                     io.sockets.emit('result error', data);
                     return;
                 }
                 sendData.tradingHouse = Trading.getTradingHouse();
-                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"贩卖了"+data.product.name+".获得了"+money+"金币. </span></li>";
-                sendData.messages.push(message);
-
-                var result = Players.containBuilding(sendData.player, 'small market');
-                if(result){
-                    Players.addMoney(sendData.player.name, 1);
-                    var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"因为有小市场大厅，所以又获得了1个金币</span></li>";
-                    sendData.messages.push(message);
-                }
                 //console.log(data.options);
                 roundAction += 1;
                 break;

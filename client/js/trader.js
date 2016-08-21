@@ -1,24 +1,42 @@
 //////Trader////
 function traderProcess(data){
-  TRADINGHOUSE = data.tradingHouse;
-  drawTradeArea();
+  var contentString = "";
 
-  options = [];
-  for(var i=0; i<myPlayer.products.length; i++){
-      if(myPlayer.products[i] != 0){
-          if(!existInTradingHouse(i, TRADINGHOUSE)){
-              options.push(PLANTS[i+1]);
+  if(TRADINGHOUSE.length >= HOUSELENGTH){
+    contentString = "商会已经满了，不再接受货物贩卖。";
+    $('#message').empty().text(contentString);
+    return;
+  }
+
+  var check = hasProdudct();
+  if(!check){
+    contentString = "你手里啥货物都没有，啥也做不了！";
+    $('#message').empty().text(contentString);
+    return;
+  }
+
+  ////如果拥有分商会，则可以卖手里的任何货物。
+  if( containBuilding('office')){
+      contentString = "请选择要贩卖的货物:";
+      $('#message').empty().text(contentString);
+  }else{
+      options = [];
+      for(var i=0; i<myPlayer.products.length; i++){
+          if(myPlayer.products[i] != 0){
+              if(!existInTradingHouse(i, TRADINGHOUSE)){
+                  options.push(PLANTS[i+1]);
+              }
           }
       }
+      if(options.length <= 0){
+          contentString = "没有可以贩卖的货物。";
+          $('#message').empty().text(contentString);
+          return;
+      }else{
+          contentString = "请选择要贩卖的货物:";
+          $('#message').empty().text(contentString);
+      }
   }
-
-  var contentString = "";
-  if(options.length <= 0){
-      contentString = "没有可以贩卖的货物。";
-  }else{
-      contentString = "请选择要贩卖的货物:";
-  }
-  $('#message').empty().text(contentString);
 
   var ulNode= $("<ul>");
   $.each(options, function(index){
@@ -38,12 +56,23 @@ function traderProcess(data){
 
 
 function existInTradingHouse(index, house){
-  console.log("trader.js  existInTradingHouse:"+index);
-  for(var i=0; i< house.length; i++){
-    if(house[i].name == PLANTS[index+1].name)
-      return true;
-  }
-  return false;
+    //console.log("trader.js  existInTradingHouse:"+index);
+    for(var i=0; i< house.length; i++){
+      if(house[i].name == PLANTS[index+1].name)
+        return true;
+    }
+    return false;
+}
+
+function hasProdudct(){
+    var result = false;
+    for(var i=0; i < myPlayer.products.length; i++){
+        if(myPlayer.products[i] !=0){
+            result = true;
+            break;
+        }
+    }
+    return result;
 }
 
 // function drawTradingHouse(house){
