@@ -5,7 +5,7 @@
         <title>My Board Game</title>
         <link rel="stylesheet" href="css/main.css" />
         <link rel="stylesheet" href="css/table.css" />
-        <link rel="stylesheet" href="css/MessageBox.css" />
+        <link rel="stylesheet" href="css/popupBox.css" />
     </head>
     <body>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -48,13 +48,15 @@
                       </div>
                   </div>
                   <div id ="leftArea">
-                      <div class="MyArea">
+                      <div class="UserArea">
                           <div id ="MyPlayerArea">MY Area</div>
-                          <div id ="buildArea"></div>
-                          <div id= "plantArea"></div>
+                          <div  id ="buildArea" class="filed"></div>
+                          <div  id= "plantArea" class="filed"></div>
                       </div>
                       <hr>
-                      <div id = "OtherPlayersArea">OtherPlayers</div>
+                      <div class = "UserArea">
+                          <div id = "OtherPlayersArea">OtherPlayers</div>
+                      </div>
                   </div>
                   <div id="rightArea">
                       <div id = "GameArea">
@@ -201,12 +203,12 @@
                                 <img src="image/tradeShip.png">
                                 <div id="TradingHouse" class="Ship">4</div>
                               </div>
-
+                              <hr>
                               <div class="shipDiv">
                                 <img src="image/colonistShip.png">
                                 <div id="ColonistsShip" class="Ship">4</div>
                               </div>
-
+                              <hr>
                               <div id="CaptainDIV">
                                   <div class="shipDiv">
                                       <img src="image/ship0.png"><div id="Ship0" class="Ship">5</div>

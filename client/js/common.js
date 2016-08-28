@@ -88,11 +88,14 @@ var myPlayer = {
     buildArea:[]
 };
 
-var mySelect = {select:null, extra:null}; //记录用户的选择
+var mySelect = {select:null, extra:null, extra1:null}; //记录用户的选择
 
 var playerNum = 1;
 var currentRole = null;
 var options = null;
+var shipState= {
+  wharf:false,
+  clear:false }
 
 
 function containBuilding(name){
@@ -106,4 +109,12 @@ function containBuilding(name){
       }
   }
   return result;
+}
+
+function getPlantByName(name){
+  for(var i=0; i<PLANTS.length; i++){
+      if(PLANTS[i].name == name){
+        return PLANTS[i];
+      }
+  }
 }

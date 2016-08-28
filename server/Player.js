@@ -31,10 +31,6 @@ exports.resetPlayers= function(){
       //player.plantArea=[];
       player.plantArea=[{id:4, name:'tobacco', price:3, color:'lt-brown', needColonist:1, actualColonist:1}];
       //player.buildArea=[];
-      player.buildArea= [
-          {id:7,name:'small market', points:1, quarry:1, price:1, needColonist:1, actualColonist:1, space:1, color:'purple' },
-          {id:13,name:'large market', points:2, quarry:2, price:5, needColonist:1, actualColonist:1, space:1, color:'purple' }
-          ];
    }
    return;
 };
@@ -71,8 +67,18 @@ exports.addNewPlayer=function(name, socketid){
             plantArea:[{id:4, name:'tobacco', price:3, color:'lt-brown', needColonist:1, actualColonist:1}],
             //buildArea:[]
             buildArea: [
-                {id:7,name:'small market', points:1, quarry:1, price:1, needColonist:1, actualColonist:1, space:1, color:'purple' },
-                {id:13,name:'large market', points:2, quarry:2, price:5, needColonist:1, actualColonist:1, space:1, color:'purple' }
+              {id:7,name:'small market', points:1, quarry:1, price:1, needColonist:1, actualColonist:1, space:1, color:'purple' },
+              {id:8,name:'hacienda', points:1, quarry:1, price:2, needColonist:1, actualColonist:1, space:1, color:'purple' }, //农庄
+              {id:9,name:'construction hut', points:1, quarry:1, price:2, needColonist:1, actualColonist:1, space:1, color:'purple' },
+              {id:10,name:'small warehouse', points:1, quarry:1, price:3, needColonist:1, actualColonist:1, space:1, color:'purple' },
+              {id:11,name:'hospice', points:2, quarry:2, price:4, needColonist:1, actualColonist:1, space:1, color:'purple' }, //收容所
+              {id:12,name:'office', points:2, quarry:2, price:5, needColonist:1, actualColonist:1, space:1, color:'purple' }, //分商会
+              {id:13,name:'large market', points:2, quarry:2, price:5, needColonist:1, actualColonist:1, space:1, color:'purple' },
+              {id:14,name:'large warehouse', points:2, quarry:2, price:6, needColonist:1, actualColonist:1, space:1, color:'purple' },
+              {id:15,name:'factory', points:3, quarry:3, price:7, needColonist:1, actualColonist:1, space:1, color:'purple' },
+              {id:16,name:'university', points:3, quarry:3, price:8, needColonist:1, actualColonist:1, space:1, color:'purple' },
+              {id:17,name:'harbor', points:3, quarry:3, price:8, needColonist:1, actualColonist:1, space:1, color:'purple' },
+              {id:18,name:'wharf', points:3, quarry:3, price:9, needColonist:1, actualColonist:1, space:1, color:'purple' }
                 ]
         };
         Players.push(player);
@@ -115,6 +121,11 @@ exports.getPlayers = function(){
   return Players;
 };
 
+exports.overwritePlayer = function(player){
+  var index = findPlayerbyName(player.name);
+  Players[index] = player;
+  //console.log(Players);
+}
 
 exports.updatePlayer=function(name, role, val1){
   var index = findPlayerbyName(name);
@@ -153,11 +164,7 @@ exports.updatePlayer=function(name, role, val1){
         player.plantArea = val1.plantArea;
         break;
     case 'Captain':
-        player.points += val1[1];
-        if(player.name == rolePlayerName){
-          player.points += 1;
-          rolePlayerName = "";
-        }
+        player.points += val1[2];
         var index = val1[0]-1;
         player.products[index] -= val1[1];
         break;
@@ -223,6 +230,15 @@ exports.nextPlayer = function(name){
 exports.setRolePayerName = function(name){
   rolePlayerName = name;
 }
+
+exports.getRolePayerName = function(){
+  return rolePlayerName;
+}
+
+exports.clearRolePayerName = function(name){
+  rolePlayerName = "";
+}
+
 
 exports.containBuilding = function(player, name){
   var result = false;

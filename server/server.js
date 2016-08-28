@@ -25,6 +25,7 @@ var playerNum = 1;
 var round = 0;
 var roundAction = 0; //记录每轮里操作的玩家数，当操作过的玩家数等于玩家总数，则开始进入选角阶段。
 var roundRole = 0; //记录选角色的玩家数
+var captainRound = 0; //记录船长角色中load货物的玩家数。当玩家数等于总数时，开始清理玩家手里的货物。
 var rolePlayer;
 
 
@@ -101,6 +102,7 @@ io.on('connection', function (socket) {
     socket.on('gameRoleSelect', function(data){
         console.log('gameRoleSelect:'+data.role);
         roundAction = 0; //重新记录操作的玩家数
+        captainRound = 0;
         roundRole += 1;
         var sendData = {};
         sendData.messages = [];
@@ -187,8 +189,6 @@ io.on('connection', function (socket) {
         sendData.rolePlayer = rolePlayer;
         sendData.messages = [];
         var role = data.role;
-        sendData.nextPlayer = Players.nextPlayer(data.player.name);
-        console.log('next player will be: '+sendData.nextPlayer.name);
 
         if(data.messages != null){
             sendData.messages = data.messages;
@@ -268,23 +268,44 @@ io.on('connection', function (socket) {
                 }
                 break;
             case 'Captain': //船长
-                //船长的次数轮回要等玩家没有货物放到船上时，才算结束
-                if(data.product == null){
-                    roundAction +=1;
+                //货物清除阶段时，只传递message
+                if(data.productClear){
+                    sendData.messages = data.messages;
+                    if(data.player != null){
+                        Players.overwritePlayer(data.player);
+                    }
+                    sendData.player = data.player;
+                    //console.log("captain product clear.");
+                    //console.log(data.player);
+                    roundAction += 1;
                     break;
                 }
-                var points = data.productNum;
+                //船长的次数轮回要等玩家没有货物放到船上时，才算结束
+                if(data.product == 'none'){
+                    captainRound +=1;
+                    var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"没有可以装载的货物了. </span></li>";
+                    sendData.messages.push(message);
+                    break;
+                }
+
                 var plant = Plantation.getPlant(data.product);
                 sendData.result = Ships.loadProduct(data.ship, plant.name, points);
-                if(!sendData.result){
-                    console.log('err: captian loadproduct failed!');
-                    io.sockets.emit('result error', data);
-                    return;
-                }
-                sendData.points = points;
-                sendData.player = Players.updatePlayer(data.player.name, role, [plant.id, points]);
                 sendData.ships = Ships.getShips();
-                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"获得了"+sendData.colonist+"个奴隶. </span></li>";
+                // if(!sendData.result){
+                //     console.log('err: captian loadproduct failed!');
+                //     io.sockets.emit('result error', data);
+                //     return;
+                // }
+                var points = data.productNum;
+                if(Players.getRolePayerName() == data.player.name){
+                  points += 1;
+                  Players.clearRolePayerName();
+                }
+                if(containBuilding(data.player, 'harbor')){
+                  points += 1;
+                }
+                sendData.player = Players.updatePlayer(data.player.name, role, [plant.id, data.productNum, points]);
+                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"装载了"+data.productNum+"个"+plant.name+", 获得了"+points+"个point.</span></li>";
                 sendData.messages.push(message);
                 break;
             case 'Builder'://建筑士
@@ -319,8 +340,16 @@ io.on('connection', function (socket) {
                 roundAction = playerNum;
                 break;
         }
+        ///计算next player，并传递最新的player数据
+        sendData.nextPlayer = Players.nextPlayer(data.player.name);
+        console.log('next player will be: '+sendData.nextPlayer.name);
 
-        console.log('roundAction:'+roundAction);
+
+        //console.log('roundAction:'+roundAction+'; captainRound:'+captainRound);
+        if((role == 'Captain')&&(captainRound >= playerNum)){
+            sendData.productClear = true;
+            console.log("set data.productClear as true");
+        }
         if(roundAction >= playerNum){
             if(roundRole >= playerNum){
               if(!judgeGameOver()){

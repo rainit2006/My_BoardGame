@@ -49,6 +49,7 @@ function traderProcess(data){
   $('#element li').on('click', function(){
       ///判断操作的player是不是有效的当前player，如果是则传给服务器data。
       mySelect.select = PLANTS[this.id];
+
       $('#message').text(contentString).append("<p>你选择的是："+$(this).text()+"</p>");
   });
 }

@@ -3,7 +3,7 @@ function craftsmanProcess(data){
     var addProducts = [0, 0, 0, 0, 0];
     ///corn
     $.each(myPlayer.plantArea, function(index){
-        if(myPlayer.plantArea[index].name == PLANTS[1].name){
+        if((myPlayer.plantArea[index].name == PLANTS[1].name)&&(myPlayer.plantArea[index].actualColonist == 1)){
              addProducts[0] += myPlayer.plantArea[index].actualColonist;
         }
     });

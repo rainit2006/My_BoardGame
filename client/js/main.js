@@ -102,14 +102,12 @@ $(function() {
               break;
           case 'Mayor':
               mayorProcess(data);
-              drawColonistShipsArea();
               break;
           case 'Trader':
               traderProcess(data);
               break;
           case 'Captain':
               captainProcess(data);
-              drawShipsArea();
               break;
           case 'Builder':
               builderProcess(data);
@@ -169,10 +167,38 @@ $(function() {
                 }
                 break;
             case 'Captain':
-                if(btnName == "Confirm"){
-                    sendData.product = PLANTS[mySelect.select[0]].id;
-                    sendData.productNum = mySelect.select[2];
-                    sendData.ship = mySelect.select[1];
+                if(!shipState.clear){
+                    if(btnName == "Confirm"){
+                        sendData.product = PLANTS[mySelect.select[0]].id;
+                        sendData.productNum = mySelect.select[2];
+                        sendData.ship = mySelect.select[1];
+                    }else{
+                        sendData.product = "none";
+                    }
+                }else{
+                    sendData.productClear = true;
+
+                    var tmp = [0,0,0,0,0];
+                    if(mySelect.select != null){
+                      tmp[mySelect.select] = 1;
+                    }
+                    if(mySelect.extra != null){
+                      tmp[mySelect.extra] = myPlayer.products[mySelect.extra];
+                    }
+                    if(mySelect.extra1 != null){
+                      $.each(mySelect.extra1, function(index){
+                          var i = mySelect.extra1[index];
+                          tmp[i]=myPlayer.products[i];
+                      });
+                    }
+                    myPlayer.products = tmp;
+                    Messages.push("<li class='message'><span class='messageSelect'>"+myPlayer.name+"完成了货物清理。剩余货物："
+                              +myPlayer.products[0]+"个corn、"
+                              +myPlayer.products[1]+"个sugar、"
+                              +myPlayer.products[2]+"个indigo、"
+                              +myPlayer.products[3]+"个tobacco、"
+                              +myPlayer.products[4]+"个coffee"
+                              +"</span></li>");
                 }
                 break;
             case 'Builder':
@@ -183,6 +209,16 @@ $(function() {
                 }else{
                     sendData.build = null;
                 }
+                break;
+            case 'Craftsman':
+                var corn = myPlayer.products[0];
+                var sugar = myPlayer.products[1];
+                var indigo = myPlayer.products[2];
+                var tobacco = myPlayer.products[3];
+                var coffee = myPlayer.products[4];
+                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"已拥有："+
+                                    core+"个玉米，"+sugar+"个白糖，"+indigo+"个靛蓝，"+tobacco+"个烟草，"+coffee+"个咖啡. </span></li>";
+                Messages.push(message);
                 break;
             default:
         }
@@ -207,6 +243,8 @@ $(function() {
 
     function updateGameStatus(data){
         Messages = [];
+        shipState.wharf = false;
+        shipState.clear = false;
 
         if(data.role != null){
           currentRole = data.role;

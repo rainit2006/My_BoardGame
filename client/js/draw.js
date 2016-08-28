@@ -35,7 +35,7 @@ function drawOtherPlayers(){
   var ulNode = $('<ul>');
   $.each(Players, function(){
       if(myPlayer.name != this.name){
-          var img = "<img src='../image/face"+this.id+".png'>";
+          var img = "<img class='face' src='../image/face"+this.id+".png'>";
           // var string = "<p>"+this.name+"</p>"+"<p> money:"+this.money+"</p>"+
           //       "<p> colonists:"+this.totalColonists+"(残余："+this.freeColonists+")"+"</p>"+
           //       "<p>quarry:"+this.quarry+"</p>"+
@@ -48,7 +48,7 @@ function drawOtherPlayers(){
                     "<img src='../image/indigo.png'> "+myPlayer.products[2]+"<img src='../image/tobacco.png'> "+
                     myPlayer.products[3]+"<img src='../image/coffee.png'> "+myPlayer.products[4]+"</p>";
 
-          var div = $("<li id="+this.id+">"+img+string+"</li>").addClass('player'+this.id);
+          var div = $("<div class='otherplayer' id="+this.id+">"+img+string+"</div>");
           ulNode.append(div);
       }
   });
@@ -56,8 +56,8 @@ function drawOtherPlayers(){
 }
 
 function drawMyPlayer(){
-  var img = "<img src='../image/face"+myPlayer.id+".png'>";
-  var string ="<p><img src='../image/point.png'> "+myPlayer.points+"<img src='../image/coin.png'> "+myPlayer.money+"  </p>"+
+  var img = "<img class='face' src='../image/face"+myPlayer.id+".png'>";
+  var string ="<p><img src='../image/coin.png'> "+myPlayer.money+" <img src='../image/point.png'> "+myPlayer.points+"</p>"+
           "<p><img src='../image/worker.png'> "+myPlayer.totalColonists+"(残余："+myPlayer.freeColonists+")"+
           "  <img src='../image/quarry.png'> "+myPlayer.quarry+"</p>"+
           "<p><img src='../image/corn.png'> "+myPlayer.products[0]+"<img src='../image/sugar.png'> "+myPlayer.products[1]+
@@ -74,9 +74,15 @@ function drawMyPlantArea(){
   var node="";
   for(var i=0; i<myPlayer.plantArea.length; i++ ){
       var plant = myPlayer.plantArea[i];
-      node += "<li class='"+plant.color +"'><p>"+plant.name
-              +"</p>已有奴隶："+plant.actualColonist+";"
-              +"空缺奴隶："+(plant.needColonist - plant.actualColonist)+"</li>";
+      var img = "";
+      for(var j=0; j<plant.actualColonist; j++){
+        img +="<img src='../image/worker.png'>";
+      }
+      var diff = plant.needColonist - plant.actualColonist;
+      for(var j=0; j<diff; j++){
+        img += "<img src='../image/vacant1.png'>";
+      }
+      node += "<li class='"+plant.color +"'><p>"+plant.name+"</p>"+img+"</li>";
   }
   for(var j=0; j < (PlantationAreaMaxNum - myPlayer.plantArea.length); j++  ){
       node +="<li class='green'></li>";
@@ -92,9 +98,15 @@ function drawMyBuildArea(){
   // }
   for(var i=0; i<myPlayer.buildArea.length; i++ ){
       var build = myPlayer.buildArea[i];
-      node += "<li class='"+build.color +"'><p>"+build.name
-              +"</p>已有奴隶："+build.actualColonist+";"
-              +"空缺奴隶："+(build.needColonist - build.actualColonist)+"</li>";
+      var img ="";
+      for(var j=0; j<build.actualColonist; j++){
+        img +="<img src='../image/worker.png'>";
+      }
+      var diff = build.needColonist - build.actualColonist;
+      for(var j=0; j<diff; j++){
+        img += "<img src='../image/vacant1.png'>";
+      }
+      node += "<li class='"+build.color +"'><p>"+build.name+"</p>"+img+"</li>";
       spaceLength += build.space;
   }
   for(var j=0; j < (PlantationAreaMaxNum - spaceLength); j++  ){
@@ -135,7 +147,7 @@ function drawTradeArea(){
         $('#TradingHouse').append("<li class='"+TRADINGHOUSE[i].color+"'><img src='../image/"+TRADINGHOUSE[i].name+".png'></li>");
     }
     for(var i=0; i<(HOUSELENGTH-TRADINGHOUSE.length); i++){
-        $('#TradingHouse').append("<li></li>");
+        $('#TradingHouse').append("<li class='white'></li>");
     }
 
 }
@@ -144,10 +156,11 @@ function drawShipsArea(){
   for(var i = 0; i<3; i++){
       $('#Ship'+i).empty();
       for(var j=0; j<SHIPS[i].num; j++){
-          $('#Ship'+i).append("<li>"+SHIPS[i].name+"</li>");
+          var plant = getPlantByName(SHIPS[i].name);
+          $('#Ship'+i).append("<li class='"+plant.color+"'><img src='../image/"+plant.name+".png'></li>");
       }
       for(var j=0; j<(SHIPLENGTH[i]-SHIPS[i].num); j++){
-          $('#Ship'+i).append("<li></li>");
+          $('#Ship'+i).append("<li class='white'></li>");
       }
   }
 }
@@ -161,7 +174,7 @@ function drawColonistShipsArea(){
       length = COLONISTSHIP;
   }
   for(var i=0; i<length; i++){
-      node += "<img src='image/worker.png'>";
+      node += "<li class='white'><img src='image/worker.png'></li>";
   }
   $('#ColonistsShip').empty().append(node);
 }
