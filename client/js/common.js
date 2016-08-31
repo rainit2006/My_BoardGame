@@ -95,7 +95,8 @@ var currentRole = null;
 var options = null;
 var shipState= {
   wharf:false,
-  clear:false }
+  clear:false,
+  selected:null}
 
 
 function containBuilding(name){

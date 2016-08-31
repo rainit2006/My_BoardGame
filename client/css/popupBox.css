@@ -10,7 +10,7 @@
 }
 
 .popup {
-  margin: 200px auto;
+  margin: 100px auto;
   padding: 20px;
   background: #fff;
   background-image: url("../image/bk-pop.jpg");
@@ -18,6 +18,8 @@
   width: 70%;
   position: relative;
   transition: all 5s ease-in-out;
+  overflow-y: scroll;
+  height:400px;
 }
 
 .popup h2 {
@@ -85,4 +87,21 @@
 #element input{
   width: 20px;
   height: 20px;
+}
+
+#products li{
+  list-style:none;
+  width: 120px;
+}
+
+.flexBox-row{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.disabled{
+  background-color: gray;
+  opacity: 0.5;
 }

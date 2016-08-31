@@ -287,9 +287,11 @@ io.on('connection', function (socket) {
                     sendData.messages.push(message);
                     break;
                 }
-
+                console.log(data.product);
                 var plant = Plantation.getPlant(data.product);
-                sendData.result = Ships.loadProduct(data.ship, plant.name, points);
+                if(data.ship != null){
+                    sendData.result = Ships.loadProduct(data.ship, plant.name, points);
+                }
                 sendData.ships = Ships.getShips();
                 // if(!sendData.result){
                 //     console.log('err: captian loadproduct failed!');
@@ -305,8 +307,13 @@ io.on('connection', function (socket) {
                   points += 1;
                 }
                 sendData.player = Players.updatePlayer(data.player.name, role, [plant.id, data.productNum, points]);
-                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"装载了"+data.productNum+"个"+plant.name+", 获得了"+points+"个point.</span></li>";
-                sendData.messages.push(message);
+                if(data.wharf != null){
+                    var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"装载了"+data.productNum+"个"+plant.name+"到【船坞船】. </span></li>";
+                    sendData.messages.push(message);
+                }else if(data.ship != null){
+                    var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"装载了"+data.productNum+"个"+plant.name+"到运输船#"+data.ship+", 获得了"+points+"个point.</span></li>";
+                    sendData.messages.push(message);
+                }
                 break;
             case 'Builder'://建筑士
                 if(data.build == null){

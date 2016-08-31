@@ -169,9 +169,18 @@ $(function() {
             case 'Captain':
                 if(!shipState.clear){
                     if(btnName == "Confirm"){
-                        sendData.product = PLANTS[mySelect.select[0]].id;
-                        sendData.productNum = mySelect.select[2];
-                        sendData.ship = mySelect.select[1];
+                        var product = null;
+                        if(mySelect.extra1 != null){
+                            sendData.product = mySelect.extra1;
+                            sendData.productNum = myPlayer.products[mySelect.extra1-1];
+                            sendData.wharf = true;
+                            shipState.wharf = true;
+                        }else{
+                            sendData.product = mySelect.select[0];
+                            sendData.productNum = mySelect.select[1]
+                            sendData.ship = mySelect.extra;
+                        }
+
                     }else{
                         sendData.product = "none";
                     }
@@ -243,11 +252,14 @@ $(function() {
 
     function updateGameStatus(data){
         Messages = [];
-        shipState.wharf = false;
-        shipState.clear = false;
 
         if(data.role != null){
           currentRole = data.role;
+          if(currentRole != 'Captain'){
+            shipState.wharf = false;
+            shipState.clear = false;
+            shipState.selected = null;
+          }
         }
 
         if(data.roles != null){
