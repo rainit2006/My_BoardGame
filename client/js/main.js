@@ -53,19 +53,6 @@ $(function() {
        console.log('start game.');
    });
 
-    // $('#SubmitArea input:button').click(function(){
-    //     //console.log("button clicked");
-    //     var index_GameItems = Action.index_GameItems;
-    //     var index_Filed = Action.index_Filed;
-    //     console.log(index_GameItems+";"+index_Filed);
-    //     Action.id = myPlayer.id;
-    //
-    //     //updateGameStatus();
-    //
-    //     socket.emit('submit', Action);
-    //
-    // });
-
     ////当角色被选择时，触发click事件
     $('.role').click(function(){
       console.log($(this).data('role') +' is clicked');
@@ -93,6 +80,11 @@ $(function() {
             console.log(data.nextPlayer.name+' is not '+myPlayer.name);
             return;
         }
+        $('#ConfirmBtn').show();
+        $('#ConfirmBtn').prop('disabled', false);
+        $('#SkipBtn').show();
+        $('#OKBtn').hide();
+        $('#CancelBtn').hide();
 
         var titleString = currentRole;
         //console.log("player name:"+myPlayer.name);
@@ -120,10 +112,7 @@ $(function() {
           default:
 
         }
-        $('#ConfirmBtn').show();
-        $('#SkipBtn').show();
-        $('#OKBtn').hide();
-        $('#CancelBtn').hide();
+
         $('#popupTitle').empty().text(titleString);
         $('#popup1').show();
 
@@ -171,14 +160,16 @@ $(function() {
                     if(btnName == "Confirm"){
                         var product = null;
                         if(mySelect.extra1 != null){
-                            sendData.product = mySelect.extra1;
-                            sendData.productNum = myPlayer.products[mySelect.extra1-1];
+                            sendData.product = mySelect.extra1[0];
+                            sendData.productNum = mySelect.extra1[1];
                             sendData.wharf = true;
                             shipState.wharf = true;
-                        }else{
+                        }else if(mySelect.select !=null){
                             sendData.product = mySelect.select[0];
                             sendData.productNum = mySelect.select[1]
                             sendData.ship = mySelect.extra;
+                        }else{
+                            sendData.product = "none";
                         }
 
                     }else{

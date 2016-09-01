@@ -290,7 +290,7 @@ io.on('connection', function (socket) {
                 console.log(data.product);
                 var plant = Plantation.getPlant(data.product);
                 if(data.ship != null){
-                    sendData.result = Ships.loadProduct(data.ship, plant.name, points);
+                    sendData.result = Ships.loadProduct(data.ship, plant.name, data.productNum);
                 }
                 sendData.ships = Ships.getShips();
                 // if(!sendData.result){
@@ -308,7 +308,7 @@ io.on('connection', function (socket) {
                 }
                 sendData.player = Players.updatePlayer(data.player.name, role, [plant.id, data.productNum, points]);
                 if(data.wharf != null){
-                    var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"装载了"+data.productNum+"个"+plant.name+"到【船坞船】. </span></li>";
+                    var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"装载了"+data.productNum+"个"+plant.name+"到【船坞船】. 获得了"+points+"个point.</span></li>";
                     sendData.messages.push(message);
                 }else if(data.ship != null){
                     var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"装载了"+data.productNum+"个"+plant.name+"到运输船#"+data.ship+", 获得了"+points+"个point.</span></li>";
@@ -361,6 +361,7 @@ io.on('connection', function (socket) {
             if(roundRole >= playerNum){
               if(!judgeGameOver()){
                   roundRole = 0;
+                  sendData.role = 'none';
                   sendData.players = Players.getPlayers();
                   sendData.colonistsShip = Colonist.updateShip();
                   sendData.ships = Ships.updateShips();
@@ -382,6 +383,7 @@ io.on('connection', function (socket) {
                   Colonist.updateRemainder();
                   sendData.colonistsShip = 0;
               }
+              sendData.role = "none";
               var message = "<li class='message'><span class='messageSelect'>请"+sendData.nextPlayer.name+"选择角色."+"</span></li>";
               sendData.messages.push(message);
               console.log('emit :next role');

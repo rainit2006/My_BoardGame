@@ -63,7 +63,8 @@ function productLoadProcess(data){
     var contentString = "你没有能交易的货物.";
     $('#message').empty().text(contentString);
     $('#element').empty();
-    $('#ConfirmBtn').prop('disabled', true);
+    $('#ConfirmBtn').prop('disabled', false);
+    $('#SkipBtn').hide();
     return;
   }
 
@@ -83,45 +84,40 @@ function productLoadProcess(data){
   });
   shipsNode.prepend("<p>运输船：</p>");
 
-  $('#element').empty().append(ulNode1).append(shipsNode).append("<hr>").append(wharfNode);
+  $('#element').empty().append(ulNode1).append(shipsNode).append("<hr>").append(wharfNode).append("<hr>").append("<p id='selection'></p>");
   $("#ships :radio[name='ship']").prop("checked", false);
-  if(!hasProduct){
-    //$("input[name='ship']").prop('disabled', true);
-    $("#ships :radio[name='ship']").prop("disabled", true);
-    $("#ships").find("img").addClass("disabled");
-  }
-
+  $("#ships :radio[name='ship']").prop("disabled", true);
 }
 
 
-$(document).on('click', '#productUL li',function(){
-    var plantIndex = options[this.id].plantID;
-    var string1 = "你选择的货物是："+PLANTS[plantIndex].name;
-    $('#message').empty().text("请选择货物和船只.").append(string1);
-    ulNode2= $("<ul id='shipUL'>");
-    var ships = options[this.id].ship;
-    $.each(ships, function(index){
-        //plantOptions.push(this.name);
-        var div = $("<li id='"+ships[index]+"'> #"+ships[index]+"</li>");
-        ulNode2.append(div);
-    });
-    $('#element').empty().append("<p>Product:</p>").append(ulNode1).append("<p>可选择的货船:</p>").append(ulNode2);
-
-    $('#shipUL li').on('click', function(){
-        var shipIndex = this.id;
-        var string2 = string1 + "; 货船是： #"+shipIndex;
-
-        var productNum = 0;
-        if(myPlayer.products[plantIndex-1] < (SHIPLENGTH[shipIndex]-SHIPS[shipIndex].num)){
-            productNum = myPlayer.products[plantIndex-1];
-        }else{
-            productNum = SHIPLENGTH[shipIndex]-SHIPS[shipIndex].num;
-        }
-        mySelect.select = [plantIndex, shipIndex, productNum];
-        string2 += ". 可装载的货物数量是:"+productNum;
-        $('#message').empty().text("请选择货物和船只.").append(string2);
-    });
-});
+// $(document).on('click', '#productUL li',function(){
+//     var plantIndex = options[this.id].plantID;
+//     var string1 = "你选择的货物是："+PLANTS[plantIndex].name;
+//     $('#message').empty().text("请选择货物和船只.").append(string1);
+//     ulNode2= $("<ul id='shipUL'>");
+//     var ships = options[this.id].ship;
+//     $.each(ships, function(index){
+//         //plantOptions.push(this.name);
+//         var div = $("<li id='"+ships[index]+"'> #"+ships[index]+"</li>");
+//         ulNode2.append(div);
+//     });
+//     $('#element').empty().append("<p>Product:</p>").append(ulNode1).append("<p>可选择的货船:</p>").append(ulNode2);
+//
+//     $('#shipUL li').on('click', function(){
+//         var shipIndex = this.id;
+//         var string2 = string1 + "; 货船是： #"+shipIndex;
+//
+//         var productNum = 0;
+//         if(myPlayer.products[plantIndex-1] < (SHIPLENGTH[shipIndex]-SHIPS[shipIndex].num)){
+//             productNum = myPlayer.products[plantIndex-1];
+//         }else{
+//             productNum = SHIPLENGTH[shipIndex]-SHIPS[shipIndex].num;
+//         }
+//         mySelect.select = [plantIndex, shipIndex, productNum];
+//         string2 += ". 可装载的货物数量是:"+productNum;
+//         $('#message').empty().text("请选择货物和船只.").append(string2);
+//     });
+// });
 
 
 function getValidShip(productName, Ships){
@@ -133,7 +129,9 @@ function getValidShip(productName, Ships){
   $.each(Ships, function(index){
     if(Ships[index].name == productName){
         if(Ships[index].num < SHIPLENGTH[index]){
-            return index;
+            validShips = [];
+            validShips.push(index);
+            return;
         }else{
             return null;
         }
@@ -174,19 +172,19 @@ function productClearProcess(data){
           //largeWarehouseNode +="<div id='largeWarehouse'></div>"
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
-              largeWarehouseNode += "<li><input type='checkbox' name='largeWarehouse' value='"+i+"' >"+PLANTS[i+1].name+"("+myPlayer.products[i]+"个)</li>";
+              largeWarehouseNode += "<span><input type='checkbox' name='largeWarehouse' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</span>";
             }
           }
           var smallWarehouseNode = "<p>【小仓库】：请选择一类要储存的货物（被选择的货物的所有数量都会被保存到下一轮）</p>";
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
-              smallWarehouseNode += "<li><input type='radio' name='smallWarehouse' value='"+i+"' >"+PLANTS[i+1].name+"("+myPlayer.products[i]+"个)</li>";
+              smallWarehouseNode += "<span><input type='radio' name='smallWarehouse' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</span>";
             }
           }
           var reserveNode = "<p>请选择一类要保留货物，该类货物只能留1个。剩下的货物将都被倒掉。</p>";
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
-              reserveNode += "<li><input type='radio' name='reserve' value='"+i+"' >"+PLANTS[i+1].name+"("+myPlayer.products[i]+"个)</li>";
+              reserveNode += "<span><input type='radio' name='reserve' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</span>";
             }
           }
 
@@ -201,13 +199,13 @@ function productClearProcess(data){
           //largeWarehouseNode +="<div id='largeWarehouse'></div>"
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
-              largeWarehouseNode += "<input type='checkbox' name='largeWarehouse' value='"+i+"' >"+PLANTS[i+1].name+"("+myPlayer.products[i]+"个)</li>";
+              largeWarehouseNode += "<input type='checkbox' name='largeWarehouse' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</li>";
             }
           }
           var reserveNode = "<p>请选择一类要保留货物，该类货物只能留1个。剩下的货物将都被倒掉。</p>";
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
-              reserveNode += "<input type='radio' name='reserve' value='"+i+"' >"+PLANTS[i+1].name+"("+myPlayer.products[i]+"个)</li>";
+              reserveNode += "<input type='radio' name='reserve' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</li>";
             }
           }
           $('#element').empty().append(largeWarehouseNode+reserveNode);
@@ -220,13 +218,13 @@ function productClearProcess(data){
           var smallWarehouseNode = "<p>【小仓库】：请选择一类要储存的货物（被选择的货物的所有数量都会被保存到下一轮）</p>";
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
-              smallWarehouseNode += "<input type='radio' name='smallWarehouse' value='"+i+"' >"+PLANTS[i+1].name+"("+myPlayer.products[i]+"个)</li>";
+              smallWarehouseNode += "<input type='radio' name='smallWarehouse' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</li>";
             }
           }
           var reserveNode = "<p>请选择一类要保留货物，该类货物只能留1个。剩下的货物将都被倒掉。</p>";
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
-              reserveNode += "<input type='radio' name='reserve' value='"+i+"' >"+PLANTS[i+1].name+"("+myPlayer.products[i]+"个)</li>";
+              reserveNode += "<input type='radio' name='reserve' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</li>";
             }
           }
           $('#element').empty().append(smallWarehouseNode+reserveNode);
@@ -235,7 +233,7 @@ function productClearProcess(data){
       var reserveNode = "<p>请选择一类要保留货物，该类货物只能留1个。剩下的货物将都被倒掉。</p>";
       for(var i=0; i< myPlayer.products.length; i++){
         if(myPlayer.products[i] != 0){
-          reserveNode += "<input type='radio' name='reserve' value='"+i+"' >"+PLANTS[i+1].name+"("+myPlayer.products[i]+"个)</li>";
+          reserveNode += "<input type='radio' name='reserve' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</li>";
         }
         $('#element').empty().append(reserveNode);
       }
@@ -275,39 +273,44 @@ $(document).on('change', '[type=radio]', function(){
 
     if(!shipState.clear){
         if(this.name == "product"){
-            $("input :radio[name='ship']").prop("checked", false);
-            $("input :radio[name='ship']").prop("disabled", true);
+            $("#ships :radio[name='ship']").prop("checked", false);
+            $("#ships :radio[name='ship']").prop("disabled", true);
             var validShips = getValidShip(PLANTS[parseInt(this.value, 10)+1].name, SHIPS);
             for(var i=0; i<validShips.length; i++){
-                $("input :radio[name='ship'][value='"+this.value+"']").prop("disabled", false);
+                $("#ships :radio[name='ship'][value='"+validShips[i]+"']").prop("disabled", false);
             }
             if($("input[name = 'wharf']")[0]){
-                $("input :radio[name='wharf']").prop("checked", false);
+                $("#wharf :radio[name='wharf']").prop("checked", false);
             }
             mySelect.select=[null, null];
             mySelect.select[0] = parseInt(this.value,10)+1;
             mySelect.extra = null;
             mySelect.extra1 = null;
-
-        }else if(this.name=="ships"){
-            var index = mySelect.select[0];
-            var productNum = myPlayer.products(index);
-            if(productNum < (SHIPLENGTH - SHIPS[this.value].num)){
+            $('#selection').html("...");
+        }else if(this.name=="ship"){
+            var index = mySelect.select[0]-1;
+            var productNum = myPlayer.products[index];
+            //var index_ship = parseInt(this.value, 10);
+            if(productNum < (SHIPLENGTH[this.value] - SHIPS[this.value].num)){
                 mySelect.select[1] = productNum;
             }else{
-                mySelect.select[1] = SHIPLENGTH - SHIPS[this.value].num;
+                mySelect.select[1] = SHIPLENGTH[this.value] - SHIPS[this.value].num;
             }
 
             mySelect.extra = parseInt(this.value, 10);
             mySelect.extra1 = null;
-            $('#element').append("<p>你选择了"+PLANTS[mySelect.select[0]].name+"和 运输船#"+(mySelect.extra+1)+"。</p><p>你可以装载"+mySelect.select[1]+"个该货物到运输船。</p>");
+            $('#selection').html("你选择了"+PLANTS[mySelect.select[0]].name+"和 运输船#"+(mySelect.extra+1)+"。你可以装载"+mySelect.select[1]+"个该货物到运输船。");
         }else if(this.name == "wharf"){
-            $("input :radio[name='product']").prop("checked", false);
-            $("input :radio[name='ship']").prop("checked", false);
+            $("#products :radio[name='product']").prop("checked", false);
+            $("#ships :radio[name='ship']").prop("checked", false);
+            $("#ships :radio[name='ship']").prop("disabled", true);
             mySelect.select = null;
             mySelect.extra = null;
-            mySelect.extra1 = parseInt(this.value, 10)+1;
-            $('#element').append("<p>你选择了"+PLANTS[mySelect.extra1].name+"。你拥有的全部该货物都将被装载到【船坞船】。</p>");
+            var index = parseInt(this.value, 10);
+            mySelect.extra1 = [null, null];
+            mySelect.extra1[0] = index+1;
+            mySelect.extra1[1] = myPlayer.products[index];
+            $('#selection').html("你选择了"+PLANTS[index+1].name+"。你可以装载"+mySelect.extra1[1]+"个该货物到【船坞船】。");
         }
 
 
