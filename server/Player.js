@@ -71,7 +71,6 @@ exports.addNewPlayer=function(name, socketid){
               {id:8,name:'hacienda', points:1, quarry:1, price:2, needColonist:1, actualColonist:1, space:1, color:'purple' }, //农庄
               {id:9,name:'construction hut', points:1, quarry:1, price:2, needColonist:1, actualColonist:1, space:1, color:'purple' },
               {id:10,name:'small warehouse', points:1, quarry:1, price:3, needColonist:1, actualColonist:1, space:1, color:'purple' },
-              {id:11,name:'hospice', points:2, quarry:2, price:4, needColonist:1, actualColonist:1, space:1, color:'purple' }, //收容所
               {id:12,name:'office', points:2, quarry:2, price:5, needColonist:1, actualColonist:1, space:1, color:'purple' }, //分商会
               {id:13,name:'large market', points:2, quarry:2, price:5, needColonist:1, actualColonist:1, space:1, color:'purple' },
               {id:14,name:'large warehouse', points:2, quarry:2, price:6, needColonist:1, actualColonist:1, space:1, color:'purple' },

@@ -41,6 +41,22 @@ exports.allotByPlayer = function(num, playerNum){
     return number;
 }
 
+exports.takeoutColonist = function(){
+    if(colonistsNum > 0){
+      colonistsNum -= 1;
+      return 0;
+    }else if(ship > 0){
+      ship -= 1;
+      return 1;
+    }else{
+      return -1;
+    }
+}
+
+exports.getShip = function(){
+   return ship;
+}
+
 var calculateColonists = function(){
     var num = 4;
     //根据player的空白奴隶数，计算ship上的奴隶数

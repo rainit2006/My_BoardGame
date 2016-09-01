@@ -201,8 +201,14 @@ io.on('connection', function (socket) {
                     var plant = Plantation.getPlant(data.index);
                     //如果玩家拥有【建筑小屋】，则可以自动获得一个拓荒者.
                     if(containBuilding(data.player, 'hospice')){
-                       plant.actualColonist += 1;
-                       sendData.messages.push("<li class='message'><span class='messageSelect'>"+data.player.name+"因为有【收容所】所以同时获得一个开拓者.</span></li>");
+                      var result = Colonist.takeoutColonist();
+                      if( result >= 0){
+                        plant.actualColonist += 1;
+                         sendData.messages.push("<li class='message'><span class='messageSelect'>"+data.player.name+"因为有【收容所】所以同时获得一个开拓者.</span></li>");
+                        if(result == 1){
+                          sendData.colonist = Colonist.getShip();
+                        }
+                      }
                     }
                     sendData.player = Players.updatePlayer(data.player.name, role, plant);
                 }
@@ -321,10 +327,22 @@ io.on('connection', function (socket) {
                     break;
                 }
                 var build = Buildings.takeoutBuild(data.build);
-                sendData.player = Players.updatePlayer(data.player.name, role, [build, data.price]);
-                sendData.buildingsNum = Buildings.getBuildingsNum();
                 var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"选择了"+build.name+". </span></li>";
                 sendData.messages.push(message);
+                if(containBuilding(data.player, 'university')){
+                  var result = Colonist.takeoutColonist();
+                  if( result >= 0){
+                    build.actualColonist += 1;
+                    var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"因为拥有【大学】所以同时获得一个开拓者.</span></li>";
+                    sendData.messages.push(message);
+                    if(result == 1){
+                      sendData.colonist = Colonist.getShip();
+                    }
+                  }
+                }
+                sendData.player = Players.updatePlayer(data.player.name, role, [build, data.price]);
+                sendData.buildingsNum = Buildings.getBuildingsNum();
+
                 roundAction += 1;
                 break;
             case 'Craftsman': //监管
