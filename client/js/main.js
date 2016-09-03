@@ -15,14 +15,6 @@ $(function() {
         myPlayer.id = null;
     }
 
-    function initWrap(){
-      drawLoginPage();
-      drawPlayers();
-      drawGameArea();
-
-      console.log("init done.");
-    }
-
 
     $('#enter').click(function(){
         username = cleanInput($('.usernameInput').val().trim());
@@ -35,7 +27,6 @@ $(function() {
     });
 
 
-
     $('#startGame').click(function(){
       socket.emit('start game');
     });
@@ -45,20 +36,37 @@ $(function() {
       return $('<div/>').text(input).text();
    }
 
+   socket.on('players update', function(data){
+       console.log('players update: '+data.players.length);
+       updatePlayers(data);
+       drawLoginPage();
+   });
+
+
    socket.on('start game', function(data){
        $('.loginPage').fadeOut("slow");
        $('.wrap').show();
-       //initWrap();
+
        updateGameStatus(data);
        //console.log('start game.');
+       if(myPlayer.name == data.rolePlayer){
+          permit = true;
+       }
    });
 
     ////当角色被选择时，触发click事件
     $('.role').click(function(){
       console.log($(this).data('role') +' is clicked');
+      if(gameOver){
+        return;
+      }
+      if(!permit){
+          return;
+      }
       if(myPlayer.name != rolePlayer){
           return;
       }
+
 
       var selected = $(this).data('role');
       if(checkRoleActivity(selected) == 0){
@@ -73,6 +81,7 @@ $(function() {
           myPlayer.freeColonists += 1;
       }
       socket.emit('gameRoleSelect', sendData);
+      permit = false;
     });
 
 
@@ -83,6 +92,7 @@ $(function() {
             console.log(data.nextPlayer.name+' is not '+myPlayer.name);
             return;
         }
+
         $('#ConfirmBtn').show();
         $('#ConfirmBtn').prop('disabled', false);
         $('#SkipBtn').show();
@@ -119,7 +129,7 @@ $(function() {
 
         $('#popupTitle').empty().text(titleString);
         $('#popup1').show();
-
+        permit = false;
     });
 
 
@@ -197,9 +207,12 @@ $(function() {
                 break;
             case 'Builder':
                 if(btnName == "Confirm"){
-                    sendData.build = mySelect.select[0];
-                    myPlayer.buildArea.push(BUILDINGS[sendData.build]);
-                    sendData.price = mySelect.select[1];
+                    if(mySelect.select != null){
+                        sendData.build = mySelect.select[0];
+                        sendData.price = mySelect.select[1];
+                    }else{
+                        sendData.build = null;
+                    }
                 }else{
                     sendData.build = null;
                 }
@@ -211,6 +224,12 @@ $(function() {
                 break;
             default:
                 break;
+        }
+
+        if(gameOver){
+          $('#element').empty();
+          $('#popup1').hide();
+          return;
         }
         sendData.player = myPlayer;
         sendData.role = currentRole;
@@ -230,6 +249,47 @@ $(function() {
     //     updateGameStatus();
     //
     // });
+
+
+
+    socket.on('next round', function(data){
+        //change govenor player.
+        console.log('next round');
+        updateGameStatus(data);
+        if(myPlayer.name == data.rolePlayer){
+           permit = true;
+        }
+    });
+
+    socket.on('next role', function(data){
+        //change next player to select one role.
+        console.log('next role');
+
+        updateGameStatus(data);
+        if(myPlayer.name == data.rolePlayer){
+           permit = true;
+        }
+    });
+
+    socket.on('game over', function(data){
+        //change next player to select one role.
+        console.log('game over');
+        updateGameStatus(data);
+        gameOver = true;
+        rolePlayer = null;
+        permit = false;
+
+        $('#ConfirmBtn').show();
+        $('#ConfirmBtn').prop('disabled', false);
+        $('#SkipBtn').hide();
+        $('#OKBtn').hide();
+        $('#CancelBtn').hide();
+
+        gameOverProcess(data);
+        $('#popupTitle').empty().text("Game Over");
+        $('#popup1').show();
+
+    });
 
     function updateGameStatus(data){
         Messages = [];
@@ -264,6 +324,9 @@ $(function() {
         if(data.colonistsShip != null){
             COLONISTSHIP = data.colonistsShip;
         }
+        if(data.colonistsNum != null){
+            COLONISTNUM = data.colonistsNum;
+        }
         if(data.buildingsNum != null){
            BUILDINGSNUM  = data.buildingsNum;
         }
@@ -276,36 +339,6 @@ $(function() {
         drawPlayers();
         drawGameArea();
     }
-
-    socket.on('players update', function(data){
-        console.log('players update: '+data.players.length);
-        updatePlayers(data);
-        drawLoginPage();
-    });
-
-    socket.on('next round', function(data){
-        //change govenor player.
-        console.log('next round');
-        updateGameStatus(data);
-    });
-
-    socket.on('next role', function(data){
-        //change next player to select one role.
-        console.log('next role');
-
-        updateGameStatus(data);
-    });
-
-
-    // function updatePlayer(player){
-    //     if(player.name == myPlayer. name){
-    //         myPlayer = player;
-    //     }else{
-    //         var index = findPlayerbyName(player.name);
-    //         Players[index] = player;
-    //     }
-    // }
-
 
     function updatePlayers(data){
         if(data == null){

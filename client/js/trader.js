@@ -38,6 +38,8 @@ function traderProcess(data){
       if(options.length <= 0){
           contentString = "没有可以贩卖的货物。";
           $('#message').empty().text(contentString);
+          $('#SkipBtn').hide();
+          mySelect.select = null;
           return;
       }else{
           contentString = "请选择要贩卖的货物:";

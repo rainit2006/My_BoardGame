@@ -65,6 +65,15 @@
   border: 1px solid gray;
 }
 
+.popupBtn {
+	background: -moz-linear-gradient(top,#FFF 0%,#EEE);
+	background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#EEE));
+	border: 1px solid #DDD;
+	color:#111;
+	width: 100px;
+	padding: 10px 0;
+}
+
 #message{
   padding: 10px;
   font-size: 1em;

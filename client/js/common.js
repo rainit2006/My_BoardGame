@@ -1,5 +1,6 @@
 /////////Global variables////////////
 var gameStart = false;
+var gameOver = false;
 var BuildingAreaMaxNum = 12;
 var PlantationAreaMaxNum = 12;
 
@@ -66,6 +67,7 @@ var BUILDINGSNUM = [100, 5,5,5,5,5,5,  5,5,5,5,5,5,5,5,5,5,5,5,  5,5,5,5,5];
 var SHIPS = [{name:null, num:0},{name:null, num:0},{name:null, num:0}];
 var SHIPLENGTH = [5, 6, 7];
 var COLONISTSHIP = 4;
+var COLONISTNUM = 0;
 var TRADINGHOUSE = [];
 var HOUSELENGTH = 4;
 var Messages = [];
@@ -91,6 +93,7 @@ var myPlayer = {
 var mySelect = {select:null, extra:null, extra1:null}; //记录用户的选择
 var playerNum = 1;
 var currentRole = null;
+var permit = false; //控制是否允许点击role按钮
 var options = null;
 var shipState= {
   wharf:false,

@@ -24,6 +24,7 @@ function craftsmanProcess(data){
     });
 
     mySelect.select = addProducts;
+    $('#SkipBtn').hide();
 }
 
 function validProductNum(plantName, buildName){

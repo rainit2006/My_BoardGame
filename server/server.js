@@ -14,13 +14,15 @@ var Players=require('./Player');
 var settings = require(__dirname + '/../config/settings');
 
 var GameItemsArray = [];
-var FiledArray = [];
-var FiledLength = 10;
-var Action={//记录玩家的操作
-    index_GameItems:null,
-    index_Filed:null,
-    id:null
-};
+// var FiledArray = [];
+// var FiledLength = 10;
+// var Action={//记录玩家的操作
+//     index_GameItems:null,
+//     index_Filed:null,
+//     id:null
+// };
+var BuildingAreaMaxNum = 12;
+var PlantationAreaMaxNum = 12;
 var playerNum = 1;
 var round = 0;
 var roundAction = 0; //记录每轮里操作的玩家数，当操作过的玩家数等于玩家总数，则开始进入选角阶段。
@@ -28,6 +30,7 @@ var roundRole = 0; //记录选角色的玩家数
 var captainRound = 0; //记录船长角色中load货物的玩家数。当玩家数等于总数时，开始清理玩家手里的货物。
 var rolePlayer;
 var govenor;
+var gameOver = false;
 
 
 app.use(express.static(__dirname + '/../client'));
@@ -72,10 +75,11 @@ io.on('connection', function (socket) {
         var sendData = {};
         ////传递一些游戏初始状态/
         sendData.ships = Ships.getShips();
-        sendData.colonistsShip = Colonist.updateShip();
         sendData.tradingHouse = Trading.getTradingHouse();
         sendData.buildingsNum = Buildings.getBuildingsNum();
         sendData.players = Players.getPlayers();
+        sendData.colonistsShip = Colonist.getShip();
+        sendData.colonistsNum = Colonist.getColonistsNum();
 
         govenor = Players.initGovenor();
         rolePlayer = govenor;
@@ -111,6 +115,9 @@ io.on('connection', function (socket) {
 
     ////////game role is selected//////////////
     socket.on('gameRoleSelect', function(data){
+        if(gameOver){
+          return;
+        }
         console.log('gameRoleSelect:'+data.role);
         roundAction = 0; //重新记录操作的玩家数
         captainRound = 0;
@@ -145,11 +152,14 @@ io.on('connection', function (socket) {
                 sendData.tradingHouse = Trading.getTradingHouse();
                 break;
             case 'Mayor': //市长
-                sendData.colonist = Colonist.allotByPlayer(roundAction, Players.getPlayerNum());
-                var message = "<li class='message'><span class='messageSelect'>"+sendData.nextPlayer.name+"获得"+sendData.colonist+"个奴隶.</span></li>";
+                //var rolePlayer = Players.getRolePayerName();
+                //var flag = (data.player.name == rolePlayer);
+                var colonist = Colonist.allotByPlayer(roundAction, Players.getPlayerNum(), true);
+                var message = "<li class='message'><span class='messageSelect'>"+sendData.nextPlayer.name+"获得"+colonist+"个奴隶.</span></li>";
                 sendData.messages.push(message);
-                console.log("allot colonists:"+sendData.colonist);
-                //io.sockets.emit('MayorResponse', sendData);
+                sendData.player = Players.addColonits(data.player.name, colonist, colonist);
+                sendData.nextPlayer = sendData.player;
+                //console.log("allot colonists:"+sendData.colonist);
                 break;
             case 'Captain': //船长
                 sendData.ships = Ships.getShips();
@@ -166,6 +176,8 @@ io.on('connection', function (socket) {
                 //io.sockets.emit('ProspectorResponse', sendData);
                 break;
         }
+
+        sendData.colonistsNum = Colonist.getColonistsNum();
         io.sockets.emit('RoleResponse', sendData);
     });
 
@@ -194,6 +206,9 @@ io.on('connection', function (socket) {
     // });
 
     socket.on('player select', function(data){
+        if(gameOver){
+          return;
+        }
         var sendData = {};
         sendData.rolePlayer = rolePlayer;
         sendData.messages = [];
@@ -202,6 +217,7 @@ io.on('connection', function (socket) {
         if(data.messages != null){
             sendData.messages = data.messages;
         }
+        sendData.nextPlayer = Players.nextPlayer(data.player.name);
         sendData.role=role;
         switch (role) {
             case 'Settler': //拓荒者
@@ -221,7 +237,7 @@ io.on('connection', function (socket) {
                   var result = Colonist.takeoutColonist();
                   if( result >= 0){
                     plant.actualColonist += 1;
-                    Players.sendData.colonist(data.player.name, 1, 0);
+                    Players.addColonits(data.player.name, 1, 0);
                     messageString += data.player.name+"因为有【收容所】所以同时获得一个开拓者。";
 
                     if(result == 1){
@@ -286,10 +302,10 @@ io.on('connection', function (socket) {
                 roundAction += 1;
                 //计算下一个玩家的奴隶数
                 if(roundAction < playerNum){
-                    sendData.colonist = Colonist.allotByPlayer(roundAction, Players.getPlayerNum());
-                    sendData.nextPlayer = Players.addColonits(sendData.nextPlayer.name, sendData.colonist, sendData.colonist);
-                    console.log("Mayor colonist:"+sendData.colonist);
-                    var message = "<li class='message'><span class='messageSelect'>"+sendData.nextPlayer.name+"获得了"+sendData.colonist+"个奴隶. </span></li>";
+                    var colonist = Colonist.allotByPlayer(roundAction, Players.getPlayerNum(), false);
+                    sendData.nextPlayer = Players.addColonits(sendData.nextPlayer.name, colonist, colonist);
+                    console.log("Mayor colonist:"+colonist);
+                    var message = "<li class='message'><span class='messageSelect'>"+sendData.nextPlayer.name+"获得了"+colonist+"个奴隶. </span></li>";
                     sendData.messages.push(message);
                 }
                 break;
@@ -353,7 +369,7 @@ io.on('connection', function (socket) {
                   var result = Colonist.takeoutColonist();
                   if( result >= 0){
                     build.actualColonist += 1;
-                    Players.sendData.colonist(data.player.name, 1, 0);
+                    Players.addColonits(data.player.name, 1, 0);
                     messageString += data.player.name+"因为拥有【大学】所以同时获得了一个开拓者。";
                     if(result == 1){
                       sendData.colonist = Colonist.getShip();
@@ -372,9 +388,9 @@ io.on('connection', function (socket) {
                 var indigo = data.player.products[2];
                 var tobacco = data.player.products[3];
                 var coffee = data.player.products[4];
-                var messageString = data.player.name+"已拥有："+core+"个玉米，"+sugar+"个白糖，"+indigo+"个靛蓝，"+tobacco+"个烟草，"+coffee+"个咖啡。";
+                var messageString = data.player.name+"已拥有："+corn+"个玉米，"+sugar+"个白糖，"+indigo+"个靛蓝，"+tobacco+"个烟草，"+coffee+"个咖啡。";
 
-                if(containBuilding('factory')){
+                if(containBuilding(data.player, 'factory')){
                     var addProducts = data.addProducts;
                     var number = 0;
                     $.each(addProducts, function(index){
@@ -418,11 +434,12 @@ io.on('connection', function (socket) {
         }
 
         //取得最新状态的player
-        sendData.player = Players.getPlantByName(data.player.name);
-        ///计算next player，并传递最新的player数据
+        sendData.player = Players.getPlayerByName(data.player.name);
+        ///再次重新计算next player，以便得到最新的next player数据
         sendData.nextPlayer = Players.nextPlayer(data.player.name);
         console.log('next player will be: '+sendData.nextPlayer.name);
-
+        //更新剩余开拓者数目
+        sendData.colonistsNum = Colonist.getColonistsNum();
 
         //console.log('roundAction:'+roundAction+'; captainRound:'+captainRound);
         if((role == 'Captain')&&(captainRound >= playerNum)){
@@ -435,32 +452,45 @@ io.on('connection', function (socket) {
                   roundRole = 0;
                   sendData.role = 'none';
                   sendData.players = Players.getPlayers();
-                  sendData.colonistsShip = Colonist.updateShip();
+                  sendData.colonistsShip = Colonist.updateShip(sendData.players);
                   sendData.ships = Ships.updateShips();
+                  sendData.colonistsNum = Colonist.getColonistsNum();
 
                   game.allotMoneyForRoles();
                   game.activeAllRoles();
                   sendData.roles = game.getAllRoles();
-                  var message = "<li class='message'><span class='messageNewRound'>进入下一轮！</span></li>";
-                  sendData.messages.push(message);
+                  var messageString = "</span></li>";
 
                   var nextPlayer = Players.nextPlayer(govenor);
                   govenor = nextPlayer.name;
                   sendData.rolePlayer = govenor;
-                  message = "<li class='message'><span class='messageNewRound'>本轮总督是"+govenor+"。请"+govenor+"选择角色。</span></li>";
-                  sendData.messages.push(message);
+                  sendData.messages.push("<li class='message'><span class='messageNewRound'>进入下一轮！新的总督是"+govenor+"。请"+govenor+"选择角色。</span></li>");
                   console.log('emit : next round');
                   io.sockets.emit('next round', sendData);　//进入下一轮，更换总督玩家
               }
               else{
                   console.log('Game Over!');
-                  message = "<li class='message'><span class='messageGameEvent'>Game Over!</span></li>";
+                  gameOver = true;
+                  var message = "<li class='message'><span class='messageGameEvent'>Game Over!</span></li>";
                   sendData.messages.push(message);
+
+                  var players = Players.getPlayers();
+                  var resultInfo = gameResult();
+                  sendData.resultInfo = resultInfo;
+
+                  var messageString = "最终排位是:";
+                  for(var i = 0; i < resultInfo.length; i++){
+                      var player = resultInfo[i].player;
+                      var pointsArray = resultInfo[i].pointsArray;
+                      messageString += "No."+(i+1)+":"+player.name+", 总分数"+pointsArray[0];
+                  }
+                  sendData.messages.push("<li class='message'><span class='messageGameEvent'>"+messageString+"</span></li>");
+                  io.sockets.emit('game over', sendData);
               }
             }
             else{
               if(role == 'Mayor'){
-                  Colonist.updateRemainder();
+                  Colonist.clearShip();
                   sendData.colonistsShip = 0;
               }
               sendData.role = "none";
@@ -482,14 +512,49 @@ io.on('connection', function (socket) {
 
 });
 
-function judgeGameOver(remainder){
+function judgeGameOver(){
+   var check = false;
+   var remainder = Colonist.getRemainder();
    if(remainder <= 0){
-      return true;
+      check = true;
    }
-   else{
-      return false;
+
+   var players = Players.getPlayers();
+   for(var i=0; i<players.length; i++){
+      if(Players.getBuildingSpaces(players[i].name) >= BuildingAreaMaxNum){
+          check = true;
+      }
    }
+  return check;
+
 }
+
+function gameResult(){
+  var resultInfo = [];
+  var players = Players.getPlayers();
+  for(var i=0; i< players.length; i++){
+      var player = players[i];
+      var pointsArray = Players.getPoints(player.name);
+      resultInfo.push({player: player, pointsArray:pointsArray});
+  }
+  resultInfo.sort(compare);
+  return resultInfo;
+}
+
+function compare(a,b) {
+  if (a.pointsArray[0] < b.pointsArray[0])
+    return -1;
+  if (a.pointsArray[0] > b.pointsArray[0])
+    return 1;
+  if (a.pointsArray[0] == b.pointsArray[0]){
+    var a_money = a.player.money + a.player.product[0]+ a.player.product[1]+ a.player.product[2]+ a.player.product[3]+ a.player.product[4];
+    var b_money = b.player.money + b.player.product[0]+ b.player.product[1]+ b.player.product[2]+ b.player.product[3]+ b.player.product[4];
+
+     return a_money-b_money;
+  }
+  return 0;
+}
+
 
 function containBuilding(player, name){
   var result = false;

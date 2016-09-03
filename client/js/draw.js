@@ -117,6 +117,7 @@ function drawMyBuildArea(){
 
 /////////////////////////////////////
 function drawGameArea(){
+    drawPublicInfo();
     drawRoles();
     drawTradeArea();
     drawShipsArea();
@@ -124,6 +125,9 @@ function drawGameArea(){
     drawBuildings();
 }
 
+function drawPublicInfo(){
+    $("#publicInfo").html("<h3>剩余的开拓者（奴隶?）数量:"+COLONISTNUM+"</h3>");
+}
 
 function drawRoles(){
   $.each(Roles, function(){

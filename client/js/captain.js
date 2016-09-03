@@ -156,9 +156,11 @@ function productClearProcess(data){
   var messageText = "";
   if(array.length == 0){
     messageText = "你手里没有任何货物了。";
+    $('#SkipBtn').hide();
   }else if ((array.length == 1)&&(myPlayer.products[array[0]])){
     messageText = "你没有多余的货物需要倒掉。";
     mySelect.select = "all";
+    $('#SkipBtn').hide();
   }else{
     var hasSmallWarehouse = containBuilding('small warehouse');
     var hasLargeWarehouse = containBuilding('large warehouse');

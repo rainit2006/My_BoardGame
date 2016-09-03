@@ -3,7 +3,7 @@
 
 var MAX_PLAYER = 5;
 var Players = [];
-var playerNum = 0;
+var playerNum = 1;
 var playerOnlineNum = 0;
 var rolePlayerName = "";
 
@@ -29,7 +29,7 @@ exports.resetPlayers= function(){
       // coffee=0;
       player.products=[1,1,4,1,1];//corn, sugar, indigo, tabacco,coffee
       //player.plantArea=[];
-      player.plantArea=[{id:4, name:'tobacco', price:3, color:'lt-brown', needColonist:1, actualColonist:1}];
+      player.plantArea=[{id:4, name:'tobacco', price:3, color:'lt-brown', needColonist:1, actualColonist:0}];
       //player.buildArea=[];
    }
    return;
@@ -64,29 +64,23 @@ exports.addNewPlayer=function(name, socketid){
             // coffee:0,
             products:[1,1,4,1,1],//corn, sugar, indigo, tabacco,coffee
             //plantArea:[],
-            plantArea:[{id:4, name:'tobacco', price:3, color:'lt-brown', needColonist:1, actualColonist:1}],
+            plantArea:[{id:4, name:'tobacco', price:3, color:'lt-brown', needColonist:1, actualColonist:0}],
             //buildArea:[]
             buildArea: [
-              {id:7,name:'small market', points:1, quarry:1, price:1, needColonist:1, actualColonist:1, space:1, color:'purple' },
-              {id:8,name:'hacienda', points:1, quarry:1, price:2, needColonist:1, actualColonist:1, space:1, color:'purple' }, //农庄
-              {id:9,name:'construction hut', points:1, quarry:1, price:2, needColonist:1, actualColonist:1, space:1, color:'purple' },
-              {id:10,name:'small warehouse', points:1, quarry:1, price:3, needColonist:1, actualColonist:1, space:1, color:'purple' },
-              {id:12,name:'office', points:2, quarry:2, price:5, needColonist:1, actualColonist:1, space:1, color:'purple' }, //分商会
-              {id:13,name:'large market', points:2, quarry:2, price:5, needColonist:1, actualColonist:1, space:1, color:'purple' },
-              {id:14,name:'large warehouse', points:2, quarry:2, price:6, needColonist:1, actualColonist:1, space:1, color:'purple' },
-              {id:15,name:'factory', points:3, quarry:3, price:7, needColonist:1, actualColonist:1, space:1, color:'purple' },
-              {id:16,name:'university', points:3, quarry:3, price:8, needColonist:1, actualColonist:1, space:1, color:'purple' },
-              {id:17,name:'harbor', points:3, quarry:3, price:8, needColonist:1, actualColonist:1, space:1, color:'purple' },
-              {id:18,name:'wharf', points:3, quarry:3, price:9, needColonist:1, actualColonist:1, space:1, color:'purple' }
+              {id:14,name:'large warehouse', points:2, quarry:2, price:6, needColonist:1, actualColonist:0, space:1, color:'purple' },
+              {id:13,name:'large market', points:2, quarry:2, price:5, needColonist:1, actualColonist:0, space:1, color:'purple' },
+              {id:15,name:'factory', points:3, quarry:3, price:7, needColonist:1, actualColonist:0, space:1, color:'purple' },
+              {id:16,name:'university', points:3, quarry:3, price:8, needColonist:1, actualColonist:0, space:1, color:'purple' },
+              {id:17,name:'harbor', points:3, quarry:3, price:8, needColonist:1, actualColonist:0, space:1, color:'purple' },
+              {id:18,name:'wharf', points:3, quarry:3, price:9, needColonist:1, actualColonist:0, space:1, color:'purple' }
                 ]
         };
         Players.push(player);
-
-        playerNum += 1;
         playerOnlineNum += 1;
         //console.log("Players pushed.");
     }
 
+    playerNum = Players.length;
     //console.log(Players);
     return Players;
 };
@@ -109,6 +103,7 @@ var findPlayerbyName = function(name){
 };
 
 exports.getPlayerNum = function(){
+  playerNum = Players.length;
   return playerNum;
 };
 
@@ -157,7 +152,7 @@ exports.updatePlayer=function(name, role, val1){
 
         break;
     case 'Mayor':
-        player.totalColonists = val1.totalColonists;
+        player.actualColonists = val1.actualColonists;
         player.freeColonists = val1.freeColonists;
         player.buildArea = val1.buildArea;
         player.plantArea = val1.plantArea;
@@ -226,6 +221,10 @@ exports.nextPlayer = function(name){
   return Players[index];
 }
 
+exports.getPlayerByName = function(name){
+  var index = findPlayerbyName(name);
+  return Players[index];
+};
 
 exports.initGovenor = function(){
   var index= Math.floor(Math.random()*playerNum);
@@ -246,11 +245,79 @@ exports.clearRolePayerName = function(name){
   rolePlayerName = "";
 }
 
+exports.getBuildingSpaces = function(playerName){
+  var index = findPlayerbyName(playerName);
+  var buildings = Players[index].buildArea;
+  var spaces = 0;
+  for(var i=0; i< buildings.length; i++){
+      spaces += buildings[i].space;
+  }
+  return spaces;
+}
 
-exports.containBuilding = function(player, name){
+exports.getPoints = function(playerName){
+  var index = findPlayerbyName(playerName);
+  var player = Players[index];
+  var points = player.points;
+  var buildingPoints = 0;
+  var extraPoints = 0;
+
+  for(var i=0; i<player.buildArea.length; i++){
+      var building = player.buildArea[i];
+      buildingPoints += building.points;
+  }
+
+  ///公会大厅
+  if(containBuilding(player, 'guild hall')){
+      for(var i=0; i<player.buildArea.length; i++){
+          var id = player.buildArea[i].id;
+          if((id == 1)||(id==3)){
+            extraPoints += 1;
+          }else if((id == 2)||(id==4)||(id == 5)||(id==6)){
+            extraPoints += 2;
+          }
+      }
+  }
+  ///公馆
+  if(containBuilding(player, 'residence')){
+      var length = player.plantArea.length;
+      if(length <= 9){
+        extraPoints += 4;
+      }else if(length == 10){
+        extraPoints += 5;
+      }else if(length == 11){
+        extraPoints += 6;
+      }else if(length == 12){
+        extraPoints += 7;
+      }
+  }
+  ///堡垒
+  if(containBuilding(player, 'fortress')){
+      extraPoints += Math.floor(player.totalColonists / 3);
+  }
+  ///海关
+  if(containBuilding(player, 'customs house')){
+      extraPoints += Math.floor(player.points / 4);
+  }
+  ///市政厅
+  if(containBuilding(player, 'city hall')){
+      for(var i=0; i<player.buildArea.length; i++){
+          var color = player.buildArea[i].color;
+          if(color=='purple'){
+            extraPoints += 1;
+          }
+      }
+  }
+
+  var sumPoints = points + buildingPoints + extraPoints;
+  return [sumPoints, points, buildingPoints, extraPoints];
+}
+
+
+function containBuilding(player, buildingName){
   var result = false;
   for(var i =0; i<player.buildArea.length; i++){
-    if(player.buildArea[i].name == name){
+    if(player.buildArea[i].name == buildingName){
         if(player.buildArea[i].actualColonist == 1){
             result = true;
             return result;
@@ -259,6 +326,7 @@ exports.containBuilding = function(player, name){
   }
   return result;
 }
+
 
 function createPlayerID(){
   var id = 0;

@@ -1,8 +1,7 @@
 //////Mayor//////
 function mayorProcess(data){
-    myPlayer.freeColonists += data.colonist;
-    myPlayer.totalColonists += data.colonist;
     drawColonistList();
+    $('#SkipBtn').hide();
 }
 
 function drawColonistList(){
@@ -54,7 +53,7 @@ function drawColonistList(){
       }
       selectItem += "<div>"+ItemNode+addBtn+minusBtn+"</div>";
     });
-    $('#element').append("<p>Build Area</p>").append(selectItem);
+    $('#element').append("<p>Build Area</p>").append(selectItem).append("<hr>");
 }
 
 $(document).on('click', '.add',function(){

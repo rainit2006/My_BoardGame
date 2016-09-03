@@ -46,6 +46,8 @@ function builderProcess(data){
         contentString = "你拥有金钱:"+myPlayer.money+"。空地数量："+(BuildingAreaMaxNum - myPlayer.buildArea.length)+"。能购买的Building是：";
     }else{
         contentString = "你拥有金钱:"+myPlayer.money+"。空地数量："+(BuildingAreaMaxNum - myPlayer.buildArea.length)+"。目前没有你能购买的建筑。";
+        mySelect.select = null;
+        $('#SkipBtn').hide();
     }
     $('#message').empty().text(contentString);
 
