@@ -89,7 +89,6 @@ var myPlayer = {
 };
 
 var mySelect = {select:null, extra:null, extra1:null}; //记录用户的选择
-
 var playerNum = 1;
 var currentRole = null;
 var options = null;

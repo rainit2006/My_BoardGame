@@ -158,6 +158,7 @@ function productClearProcess(data){
     messageText = "你手里没有任何货物了。";
   }else if ((array.length == 1)&&(myPlayer.products[array[0]])){
     messageText = "你没有多余的货物需要倒掉。";
+    mySelect.select = "all";
   }else{
     var hasSmallWarehouse = containBuilding('small warehouse');
     var hasLargeWarehouse = containBuilding('large warehouse');
@@ -166,22 +167,23 @@ function productClearProcess(data){
     if(hasSmallWarehouse && hasLargeWarehouse){
       if(array.length <= 3){
           messageText = "你同时拥有【大仓库】和【小仓库】。而且你没有多余的货物需要倒掉。";
+          mySelect.select = "all";
       }else{
           messageText = "你同时拥有【大仓库】和【小仓库】。请选择三类要储存的货物和一类只保留1个的货物，其他货物都将被倒掉。";
-          var largeWarehouseNode = "<p>【大仓库】：请选择两类要储存的货物（被选择的货物的所有数量都会被保存到下一轮）</p>";
+          var largeWarehouseNode = "<div>【大仓库】：请选择两类要储存的货物（被选择的货物的所有数量都会被保存到下一轮）</div>";
           //largeWarehouseNode +="<div id='largeWarehouse'></div>"
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
               largeWarehouseNode += "<span><input type='checkbox' name='largeWarehouse' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</span>";
             }
           }
-          var smallWarehouseNode = "<p>【小仓库】：请选择一类要储存的货物（被选择的货物的所有数量都会被保存到下一轮）</p>";
+          var smallWarehouseNode = "<div>【小仓库】：请选择一类要储存的货物（被选择的货物的所有数量都会被保存到下一轮）</div>";
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
               smallWarehouseNode += "<span><input type='radio' name='smallWarehouse' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</span>";
             }
           }
-          var reserveNode = "<p>请选择一类要保留货物，该类货物只能留1个。剩下的货物将都被倒掉。</p>";
+          var reserveNode = "<div>请选择一类要保留货物，该类货物只能留1个。剩下的货物将都被倒掉。</div>";
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
               reserveNode += "<span><input type='radio' name='reserve' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</span>";
@@ -193,16 +195,17 @@ function productClearProcess(data){
     }else if(hasLargeWarehouse){
       if(array.length <= 2){
           messageText = "你拥有【大仓库】，而且你没有多余的货物需要倒掉。";
+          mySelect.select = "all";
       }else{
           messageText = "你拥有【大仓库】。请选择两类要储存的货物和一类只保留1个的货物，其他货物都将被倒掉。";
-          var largeWarehouseNode = "<p>【大仓库】：请选择两类要储存的货物（被选择的货物的所有数量都会被保存到下一轮）</p>";
+          var largeWarehouseNode = "<div>【大仓库】：请选择两类要储存的货物（被选择的货物的所有数量都会被保存到下一轮）</div>";
           //largeWarehouseNode +="<div id='largeWarehouse'></div>"
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
               largeWarehouseNode += "<input type='checkbox' name='largeWarehouse' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</li>";
             }
           }
-          var reserveNode = "<p>请选择一类要保留货物，该类货物只能留1个。剩下的货物将都被倒掉。</p>";
+          var reserveNode = "<div>请选择一类要保留货物，该类货物只能留1个。剩下的货物将都被倒掉。</div>";
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
               reserveNode += "<input type='radio' name='reserve' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</li>";
@@ -213,15 +216,16 @@ function productClearProcess(data){
     }else if(hasSmallWarehouse){
       if(array.length <= 1){
           messageText = "你拥有【小仓库】。而且你没有多余的货物需要倒掉。";
+          mySelect.select = "all";
       }else{
           messageText = "你拥有【小仓库】。请选择一类要储存的货物和一类只保留1个的货物，其他货物都将被倒掉。";
-          var smallWarehouseNode = "<p>【小仓库】：请选择一类要储存的货物（被选择的货物的所有数量都会被保存到下一轮）</p>";
+          var smallWarehouseNode = "<div>【小仓库】：请选择一类要储存的货物（被选择的货物的所有数量都会被保存到下一轮）</div>";
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
               smallWarehouseNode += "<input type='radio' name='smallWarehouse' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</li>";
             }
           }
-          var reserveNode = "<p>请选择一类要保留货物，该类货物只能留1个。剩下的货物将都被倒掉。</p>";
+          var reserveNode = "<div>请选择一类要保留货物，该类货物只能留1个。剩下的货物将都被倒掉。</div>";
           for(var i=0; i< myPlayer.products.length; i++){
             if(myPlayer.products[i] != 0){
               reserveNode += "<input type='radio' name='reserve' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</li>";
@@ -230,7 +234,7 @@ function productClearProcess(data){
           $('#element').empty().append(smallWarehouseNode+reserveNode);
       }
     }else{
-      var reserveNode = "<p>请选择一类要保留货物，该类货物只能留1个。剩下的货物将都被倒掉。</p>";
+      var reserveNode = "<div>请选择一类要保留货物，该类货物只能留1个。剩下的货物将都被倒掉。</div>";
       for(var i=0; i< myPlayer.products.length; i++){
         if(myPlayer.products[i] != 0){
           reserveNode += "<input type='radio' name='reserve' value='"+i+"' ><img src='../image/"+PLANTS[i+1].name+".png'>("+myPlayer.products[i]+"个)</li>";
@@ -239,7 +243,7 @@ function productClearProcess(data){
       }
     }
   }
-  $('#message').empty().text(messageText);
+  $('#message').empty().append(messageText);
 }
 
 
@@ -270,7 +274,9 @@ $(document).on('change', '[type=checkbox]', function(){
 
 $(document).on('change', '[type=radio]', function(){
     console.log(this.value+";"+this.name);
-
+    if(currentRole != 'Captain'){
+      return;
+    }
     if(!shipState.clear){
         if(this.name == "product"){
             $("#ships :radio[name='ship']").prop("checked", false);

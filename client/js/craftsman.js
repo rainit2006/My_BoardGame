@@ -22,6 +22,8 @@ function craftsmanProcess(data){
         myPlayer.products[index] += addProducts[index];
         $('#element').append("<div>"+PLANTS[index+1].name +" : "+myPlayer.products[index]+"个; (新加"+addProducts[index]+"个)</div>");
     });
+
+    mySelect.select = addProducts;
 }
 
 function validProductNum(plantName, buildName){

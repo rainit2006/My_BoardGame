@@ -27,6 +27,7 @@ var roundAction = 0; //记录每轮里操作的玩家数，当操作过的玩家
 var roundRole = 0; //记录选角色的玩家数
 var captainRound = 0; //记录船长角色中load货物的玩家数。当玩家数等于总数时，开始清理玩家手里的货物。
 var rolePlayer;
+var govenor;
 
 
 app.use(express.static(__dirname + '/../client'));
@@ -39,7 +40,6 @@ http.listen(settings.port, function() {
 
 function init() {
   //根据player个数决定每次开拓者角色时platation tile数量, colonist总数等。
-
   game.init();
   Buildings.iniBuildings();
   Ships.initShips();
@@ -75,6 +75,17 @@ io.on('connection', function (socket) {
         sendData.colonistsShip = Colonist.updateShip();
         sendData.tradingHouse = Trading.getTradingHouse();
         sendData.buildingsNum = Buildings.getBuildingsNum();
+        sendData.players = Players.getPlayers();
+
+        govenor = Players.initGovenor();
+        rolePlayer = govenor;
+        sendData.rolePlayer = govenor;
+
+        sendData.messages = [];
+        var message = "<li class='message'><span class='messageGameEvent'>Game start！</span></li>";
+        sendData.messages.push(message);
+        message = "<li class='message'><span class='messageNewRound'>总督是："+govenor+"。请"+govenor+"选择角色。</span></li>";
+        sendData.messages.push(message);
 
         io.sockets.emit('start game', sendData);
     });
@@ -108,27 +119,25 @@ io.on('connection', function (socket) {
         sendData.messages = [];
 
         Players.setRolePayerName(data.player.name);
-        rolePlayer = data.player.name;
-        sendData.rolePlayer = data.player.name;
 
         var role = data.role;
         sendData.role = role;
-        var message = "<li class='message'><span class='messageRole'>"+data.player.name+"选择的角色是："+role+".</span></li>";
+        var messageString = data.player.name+"选择的角色是："+role+"。";
         sendData.messages.push(message);
 
         var money = game.getRoleMoney(role);
         if(money > 0){
             Players.addMoney(data.player.name, money);
-            var message = "<li class='message'><span class='messageRole'>"+data.player.name+"获得了："+money+"个金币.</span></li>";
-            sendData.messages.push(message);
+            messageString += data.player.name+"获得了："+money+"个金币。";
         }
+        sendData.messages.push("<li class='message'><span class='messageRole'>"+messageString+"</span></li>");
         game.disactiveRole(role);
         sendData.roles = game.getAllRoles();
         sendData.nextPlayer = data.player;
 
         switch(role){
             case 'Settler': //拓荒者
-                sendData.options = Plantation.getPlatationOptions(true);
+                sendData.options = Plantation.createPlatationOptions(true);
                 //console.log(data.options);
                 break;
             case 'Trader'://商人
@@ -196,32 +205,43 @@ io.on('connection', function (socket) {
         sendData.role=role;
         switch (role) {
             case 'Settler': //拓荒者
-                if(data.index != null){
-                    Plantation.takeoutPlant(data.index);
-                    var plant = Plantation.getPlant(data.index);
-                    //如果玩家拥有【建筑小屋】，则可以自动获得一个拓荒者.
-                    if(containBuilding(data.player, 'hospice')){
-                      var result = Colonist.takeoutColonist();
-                      if( result >= 0){
-                        plant.actualColonist += 1;
-                         sendData.messages.push("<li class='message'><span class='messageSelect'>"+data.player.name+"因为有【收容所】所以同时获得一个开拓者.</span></li>");
-                        if(result == 1){
-                          sendData.colonist = Colonist.getShip();
-                        }
-                      }
-                    }
-                    sendData.player = Players.updatePlayer(data.player.name, role, plant);
-                }
-                if(data.extraIndex != null){
-                    Plantation.takeoutPlant(data.extraIndex);
-                    var plant = Plantation.getPlant(data.extraIndex);
-                    sendData.player = Players.updatePlayer(data.player.name, role, plant);
+                if(data.index == null){
+                    roundAction +=1;
+                    sendData.options = Plantation.updatePlantationOptions(0);
+                    sendData.messages.push("<li class='message'><span class='messageSelect'>"+data.player.name+"放弃了选择。</span></li>");
+                    break;
                 }
 
-                var extraPlant = Plantation.getPlant(data.extraIndex);
-                sendData.options = Plantation.updatePlantationOptions();
+                Plantation.takeoutPlant(data.index);
+                var plant = Plantation.getPlant(data.index);
+                var messageString = data.player.name+"选择了"+plant.name+"。";
+
+                //如果玩家拥有【收容所】，则可以自动获得一个拓荒者.
+                if(containBuilding(data.player, 'hospice')){
+                  var result = Colonist.takeoutColonist();
+                  if( result >= 0){
+                    plant.actualColonist += 1;
+                    Players.sendData.colonist(data.player.name, 1, 0);
+                    messageString += data.player.name+"因为有【收容所】所以同时获得一个开拓者。";
+
+                    if(result == 1){
+                      sendData.colonist = Colonist.getShip();
+                    }
+                  }
+                }
+                Players.updatePlayer(data.player.name, role, plant);
+
+                if(data.extraIndex != null){
+                    Plantation.takeoutPlant(data.extraIndex);
+                    var plant1 = Plantation.getPlant(data.extraIndex);
+                    sendData.player = Players.updatePlayer(data.player.name, role, plant1);
+                    messageString += data.player.name+"因为有【农庄】所以额外获得一个"+plant1.name+"。";
+                }
+
+                sendData.options = Plantation.updatePlantationOptions(plant.id);
                 //console.log('after plant selected:');
                 //console.log(data.options);
+                sendData.messages.push("<li class='message'><span class='messageSelect'>"+messageString+"</span></li>");
                 roundAction += 1;
                 break;
             case 'Trader'://商人
@@ -246,7 +266,7 @@ io.on('connection', function (socket) {
                 if(containBuilding(data.player, 'large market')){
                     money += 2;
                 }
-                sendData.player = Players.updatePlayer(data.player.name, role, [money, data.product.id]);
+                Players.updatePlayer(data.player.name, role, [money, data.product.id]);
                 var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"贩卖了"+data.product.name+". 共获得了"+money+"金币. </span></li>";
                 sendData.messages.push(message);
 
@@ -261,13 +281,13 @@ io.on('connection', function (socket) {
                 break;
             case 'Mayor': //市长
                 //更新每个玩家的buildarea和plantArea
-                sendData.player = Players.updatePlayer(data.player.name, role, data.player);
+                Players.updatePlayer(data.player.name, role, data.player);
 
                 roundAction += 1;
                 //计算下一个玩家的奴隶数
                 if(roundAction < playerNum){
                     sendData.colonist = Colonist.allotByPlayer(roundAction, Players.getPlayerNum());
-                    sendData.nextPlayer = Players.addColonits(sendData.nextPlayer.name, sendData.colonist);
+                    sendData.nextPlayer = Players.addColonits(sendData.nextPlayer.name, sendData.colonist, sendData.colonist);
                     console.log("Mayor colonist:"+sendData.colonist);
                     var message = "<li class='message'><span class='messageSelect'>"+sendData.nextPlayer.name+"获得了"+sendData.colonist+"个奴隶. </span></li>";
                     sendData.messages.push(message);
@@ -312,7 +332,7 @@ io.on('connection', function (socket) {
                 if(containBuilding(data.player, 'harbor')){
                   points += 1;
                 }
-                sendData.player = Players.updatePlayer(data.player.name, role, [plant.id, data.productNum, points]);
+                Players.updatePlayer(data.player.name, role, [plant.id, data.productNum, points]);
                 if(data.wharf != null){
                     var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"装载了"+data.productNum+"个"+plant.name+"到【船坞船】. 获得了"+points+"个point.</span></li>";
                     sendData.messages.push(message);
@@ -324,47 +344,81 @@ io.on('connection', function (socket) {
             case 'Builder'://建筑士
                 if(data.build == null){
                     roundAction +=1;
+                    sendData.messages.push("<li class='message'><span class='messageSelect'>"+data.player.name+"没有选择任何建筑。</span></li>");
                     break;
                 }
                 var build = Buildings.takeoutBuild(data.build);
-                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"选择了"+build.name+". </span></li>";
-                sendData.messages.push(message);
+                var messageString = data.player.name+"选择了"+build.name+"。";
                 if(containBuilding(data.player, 'university')){
                   var result = Colonist.takeoutColonist();
                   if( result >= 0){
                     build.actualColonist += 1;
-                    var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"因为拥有【大学】所以同时获得一个开拓者.</span></li>";
-                    sendData.messages.push(message);
+                    Players.sendData.colonist(data.player.name, 1, 0);
+                    messageString += data.player.name+"因为拥有【大学】所以同时获得了一个开拓者。";
                     if(result == 1){
                       sendData.colonist = Colonist.getShip();
                     }
                   }
                 }
-                sendData.player = Players.updatePlayer(data.player.name, role, [build, data.price]);
+                Players.updatePlayer(data.player.name, role, [build, data.price]);
                 sendData.buildingsNum = Buildings.getBuildingsNum();
-
+                sendData.messages.push("<li class='message'><span class='messageSelect'>"+messageString+"</span></li>");
                 roundAction += 1;
                 break;
             case 'Craftsman': //监管
-                sendData.player = Players.updatePlayer(data.player.name, role, data.player);
-                var corn = data.player.product[0];
-                var sugar = data.player.product[1];
-                var indigo = data.player.product[2];
-                var tobacco = data.player.product[3];
-                var coffee = data.player.product[4];
-                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"已拥有："+
-                                    core+"个玉米，"+sugar+"个白糖，"+indigo+"个靛蓝，"+tobacco+"个烟草，"+coffee+"个咖啡. </span></li>";
-                sendData.messages.push(message);
+                Players.updatePlayer(data.player.name, role, data.player);
+                var corn = data.player.products[0];
+                var sugar = data.player.products[1];
+                var indigo = data.player.products[2];
+                var tobacco = data.player.products[3];
+                var coffee = data.player.products[4];
+                var messageString = data.player.name+"已拥有："+core+"个玉米，"+sugar+"个白糖，"+indigo+"个靛蓝，"+tobacco+"个烟草，"+coffee+"个咖啡。";
+
+                if(containBuilding('factory')){
+                    var addProducts = data.addProducts;
+                    var number = 0;
+                    $.each(addProducts, function(index){
+                        if(addProducts[index] > 0){
+                            number += 1;
+                        }
+                    });
+                    var moeny = 0;
+                    switch(number){
+                      case 2:
+                        money = 1;
+                        break;
+                      case 3:
+                        money =2;
+                        break;
+                      case 4:
+                        money = 3;
+                        break;
+                      case 5:
+                        money = 5;
+                        break;
+                      default:
+                        money = 0;
+                        break;
+                    }
+                    if(money > 0){
+                        messageString += data.player.name+"因为拥有【工厂】，所以根据生产货物的种类，额外获得"+money+"个金币。";
+                    }
+                }
+
+
+                sendData.messages.push("<li class='message'><span class='messageSelect'>"+messageString+"</span></li>");
                 roundAction += 1;
                 break;
             case 'Prospector'://淘金者
-                var money = game.getMoney(role);
-                sendData.player = Players.updateplayer(data.player.name, role, money);
-                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"获得了"+money+"个金币. </span></li>";
+                Players.updatePlayer(data.player.name, role, 1);
+                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"获得了1个金币. </span></li>";
                 sendData.messages.push(message);
                 roundAction = playerNum;
                 break;
         }
+
+        //取得最新状态的player
+        sendData.player = Players.getPlantByName(data.player.name);
         ///计算next player，并传递最新的player数据
         sendData.nextPlayer = Players.nextPlayer(data.player.name);
         console.log('next player will be: '+sendData.nextPlayer.name);
@@ -389,11 +443,19 @@ io.on('connection', function (socket) {
                   sendData.roles = game.getAllRoles();
                   var message = "<li class='message'><span class='messageNewRound'>进入下一轮！</span></li>";
                   sendData.messages.push(message);
+
+                  var nextPlayer = Players.nextPlayer(govenor);
+                  govenor = nextPlayer.name;
+                  sendData.rolePlayer = govenor;
+                  message = "<li class='message'><span class='messageNewRound'>本轮总督是"+govenor+"。请"+govenor+"选择角色。</span></li>";
+                  sendData.messages.push(message);
                   console.log('emit : next round');
                   io.sockets.emit('next round', sendData);　//进入下一轮，更换总督玩家
               }
               else{
                   console.log('Game Over!');
+                  message = "<li class='message'><span class='messageGameEvent'>Game Over!</span></li>";
+                  sendData.messages.push(message);
               }
             }
             else{
@@ -402,7 +464,9 @@ io.on('connection', function (socket) {
                   sendData.colonistsShip = 0;
               }
               sendData.role = "none";
-              var message = "<li class='message'><span class='messageSelect'>请"+sendData.nextPlayer.name+"选择角色."+"</span></li>";
+              var nextPlayer = Players.nextPlayer(rolePlayer);
+              sendData.rolePlayer = nextPlayer.name;
+              var message = "<li class='message'><span class='messageSelect'>请"+sendData.rolePlayer+"选择角色."+"</span></li>";
               sendData.messages.push(message);
               console.log('emit :next role');
 

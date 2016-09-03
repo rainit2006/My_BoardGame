@@ -50,12 +50,15 @@ $(function() {
        $('.wrap').show();
        //initWrap();
        updateGameStatus(data);
-       console.log('start game.');
+       //console.log('start game.');
    });
 
     ////当角色被选择时，触发click事件
     $('.role').click(function(){
       console.log($(this).data('role') +' is clicked');
+      if(myPlayer.name != rolePlayer){
+          return;
+      }
 
       var selected = $(this).data('role');
       if(checkRoleActivity(selected) == 0){
@@ -108,6 +111,7 @@ $(function() {
               craftsmanProcess(data);
               break;
           case 'Prospector':
+              prospectorProcess(data);
               break;
           default:
 
@@ -129,21 +133,11 @@ $(function() {
                 if(btnName == "Confirm"){
                     sendData.index=mySelect.select;
                     //console.log("selected plant :"+options[mySelect.select].name);
-                    var plant = PLANTS[mySelect.select];
-                    // myPlayer.plantArea.push(plant);
-                    // if(options[mySelect.select].name == 'quarry'){
-                    //     myPlayer.quarry += 1;
-                    // }
-                    Messages.push("<li class='message'><span class='messageSelect'>"+myPlayer.name+"选择了"+plant.name+".</span></li>");
                     if(mySelect.extra != null){
                         sendData.extraIndex = mySelect.extra;
-                        var plant = PLANTS[mySelect.extra];
-                        Messages.push("<li class='message'><span class='messageSelect'>"+myPlayer.name+"因为有【农庄】所以额外获得一个"+plant.name+".</span></li>");
                     }
-
                 }else if(btnName == "Skip"){
                     sendData.index = null;
-                    Messages.push("<li class='message'><span class='messageSelect'>"+data.player.name+"放弃了选择.</span></li>");
                 }
                 console.log(sendData.index+':'+options[mySelect.select]+' is clicked!');
                 break;
@@ -178,20 +172,20 @@ $(function() {
                 }else{
                     sendData.productClear = true;
 
-                    var tmp = [0,0,0,0,0];
-                    if(mySelect.select != null){
+                    if((mySelect.select != null)&&(mySelect.select != "all")){
+                      var tmp = [0,0,0,0,0];
                       tmp[mySelect.select] = 1;
+                      if(mySelect.extra != null){
+                        tmp[mySelect.extra] = myPlayer.products[mySelect.extra];
+                      }
+                      if(mySelect.extra1 != null){
+                        $.each(mySelect.extra1, function(index){
+                            var i = mySelect.extra1[index];
+                            tmp[i]=myPlayer.products[i];
+                        });
+                      }
+                      myPlayer.products = tmp;
                     }
-                    if(mySelect.extra != null){
-                      tmp[mySelect.extra] = myPlayer.products[mySelect.extra];
-                    }
-                    if(mySelect.extra1 != null){
-                      $.each(mySelect.extra1, function(index){
-                          var i = mySelect.extra1[index];
-                          tmp[i]=myPlayer.products[i];
-                      });
-                    }
-                    myPlayer.products = tmp;
                     Messages.push("<li class='message'><span class='messageSelect'>"+myPlayer.name+"完成了货物清理。剩余货物："
                               +myPlayer.products[0]+"个corn、"
                               +myPlayer.products[1]+"个sugar、"
@@ -211,16 +205,12 @@ $(function() {
                 }
                 break;
             case 'Craftsman':
-                var corn = myPlayer.products[0];
-                var sugar = myPlayer.products[1];
-                var indigo = myPlayer.products[2];
-                var tobacco = myPlayer.products[3];
-                var coffee = myPlayer.products[4];
-                var message = "<li class='message'><span class='messageSelect'>"+data.player.name+"已拥有："+
-                                    core+"个玉米，"+sugar+"个白糖，"+indigo+"个靛蓝，"+tobacco+"个烟草，"+coffee+"个咖啡. </span></li>";
-                Messages.push(message);
+                sendData.addProducts = mySelect.select;
+                break;
+            case 'Prospector':
                 break;
             default:
+                break;
         }
         sendData.player = myPlayer;
         sendData.role = currentRole;

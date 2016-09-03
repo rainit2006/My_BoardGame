@@ -2,7 +2,7 @@
 function traderProcess(data){
   var contentString = "";
 
-  if(TRADINGHOUSE.length >= HOUSELENGTH){
+  if((TRADINGHOUSE != null)&&(TRADINGHOUSE.length >= HOUSELENGTH)){
     contentString = "商会已经满了，不再接受货物贩卖。";
     $('#message').empty().text(contentString);
     return;
@@ -15,12 +15,19 @@ function traderProcess(data){
     return;
   }
 
+  options = [];
   ////如果拥有分商会，则可以卖手里的任何货物。
   if( containBuilding('office')){
       contentString = "请选择要贩卖的货物:";
       $('#message').empty().text(contentString);
+
+      for(var i=0; i<myPlayer.products.length; i++){
+          if(myPlayer.products[i] != 0){
+              options.push(PLANTS[i+1]);
+          }
+      }
+
   }else{
-      options = [];
       for(var i=0; i<myPlayer.products.length; i++){
           if(myPlayer.products[i] != 0){
               if(!existInTradingHouse(i, TRADINGHOUSE)){
@@ -41,7 +48,7 @@ function traderProcess(data){
   var ulNode= $("<ul>");
   $.each(options, function(index){
       //plantOptions.push(this.name);
-      var div = $("<li id='"+options[index].id+"'>"+options[index].name+"</li>");
+      var div = $("<li id='"+options[index].id+"'><img src='../image/"+options[index].name+".png'></li>");
       ulNode.append(div);
   });
   $('#element').empty().append(ulNode);
@@ -50,7 +57,7 @@ function traderProcess(data){
       ///判断操作的player是不是有效的当前player，如果是则传给服务器data。
       mySelect.select = PLANTS[this.id];
 
-      $('#message').text(contentString).append("<p>你选择的是："+$(this).text()+"</p>");
+      $('#message').text(contentString).append("<p>你选择的是："+PLANTS[this.id].name+"</p>");
   });
 }
 

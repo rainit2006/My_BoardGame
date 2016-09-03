@@ -210,10 +210,10 @@ exports.addMoney = function(name, val){
   return Players[index];
 };
 
-exports.addColonits = function(name, val){
+exports.addColonits = function(name, val1,  val2){
    var index = findPlayerbyName(name);
-   Players[index].totalColonists += val;
-   Players[index].freeColonists += val;
+   Players[index].totalColonists += val1;
+   Players[index].freeColonists += val2;
    return Players[index];
 };
 
@@ -224,6 +224,14 @@ exports.nextPlayer = function(name){
     index = 0;
   }
   return Players[index];
+}
+
+
+exports.initGovenor = function(){
+  var index= Math.floor(Math.random()*playerNum);
+
+  console.log(index);
+  return Players[index].name;
 }
 
 exports.setRolePayerName = function(name){

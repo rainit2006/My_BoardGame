@@ -28,7 +28,7 @@ var extraOptions = [];
       extraOptions = [];
   }
 
-  exports.getPlatationOptions = function(){
+  exports.createPlatationOptions = function(){
       PlantOptions=[];
       extraOptions=[];
       quarryOptions=[];

@@ -407,12 +407,12 @@ li {
   color:blue;
 }
 
-.messageGameOver {
+.messageGameEvent {
   color:red;
 }
 
 .messageNewRound{
-  color:red;
+  color:#800080;
 }
 
 #RolesArea {

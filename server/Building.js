@@ -5,8 +5,8 @@ var Buildings = [
   {id:2,name:'indigo plant', points:2, quarry:2, price:3, needColonist:3, actualColonist:0, space:1, color:'blue' },
   {id:3,name:'small sugar mill', points:1, quarry:2, price:1, needColonist:1, actualColonist:0, space:1, color:'white' },
   {id:4,name:'sugar mill', points:2, quarry:2, price:4, needColonist:1, actualColonist:0, space:1, color:'white' },
-  {id:5,name:'tabacco storage', points:3, quarry:3, price:5, needColonist:3, actualColonist:0, space:1, color:'lt brown' },
-  {id:6,name:'coffee roaster', points:3, quarry:3, price:6, needColonist:2, actualColonist:0, space:1, color:'dk brown' },
+  {id:5,name:'tabacco storage', points:3, quarry:3, price:5, needColonist:3, actualColonist:0, space:1, color:'lt-brown' },
+  {id:6,name:'coffee roaster', points:3, quarry:3, price:6, needColonist:2, actualColonist:0, space:1, color:'dk-brown' },
 
   //small purple building
   {id:7,name:'small market', points:1, quarry:1, price:1, needColonist:1, actualColonist:0, space:1, color:'purple' },
