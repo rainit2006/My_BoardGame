@@ -121,3 +121,12 @@ function getPlantByName(name){
       }
   }
 }
+
+function findPlayerByID(ID){
+  for(var i = 0; i< Players.length; i++){
+      var player = Players[i];
+      if(player.id == ID){
+        return Players[i];
+      }
+  }
+}

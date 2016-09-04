@@ -6,6 +6,23 @@ exports.init = function(playerNum){
     Ship = playerNum;
 }
 
+function initColonistNum(playerNum){
+    switch (playerNum) {
+      case 3:
+          colonistsNum = 90;
+          break;
+      case 4:
+          colonistsNum = 90;
+          break;
+      case 5:
+          colonistsNum = 90;
+          break;
+      default: colonistsNum = 90;
+    }
+    colonistsNum -= playerNum;
+};
+
+
 exports.updateShip = function(players){
     Ship = calculateColonists(players);
     if(colonistsNum > Ship){
@@ -31,20 +48,6 @@ exports.clearShip = function(){
     console.log('colonists remainder:'+colonistsNum);
 };
 
-function initColonistNum(playerNum){
-    switch (playerNum) {
-      case 3:
-          colonistsNum = 90;
-          break;
-      case 4:
-          colonistsNum = 90;
-          break;
-      case 5:
-          colonistsNum = 90;
-          break;
-      default: colonistsNum = 90;
-    }
-};
 
 
 exports.allotByPlayer = function(index, playerNum, isRolePlayer){

@@ -23,14 +23,9 @@ body {
     --player-img-size: 150px;
 }
 
-div{
-  /*border: 1px solid gray;*/
-}
-
 p {
   line-height: 1px !important;
   font-size: 10px;
-
 }
 
 .vacant {
@@ -128,20 +123,19 @@ hr {
 
 /**************loginPage****************************/
 .loginPage {
-/*  position: absolute;
+  position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  left: 0;*/
-  padding-top: 100px;
+  left: 0;
   width:100%;
   margin: 0 auto;
   text-align: center;
 }
 
 .loginForm {
-   height: 100px;
-   margin-top: 200px;
+   position: absolute;
+   top: 200px;
    text-align: center;
    width: 100%;
 
@@ -168,11 +162,12 @@ hr {
   width: 150px;
   height: 150px;
   list-style:none;
+  font-size: 1em;
 }
 
 #playerArea img{
-  width: var(--player-img-size);
-  height: var(--player-img-size);
+  width: 150px;
+  height: 150px;
 }
 
 
@@ -216,20 +211,60 @@ hr {
   flex-direction: column;
   flex-wrap: nowrap;
   align-items: center;
-  width: 300px;
+  width: 350px;
   padding: 0px 0px;
   border: 0.5px solid #bbb;
 }
 
-.UserArea{
-  width: 100%;
+
+#leftArea ul {
+   display: flex;
+   flex-flow: row wrap;
+   justify-content:center;
+   align-items: center;
+   list-style:none;
+   padding: 0;
+}
+
+#leftArea li {
+  text-align: center;
+  width: 100px;
+  height: 50px;
+  border: 1px solid gray;
+}
+
+
+.playerArea{
+  /** width: 100%  不需要**/
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: center;
+  border: 10px solid #336600;
 }
 
-#MyPlayerArea {
+.myFiled{
+  width: 100%;
+  margin: auto;
+  padding: 5px;
+  text-align: center;
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+}
+
+.myFiled p{
+  font-size: 10px;
+}
+
+.myFiled li img{
+  width: 18px;
+  height: 18px;
+}
+
+/*#MyPlayerArea {
   border-style: 1px;
   padding-left: 20%;
   padding-right:20%;
@@ -237,19 +272,10 @@ hr {
   display:flex;
   flex-direction: column;
   flex-wrap: nowrap;
-}
+  align-items: center;
+}*/
 
-#OtherPlayersArea {
-  border-style: 1px;
-  padding-left: 20%;
-  padding-right:20%;
-  padding-top: 20px;
-  display:flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-}
-
-#MyPlayerArea img{
+/*#MyPlayerArea img{
   width: var(--player-img-size);
   height: var(--player-img-size);
 }
@@ -263,92 +289,60 @@ hr {
   line-height: 1px;
   padding: 0;
   margin: 0;
+}*/
+.playerInfo{
+  width: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
 }
 
-/*#OtherPlayersArea {
-  width: 100%;
-  border-style: 1px;
-  padding-left: 20%;
-  padding-right:20%;
-  padding-top: 20px;
-}*/
-
-.otherplayer {
+.playerState {
+  /** width: 100%  不需要**/
+  margin: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  border: 1px solid gray;
-  background-color: yellow;
-  margin-bottom: 3px;
+  justify-content: left;
 }
 
-.otherplayer img{
-  width: var(--player-img-size);
-  height: var(--player-img-size);
-}
-
-.face {
-  width: var(--player-img-size);
-  height: var(--player-img-size);
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.otherplayer p{
-  line-height: 1px;
-  padding: 1px;
-  margin: 0;
-}
-
-.otherplayer p img{
+.playerState img{
   width: 20px;
   height: 20px;
 }
 
 
-#leftArea ul {
-   display: flex;
-   flex-flow: row wrap;
-   justify-content:flex-start;
-   align-items: center;
-   list-style:none;
-   padding: 0;
+.face img{
+  width: 150px;
+  height: 150px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-#leftArea li {
-  text-align: center;
-  width: 100px;
-  height: 50px;
-  border: 1px solid gray;
+.playerinfo p{
+  line-height: 1px;
+  padding: 1px;
+  margin: 0;
 }
 
-/*
-ul {
-   display: flex;
-   flex-flow: row wrap;
-   justify-content:flex-start;
-   align-items: center;
-   list-style:none;
-   padding: 0;
+.playerinfo p img{
+  width: 20px;
+  height: 20px;
 }
 
-li {
-  text-align: center;
-  width: 100px;
-  height: 50px;
-  border: 1px solid gray;
-}*/
 
 .filed{
-  padding-left: 20px;
+  /** width: 100%  不需要**/
+  margin: auto;
+  padding: 5px;
   text-align: center;
-}
-
-.filed li{
-  font-size: 5px;
-  border-width: 1px;
-  border-color: #808000;
+  display: flex;
+  flex-flow: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
 }
 
 .filed p{
@@ -360,25 +354,28 @@ li {
   height: 18px;
 }
 
-
-/*
-#OtherPlayersArea > ul {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content:space-around;
-  align-items: center;
-  padding: 0;
-  margin:0;
+#OtherPlayerArea{
+ /** width: 100%  不需要**/
+ display: flex;
+ flex-direction: column;
+ flex-wrap: nowrap;
+ justify-content: center;
+ align-items: center;
 }
 
-#OtherPlayersArea > ul li{
-  width: 80px;
-  height: 80px;
-  list-style:none;
-}*/
+.otherPlayerArea{
+ /** width: 100%  不需要**/
+ display: flex;
+ flex-direction: column;
+ flex-wrap: nowrap;
+ justify-content: center;
+ align-items: center;
+ margin: 0;
+ padding: 0;
+}
 
 
-
+/********************/
 #rightArea {
   width:500px;
   flex: 2 0 auto;
