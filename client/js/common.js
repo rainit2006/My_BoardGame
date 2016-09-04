@@ -62,7 +62,7 @@ var BUILDINGS = [
   {id:22,name:'customs house', points:4, quarry:4, price:10, needColonist:1, actualColonist:0, space:2, color:'purple' },//海关
   {id:23,name:'city hall', points:4, quarry:4, price:10, needColonist:1, actualColonist:0, space:2, color:'purple' }//市政厅
 ];
-var BUILDINGSNUM = [100, 5,5,5,5,5,5,  5,5,5,5,5,5,5,5,5,5,5,5,  5,5,5,5,5];
+var BUILDINGSNUM = [];
 
 var SHIPS = [{name:null, num:0},{name:null, num:0},{name:null, num:0}];
 var SHIPLENGTH = [5, 6, 7];

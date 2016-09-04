@@ -56,7 +56,6 @@ io.on('connection', function (socket) {
 
     socket.on('new player join', function (data) {
         // var player = new Object();
-        // player.id = data.id;
         // player.socket = socket.id;
         console.log('new player:' + data+','+ socket.id);
         socket.name = data;
@@ -347,6 +346,7 @@ io.on('connection', function (socket) {
                 }
                 if(containBuilding(data.player, 'harbor')){
                   points += 1;
+                  // player.id = data.id;
                 }
                 Players.updatePlayer(data.player.name, role, [plant.id, data.productNum, points]);
                 if(data.wharf != null){

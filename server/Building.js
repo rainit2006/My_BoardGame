@@ -30,7 +30,7 @@ var Buildings = [
   {id:23,name:'city hall', points:4, quarry:4, price:10, needColonist:1, actualColonist:0, space:2, color:'purple' }//市政厅
 ];
 
-var buildingsNum = [100, 5,5,5,5,5,5,  5,5,5,5,5,5,5,5,5,5,5,5,  5,5,5,5,5];
+var buildingsNum = [0, 3,3,3,3,3,2,  2,2,2,2,2,2,2,2,2,2,2,2,  1,1,1,1,1];
 
 exports.getBuildingsNum = function(){
     console.log(buildingsNum);
@@ -78,5 +78,5 @@ exports.iniBuildings = function(){
       {id:23,name:'city hall', points:4, quarry:4, price:10, needColonist:1, actualColonist:0, space:2, color:'purple' }//市政厅
     ];
 
-    buildingsNum = [100, 5,5,5,5,5,5,  5,5,5,5,5,5,5,5,5,5,5,5,  5,5,5,5,5];
+    buildingsNum = [0, 3,3,3,3,3,2,  2,2,2,2,2,2,2,2,2,2,2,2,  1,1,1,1,1];
 }

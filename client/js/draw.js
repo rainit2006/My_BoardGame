@@ -33,7 +33,7 @@ function drawPlayers(){
 
 function drawMyPlayer(){
   var img = "<img src='../image/face"+myPlayer.id+".png'>";
-  $('.face').append(img);
+  $('.face').empty().append(img);
   var string ="<span><img src='../image/coin.png'> "+myPlayer.money+" <img src='../image/point.png'> "+myPlayer.points+"</span>"+
           "<span><img src='../image/worker.png'> "+myPlayer.totalColonists+"(残余："+myPlayer.freeColonists+")"+
           "  <img src='../image/quarry.png'> "+myPlayer.quarry+"</span>"+
@@ -41,7 +41,7 @@ function drawMyPlayer(){
             "<img src='../image/indigo.png'> "+myPlayer.products[2]+"<img src='../image/tobacco.png'> "+
             myPlayer.products[3]+"<img src='../image/coffee.png'> "+myPlayer.products[4]+"</span>";
 
-  $('.playerState').append('<h3>'+myPlayer.name+'</h3>'+string);
+  $('.playerState').empty().append('<h3>'+myPlayer.name+'</h3>'+string);
 
   drawMyPlantArea();
   drawMyBuildArea();
@@ -212,7 +212,7 @@ function drawGameArea(){
 }
 
 function drawPublicInfo(){
-    $("#publicInfo").html("<h3>剩余的开拓者（奴隶?）数量:"+COLONISTNUM+"</h3>");
+    $("#publicInfo").html("<h3>剩余的开拓者数量:"+COLONISTNUM+"</h3>");
 }
 
 function drawRoles(){
