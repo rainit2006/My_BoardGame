@@ -20,16 +20,16 @@ exports.resetPlayers= function(){
       player.points=0;
       player.totalColonists=0;
       player.freeColonists=0;
-      player.money=20;
+      player.money=0;
       player.quarry=0;
       // corn=0;
       // sugar=0;
       // indigo=0;
       // tabacco=0;
       // coffee=0;
-      player.products=[1,1,4,1,1];//corn, sugar, indigo, tabacco,coffee
+      player.products=[0,0,0,0,0];//corn, sugar, indigo, tabacco,coffee
       //player.plantArea=[];
-      player.plantArea=[{id:4, name:'tobacco', price:3, color:'lt-brown', needColonist:1, actualColonist:0}];
+      player.plantArea=[];
       //player.buildArea=[];
    }
    return;
@@ -55,25 +55,18 @@ exports.addNewPlayer=function(name, socketid){
             points:0,
             totalColonists:0,
             freeColonists:0,
-            money:20,
+            money:0,
             quarry:0,
             // corn:0,
             // sugar:0,
             // indigo:0,
             // tabacco:0,
             // coffee:0,
-            products:[1,1,4,1,1],//corn, sugar, indigo, tabacco,coffee
+            products:[0,0,0,0,0],//corn, sugar, indigo, tabacco,coffee
             //plantArea:[],
-            plantArea:[{id:4, name:'tobacco', price:3, color:'lt-brown', needColonist:1, actualColonist:0}],
+            plantArea:[],
             //buildArea:[]
-            buildArea: [
-              {id:14,name:'large warehouse', points:2, quarry:2, price:6, needColonist:1, actualColonist:0, space:1, color:'purple' },
-              {id:13,name:'large market', points:2, quarry:2, price:5, needColonist:1, actualColonist:0, space:1, color:'purple' },
-              {id:15,name:'factory', points:3, quarry:3, price:7, needColonist:1, actualColonist:0, space:1, color:'purple' },
-              {id:16,name:'university', points:3, quarry:3, price:8, needColonist:1, actualColonist:0, space:1, color:'purple' },
-              {id:17,name:'harbor', points:3, quarry:3, price:8, needColonist:1, actualColonist:0, space:1, color:'purple' },
-              {id:18,name:'wharf', points:3, quarry:3, price:9, needColonist:1, actualColonist:0, space:1, color:'purple' }
-                ]
+            buildArea: []
         };
         Players.push(player);
         playerOnlineNum += 1;
@@ -229,6 +222,49 @@ exports.getPlayerByName = function(name){
 exports.initGovenor = function(){
   var index= Math.floor(Math.random()*playerNum);
 
+  switch(playerNum){
+    case 3:
+        for(var i = 0; i<Players.length; i++){
+            Players[i].money=2;
+        }
+        var secondPlayer = Players[(index+1)%playerNum];
+        secondPlayer.plantArea.push({id:3, name:'indigo', price:2, color:'blue', needColonist:1, actualColonist:0});
+        var thirdPlayer = Players[(index+2)%playerNum];
+        thirdPlayer.plantArea.push({id:1, name:'corn', price:0, color:'yellow', needColonist:1, actualColonist:0});
+        break;
+    case 4:
+        for(var i = 0; i<Players.length; i++){
+            Players[i].money = 3;
+        }
+        var secondPlayer = Players[(index+1)%playerNum];
+        secondPlayer.plantArea.push({id:3, name:'indigo', price:2, color:'blue', needColonist:1, actualColonist:0});
+        var thirdPlayer = Players[(index+2)%playerNum];
+        thirdPlayer.plantArea.push({id:1, name:'corn', price:0, color:'yellow', needColonist:1, actualColonist:0});
+        var forthPlayer = Players[(index+3)%playerNum];
+        forthPlayer.plantArea.push({id:1, name:'corn', price:0, color:'yellow', needColonist:1, actualColonist:0});
+        break;
+    case 5:
+        for(var i = 0; i<Players.length; i++){
+            Players[i].money = 4;
+        }
+        var secondPlayer = Players[(index+1)%playerNum];
+        secondPlayer.plantArea.push({id:3, name:'indigo', price:2, color:'blue', needColonist:1, actualColonist:0});
+        var thirdPlayer = Players[(index+2)%playerNum];
+        thirdPlayer.plantArea.push({id:3, name:'indigo', price:2, color:'blue', needColonist:1, actualColonist:0});
+        var forthPlayer = Players[(index+3)%playerNum];
+        forthPlayer.plantArea.push({id:1, name:'corn', price:0, color:'yellow', needColonist:1, actualColonist:0});
+        var fifthPlayer = Players[(index+4)%playerNum];
+        fifthPlayer.plantArea.push({id:1, name:'corn', price:0, color:'yellow', needColonist:1, actualColonist:0});
+        break;
+    default:
+        for(var i = 0; i<Players.length; i++){
+            Players[i].money = 1;
+        }
+        var secondPlayer = Players[(index+1)%playerNum];
+        secondPlayer.plantArea.push({id:3, name:'indigo', price:2, color:'blue', needColonist:1, actualColonist:0});
+        break;
+  }
+
   console.log(index);
   return Players[index].name;
 }
@@ -326,7 +362,6 @@ function containBuilding(player, buildingName){
   }
   return result;
 }
-
 
 function createPlayerID(){
   var id = 0;
