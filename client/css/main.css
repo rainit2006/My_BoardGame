@@ -448,7 +448,7 @@ hr {
 #seaArea {
   background-image: url("../image/sea.jpg");
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size:cover;
 }
 
 #seaArea img{
@@ -528,7 +528,5 @@ hr {
   height:20px;
   text-align: center;
   float:left;
-  background-image: url("../image/sea.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-color: #FFCC33;
 }
