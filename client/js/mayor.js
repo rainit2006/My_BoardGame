@@ -29,7 +29,7 @@ function drawColonistList(){
       }
       selectItem += "<div>"+ItemNode+addBtn+minusBtn+"</div>";
     });
-    $('#element').empty().append("<p>Plant Area</p>").append(selectItem).append("<hr>");
+    $('#element').empty().append(selectItem).append("<hr>");
 
 
     selectItem="";
@@ -53,7 +53,7 @@ function drawColonistList(){
       }
       selectItem += "<div>"+ItemNode+addBtn+minusBtn+"</div>";
     });
-    $('#element').append("<p>Build Area</p>").append(selectItem).append("<hr>");
+    $('#element').append(selectItem).append("<hr>");
 }
 
 $(document).on('click', '.add',function(){

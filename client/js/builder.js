@@ -53,7 +53,7 @@ function builderProcess(data){
 
     $('#buildList').change(function(){
         var id = $(this).children(':selected').attr('id');
-        console.log("selected build is "+id);
+        //console.log("selected build is "+id);
         if(id == 0){
           return;
         }

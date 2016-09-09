@@ -5,6 +5,7 @@ function traderProcess(data){
   if((TRADINGHOUSE != null)&&(TRADINGHOUSE.length >= HOUSELENGTH)){
     contentString = "商会已经满了，不再接受货物贩卖。";
     $('#message').empty().text(contentString);
+    $('#SkipBtn').hide();
     return;
   }
 
@@ -12,6 +13,7 @@ function traderProcess(data){
   if(!check){
     contentString = "你手里啥货物都没有，啥也做不了！";
     $('#message').empty().text(contentString);
+    $('#SkipBtn').hide();
     return;
   }
 

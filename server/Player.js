@@ -17,20 +17,17 @@ exports.resetPlayers= function(){
    }
    for(var i=0; i < Players.length; i++){
       var player = Players[i];
+      if(player.online == 0){
+        Players.splice(i, 1);
+      }
       player.points=0;
       player.totalColonists=0;
       player.freeColonists=0;
       player.money=0;
       player.quarry=0;
-      // corn=0;
-      // sugar=0;
-      // indigo=0;
-      // tabacco=0;
-      // coffee=0;
       player.products=[0,0,0,0,0];//corn, sugar, indigo, tabacco,coffee
-      //player.plantArea=[];
       player.plantArea=[];
-      //player.buildArea=[];
+      player.buildArea=[];
    }
    return;
 };
@@ -57,15 +54,8 @@ exports.addNewPlayer=function(name, socketid){
             freeColonists:0,
             money:0,
             quarry:0,
-            // corn:0,
-            // sugar:0,
-            // indigo:0,
-            // tabacco:0,
-            // coffee:0,
             products:[0,0,0,0,0],//corn, sugar, indigo, tabacco,coffee
-            //plantArea:[],
             plantArea:[],
-            //buildArea:[]
             buildArea: []
         };
         Players.push(player);

@@ -7,6 +7,7 @@ function settlerProcess(data){
   if((myPlayer.plantArea != null)&&(myPlayer.plantArea.length >= PlantationAreaMaxNum)){
         var contentString = "你的农场空地已满，无法再选择了.";
         $('#message').empty().text(contentString);
+        $('#SkipBtn').hide();
         return;
   }
   var contentString = "请选择你想要的种植园或采石场.";

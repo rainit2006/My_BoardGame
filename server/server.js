@@ -49,6 +49,11 @@ function init() {
   Trading.init();
   Plantation.init();
   Colonist.init(playerNum);
+  round = 0;
+  roundRole = 0;
+  roundAction = 0;
+  captainRound = 0;
+  gameOver = false;
 }
 
 io.on('connection', function (socket) {
@@ -79,6 +84,7 @@ io.on('connection', function (socket) {
         sendData.players = Players.getPlayers();
         sendData.colonistsShip = Colonist.getShip();
         sendData.colonistsNum = Colonist.getColonistsNum();
+        sendData.roles = game.getAllRoles();
 
         govenor = Players.initGovenor();
         rolePlayer = govenor;
@@ -100,7 +106,7 @@ io.on('connection', function (socket) {
         GameItemsArray[i][1] = GameItemsArray[i][1] - 1;
         FiledArray[j][0] = GameItemsArray[i][0];
         FiledArray[j][0] = Action.id;
-        console.log('submit.'+Action.index_GameItems+';'+Action.index_Filed);
+        //console.log('submit.'+Action.index_GameItems+';'+Action.index_Filed);
         io.sockets.emit('update', data);
     });
 
@@ -303,7 +309,7 @@ io.on('connection', function (socket) {
                 if(roundAction < playerNum){
                     var colonist = Colonist.allotByPlayer(roundAction, Players.getPlayerNum(), false);
                     sendData.nextPlayer = Players.addColonits(sendData.nextPlayer.name, colonist, colonist);
-                    console.log("Mayor colonist:"+colonist);
+                    //console.log("Mayor colonist:"+colonist);
                     var message = "<li class='message'><span class='messageSelect'>"+sendData.nextPlayer.name+"获得了"+colonist+"个奴隶. </span></li>";
                     sendData.messages.push(message);
                 }
@@ -328,7 +334,7 @@ io.on('connection', function (socket) {
                     sendData.messages.push(message);
                     break;
                 }
-                console.log(data.product);
+                //console.log(data.product);
                 var plant = Plantation.getPlant(data.product);
                 if(data.ship != null){
                     sendData.result = Ships.loadProduct(data.ship, plant.name, data.productNum);
@@ -444,7 +450,7 @@ io.on('connection', function (socket) {
         //console.log('roundAction:'+roundAction+'; captainRound:'+captainRound);
         if((role == 'Captain')&&(captainRound >= playerNum)){
             sendData.productClear = true;
-            console.log("set data.productClear as true");
+            //console.log("set data.productClear as true");
         }
         if(roundAction >= playerNum){
             if(roundRole >= playerNum){

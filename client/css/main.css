@@ -436,8 +436,11 @@ hr {
 }
 
 #RolesArea .disabled{
-  background-color: gray;
+  /*background-color: gray;
   opacity: 0.2;
+  filter: alpha(opacity=20); /* msie */
+  -webkit-filter: grayscale(100%);
+  grayscale(100%);
 }
 
 #RolesArea .roleCoin img{

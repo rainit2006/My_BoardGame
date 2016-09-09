@@ -7,17 +7,18 @@
   background: rgba(0, 0, 0, 0.7);
   transition: opacity 500ms;
   display: none;
+  height: 100%;
 }
 
 .popup {
   margin: 100px auto;
   padding: 20px;
-  background: #fff;
+  background: rgba(0, 0, 0, 1);;
   background-image: url("../image/bk-pop.jpg");
   border-radius: 5px;
   width: 70%;
   position: relative;
-  transition: all 5s ease-in-out;
+  transition: 1; all 5s ease-in-out;
   overflow-y: scroll;
   height:400px;
 }

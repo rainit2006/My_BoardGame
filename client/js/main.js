@@ -46,12 +46,19 @@ $(function() {
    socket.on('start game', function(data){
        $('.loginPage').fadeOut("slow");
        $('.wrap').show();
+       $("#messageArea").empty().append("<ul class='messages'><h3>--Welcome to my board game!--</h3></ul>");
+       $('#popup1').hide();
+       $('#RolesArea').show();
 
        updateGameStatus(data);
-       //console.log('start game.');
+
+
+       console.log('start game.');
        if(myPlayer.name == data.rolePlayer){
           permit = true;
        }
+
+
    });
 
     ////当角色被选择时，触发click事件
@@ -129,6 +136,7 @@ $(function() {
 
         $('#popupTitle').empty().text(titleString);
         $('#popup1').show();
+        $('#RolesArea').hide();
         permit = false;
     });
 
@@ -240,6 +248,7 @@ $(function() {
 
         $('#element').empty();
         $('#popup1').hide();
+        $('#RolesArea').show();
     });
 
     // socket.on('update', function(data){

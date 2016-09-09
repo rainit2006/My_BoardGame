@@ -45,11 +45,11 @@ exports.updateShips = function(){
 }
 
 exports.initShips = function(){
-  // Ship0 = {name:null, num:0};
-  // Ship1 = {name:null, num:0};
-  // Ship2 = {name:null, num:0};
-  Ship0 = {name:'indigo', num:3};
-  Ship1 = {name:'coffee', num:6};
-  Ship2 = {name:'tobacco', num:7};
+  Ship0 = {name:null, num:0};
+  Ship1 = {name:null, num:0};
+  Ship2 = {name:null, num:0};
+  // Ship0 = {name:'indigo', num:3};
+  // Ship1 = {name:'coffee', num:6};
+  // Ship2 = {name:'tobacco', num:7};
   Ships = [Ship0, Ship1, Ship2];
 }
