@@ -502,7 +502,7 @@ io.on('connection', function (socket) {
               sendData.role = "none";
               var nextPlayer = Players.nextPlayer(rolePlayer);
               sendData.rolePlayer = nextPlayer.name;
-              var message = "<li class='message'><span class='messageSelect'>请"+sendData.rolePlayer+"选择角色."+"</span></li>";
+              var message = "<li class='message'><span class='messageNewRound'>请"+sendData.rolePlayer+"选择角色."+"</span></li>";
               sendData.messages.push(message);
               console.log('emit :next role');
 
