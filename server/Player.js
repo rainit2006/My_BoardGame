@@ -116,8 +116,8 @@ exports.updatePlayer=function(name, role, val1){
 
   switch(role){
     case 'Settler':
-        console.log('Settler plant:');
-        console.log(val1);
+        //console.log('Settler plant:');
+        //console.log(val1);
         player.plantArea.push(val1);
         // if(val1.name =="quarry" ){
         //   player.quarry += 1;
@@ -210,6 +210,7 @@ exports.getPlayerByName = function(name){
 };
 
 exports.initGovenor = function(){
+  playerNum = Players.length;
   var index= Math.floor(Math.random()*playerNum);
 
   switch(playerNum){
@@ -255,7 +256,7 @@ exports.initGovenor = function(){
         break;
   }
 
-  console.log(index);
+  //console.log(index);
   return Players[index].name;
 }
 
